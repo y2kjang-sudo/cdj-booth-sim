@@ -1,0 +1,1642 @@
+<meta charset="utf-8">
+<title>CDJ-3000 부스 연습</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: header → 내 USB band → coach (missions) → booth (PLAYER 2 | DJM | PLAYER 3, scaled to fit) → hands-on difference cards → checklist.
+   Single dark look by choice: matte black hardware under booth light. Mixer layout follows the DJM-2000NXS manual's control panel diagram. */
+:root{
+  color-scheme:dark;
+  --ground:#0d0e10; --panel:#141517; --panel2:#1a1b1e; --edge:#34373c; --groove:#050506;
+  --silk:#e6e7e9; --silk-dim:#8a8f96; --faint:#575c63;
+  --screen:#020306; --scr-ink:#e3ecf8; --scr-dim:#7d8a9c; --scr-sel:#2a5fa8;
+  --led-orange:#ff7a12; --led-green:#22e07a; --led-red:#ff3d33; --led-blue:#2f9bff; --led-white:#f4f8ff; --led-amber:#ffb31a;
+  --hint:#ff4fd8;
+  --f-panel:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--ground);color:var(--silk)}
+body{font-family:var(--f-body);font-size:14px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 60px}
+button{font:inherit;color:inherit}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--led-blue);outline-offset:2px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.wrap{max-width:1560px;margin-inline:auto}
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 24px;margin-bottom:14px}
+.top h1{font-family:var(--f-panel);font-weight:700;font-size:34px;letter-spacing:.02em;line-height:1}
+.top h1 span{color:var(--led-orange)}
+.top p{margin:6px 0 0;color:var(--silk-dim);max-width:70ch}
+.sound{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--silk-dim);border:1px solid var(--edge);border-radius:999px;padding:6px 12px;background:var(--panel)}
+.sound i{width:8px;height:8px;border-radius:50%;background:var(--faint)}
+.sound.on i{background:var(--led-green);box-shadow:0 0 8px var(--led-green)}
+.sound.on{color:var(--silk)}
+.usbband{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 20px;align-items:center;background:linear-gradient(90deg,#16191d,#121417);border:1px solid var(--edge);border-radius:10px;padding:12px 16px;margin-bottom:12px}
+.usbband h2{font-size:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.usbband .stat{font-family:var(--f-mono);font-size:12px;color:var(--led-green);background:#07110b;border:1px solid #1d3b28;border-radius:4px;padding:1px 8px}
+.usbband .stat.demo{color:var(--scr-dim);background:#0b0f15;border-color:#24303e}
+.usbband p{margin:4px 0 0;color:var(--silk-dim);font-size:13px;max-width:90ch}
+.usbband .acts{display:flex;flex-wrap:wrap;gap:8px}
+.pill{border:1px solid var(--edge);background:var(--panel2);border-radius:6px;padding:7px 12px;cursor:pointer;font-size:13px;white-space:nowrap}
+.pill:hover{border-color:var(--silk-dim)}
+.pill.primary{border-color:var(--led-orange);color:#fff;background:color-mix(in srgb,var(--led-orange) 22%,var(--panel2))}
+.pill:disabled{opacity:.5;cursor:default}
+.prog{font-size:12px;color:var(--led-amber)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.coach{display:grid;grid-template-columns:280px minmax(0,1fr);gap:12px;margin-bottom:14px}
+.mlist{display:flex;flex-direction:column;gap:2px;background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:8px;max-height:540px;overflow:auto}
+.mlist .grp{font-family:var(--f-panel);font-size:11px;letter-spacing:.14em;color:var(--faint);padding:8px 8px 4px}
+.mlist button{display:flex;gap:8px;align-items:center;text-align:left;background:none;border:0;border-radius:6px;padding:5px 8px;cursor:pointer;color:var(--silk-dim);font-size:13px}
+.mlist button:hover{background:var(--panel2);color:var(--silk)}
+.mlist button.cur{background:var(--panel2);color:var(--silk);box-shadow:inset 0 0 0 1px var(--edge)}
+.mlist .n{font-family:var(--f-mono);font-size:11px;width:22px;color:var(--faint);flex:none}
+.mlist .ok{margin-left:auto;color:var(--led-green);font-size:12px;flex:none}
+.mcard{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px 18px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.mcard-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.mcard h2{font-size:19px;font-weight:700}
+.mcard .tag{font-family:var(--f-panel);letter-spacing:.1em;font-size:12px;color:var(--led-orange)}
+.mcard .why{margin:0;color:var(--silk-dim);max-width:84ch}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:960px}
+.vs div{border:1px solid var(--edge);border-radius:8px;padding:8px 12px;font-size:13px;background:#101113}
+.vs b{display:block;font-family:var(--f-panel);letter-spacing:.1em;font-size:11px;color:var(--faint);margin-bottom:2px}
+.vs .djm{border-color:color-mix(in srgb,var(--led-orange) 45%,var(--edge))}
+.vs .djm b{color:var(--led-orange)}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.steps li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;align-items:start;color:var(--faint)}
+.steps li .b{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--faint);display:grid;place-items:center;font-size:11px;margin-top:2px;font-family:var(--f-mono)}
+.steps li.done{color:var(--silk-dim)}
+.steps li.done .b{border-color:var(--led-green);background:var(--led-green);color:#052}
+.steps li.now{color:var(--silk);font-weight:500}
+.steps li.now .b{border-color:var(--hint);color:var(--hint)}
+.steps b{color:var(--silk)}
+.mnav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mdone{color:var(--led-green);font-weight:600}
+.src-note{font-size:12px;color:var(--faint)}
+.tabs{display:none;gap:6px;margin-bottom:10px}
+body.narrow .tabs{display:flex}
+.tabs button{flex:1;border:1px solid var(--edge);background:var(--panel);border-radius:8px;padding:8px 4px;font-family:var(--f-panel);font-weight:600;letter-spacing:.06em;cursor:pointer;position:relative;color:var(--silk-dim)}
+.tabs button.cur{color:var(--silk);border-color:var(--silk-dim);background:var(--panel2)}
+.tabs button.attn::after{content:"";position:absolute;top:6px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--hint);box-shadow:0 0 6px var(--hint)}
+.booth-wrap{position:relative;overflow:hidden}
+.booth{display:flex;gap:14px;align-items:flex-start;padding:16px;width:max-content;transform-origin:0 0;border-radius:14px;background:radial-gradient(120% 80% at 50% 0%,#202327,#0b0c0d 70%);border:1px solid #1b1d20}
+body.narrow .unit:not(.cur){display:none}
+.unit{display:flex;flex-direction:column;gap:6px}
+.cap-line{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:0 6px;font-family:var(--f-panel);letter-spacing:.1em;font-size:12px;color:var(--silk-dim);min-height:28px}
+.cap-line b{color:var(--silk);font-size:14px}
+.chassis{position:relative;border-radius:14px;user-select:none;-webkit-user-select:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 3px),linear-gradient(180deg,#19191b,#111113 60%,#0e0e10);
+  border:1px solid #2b2d31;box-shadow:0 24px 40px #000c,0 2px 0 #000,inset 0 1px 0 #ffffff14,inset 0 0 0 6px #0b0b0c,inset 0 0 0 7px #26282c}
+.silk{font-family:var(--f-panel);font-weight:600;font-size:9.5px;letter-spacing:.08em;color:var(--silk);text-transform:uppercase;line-height:1.05;text-align:center;opacity:.92}
+.silk.dim{color:var(--silk-dim)}
+.sect{font-family:var(--f-panel);font-weight:700;font-size:9.5px;letter-spacing:.14em;color:var(--silk-dim);text-align:center;text-transform:uppercase;display:flex;align-items:center;gap:6px;width:100%}
+.sect::before,.sect::after{content:"";flex:1;height:1px;background:#3a3d42}
+.btn{--led:var(--led-white);font-family:var(--f-panel);font-weight:600;font-size:10px;letter-spacing:.05em;line-height:1.05;text-transform:uppercase;
+  color:#d6d8db;background:linear-gradient(#2a2b2e,#1d1e20);border:1px solid #050506;border-radius:3px;min-height:26px;padding:3px 4px;cursor:pointer;
+  box-shadow:inset 0 1px 0 #ffffff14,0 2px 0 #000,0 0 0 1px #2c2e32;touch-action:manipulation}
+.btn:active{transform:translateY(1px)}
+.btn.on{color:#fff;background:linear-gradient(color-mix(in srgb,var(--led) 70%,#161616),color-mix(in srgb,var(--led) 42%,#0d0d0d));
+  box-shadow:0 0 12px color-mix(in srgb,var(--led) 60%,transparent),inset 0 1px 0 #ffffff40,0 2px 0 #000,0 0 0 1px color-mix(in srgb,var(--led) 70%,#000);text-shadow:0 0 6px var(--led)}
+.btn.blink{animation:blink .9s steps(1) infinite}
+@keyframes blink{50%{color:#fff;background:linear-gradient(color-mix(in srgb,var(--led) 70%,#161616),color-mix(in srgb,var(--led) 42%,#0d0d0d));box-shadow:0 0 12px color-mix(in srgb,var(--led) 60%,transparent),0 0 0 1px color-mix(in srgb,var(--led) 70%,#000)}}
+.led-orange{--led:var(--led-orange)} .led-green{--led:var(--led-green)} .led-red{--led:var(--led-red)} .led-blue{--led:var(--led-blue)}
+.white.on{color:#0c0c0c!important;text-shadow:none!important}
+.hint{outline:2.5px solid var(--hint)!important;outline-offset:3px;animation:hintp 1.1s ease-in-out infinite}
+@keyframes hintp{50%{outline-color:transparent}}
+
+/* ---------------- CDJ deck ---------------- */
+.deck .chassis{width:590px;padding:18px 18px 22px;display:flex;flex-direction:column;gap:10px}
+.dk-a{display:grid;grid-template-columns:78px minmax(0,1fr) 70px;gap:10px}
+.dk-left{display:flex;flex-direction:column;gap:5px}
+.media{display:flex;flex-direction:column;gap:4px;padding:5px;border-radius:5px;background:#0a0a0b;box-shadow:inset 0 1px 3px #000,0 0 0 1px #26282b;margin-bottom:4px}
+.sdslot{height:7px;border-radius:2px;background:#000;box-shadow:inset 0 0 0 1px #2b2d30}
+.usb-port{height:26px;border-radius:3px;background:#000;border:1px solid #33363a;position:relative;cursor:pointer;padding:0}
+.usb-port::before{content:"";position:absolute;left:12px;right:12px;top:9px;height:6px;background:#1b1c1f;border-radius:1px}
+.usb-port .stick{position:absolute;left:6px;right:6px;top:4px;bottom:4px;border-radius:2px;background:linear-gradient(#e7eaee,#9ba3ab);display:none}
+.usb-port .stick::after{content:"";position:absolute;right:4px;top:50%;width:5px;height:5px;margin-top:-2.5px;border-radius:50%;background:var(--led-blue);box-shadow:0 0 6px var(--led-blue)}
+.usb-port.in .stick{display:block}
+.media .row{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.media .btn{min-height:20px;font-size:8.5px;flex:1}
+.media .lbl{font-family:var(--f-panel);font-size:8px;letter-spacing:.1em;color:var(--silk-dim)}
+.dk-left>.btn{min-height:30px}
+.dk-right{display:flex;flex-direction:column;align-items:center;gap:6px}
+.dk-right .btn{width:100%;min-height:28px}
+.rotary{width:62px;height:62px;border-radius:50%;cursor:ns-resize;touch-action:none;position:relative;margin-top:6px;background:repeating-conic-gradient(#2c2d30 0 5deg,#18191b 5deg 10deg);box-shadow:0 4px 8px #000,0 0 0 2px #050505}
+.rotary .cap{position:absolute;inset:10px;border-radius:50%;background:radial-gradient(circle at 40% 30%,#3e4045,#151618 72%);box-shadow:inset 0 1px 0 #ffffff22}
+.rotary .cap::after{content:"";position:absolute;left:50%;top:4px;width:2px;height:8px;margin-left:-1px;background:#e6e7e9;border-radius:1px}
+.bezel{background:#050506;border-radius:6px;padding:5px;box-shadow:inset 0 0 0 1px #2d2f33,0 1px 0 #ffffff10}
+.screen{height:300px;background:var(--screen);border-radius:3px;color:var(--scr-ink);display:flex;flex-direction:column;overflow:hidden;position:relative}
+.scr-bar{display:flex;align-items:center;gap:6px;padding:4px 7px;font-family:var(--f-panel);font-size:11px;letter-spacing:.05em;background:#0a111c;border-bottom:1px solid #18263a;white-space:nowrap}
+.scr-bar .pn{background:var(--scr-ink);color:#02040a;border-radius:2px;padding:0 5px;font-weight:700}
+.scr-bar .src{color:var(--scr-dim);overflow:hidden;text-overflow:ellipsis;min-width:0}
+.scr-bar .src.link{color:#7fd0ff}
+.badges{margin-left:auto;display:flex;gap:3px}
+.badges i{font-style:normal;border:1px solid #2b3c55;border-radius:2px;padding:0 4px;color:var(--scr-dim)}
+.badges i.on{color:#02040a;background:#a9d4ff;border-color:#a9d4ff}
+.badges i.q.on{background:var(--led-red);border-color:var(--led-red);color:#fff}
+.scr-idle{flex:1;display:grid;place-items:center;text-align:center;color:var(--scr-dim);font-size:13px;padding:16px}
+.scr-idle b{display:block;color:var(--scr-ink);font-family:var(--f-panel);letter-spacing:.12em;font-size:17px;margin-bottom:4px}
+.scr-list{flex:1;display:flex;flex-direction:column;min-height:0}
+.crumb{font-size:11px;color:var(--scr-dim);padding:3px 8px;border-bottom:1px solid #121c2a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scr-list ul{list-style:none;margin:0;padding:0;flex:1;overflow:hidden}
+.scr-list li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:0 8px;height:28px;font-size:13px;border-bottom:1px solid #0d1520;cursor:pointer}
+.scr-list li .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scr-list li .t small{color:var(--scr-dim);margin-left:6px;font-size:11px}
+.scr-list li .m{font-family:var(--f-mono);font-size:11px;color:var(--scr-dim)}
+.scr-list li.sel{background:var(--scr-sel);color:#fff}
+.scr-list li.sel .m,.scr-list li.sel small{color:#d5e7ff}
+.scr-list li.dis{color:#3d4e63;cursor:default}
+.scr-list li .chev{color:var(--scr-dim)}
+.scr-play{flex:1;display:flex;flex-direction:column;min-height:0}
+.ti{display:flex;align-items:baseline;gap:8px;padding:4px 8px 2px;min-width:0}
+.ti .tt{min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+.ti .tt b{font-weight:600}
+.ti .tt span{color:var(--scr-dim);margin-left:6px;font-size:12px}
+.ti .k{font-family:var(--f-mono);font-size:11px;color:#9ff0c0}
+canvas.wz{width:100%;height:110px;display:block}
+canvas.wo{width:100%;height:32px;display:block;cursor:pointer;border-top:1px solid #111b28;border-bottom:1px solid #111b28}
+.st{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:4px 8px;flex:1}
+.st-time{cursor:pointer}
+.st small{display:block;font-family:var(--f-panel);letter-spacing:.08em;font-size:10px;color:var(--scr-dim);line-height:1}
+.st-time b{font-family:var(--f-mono);font-size:21px;font-weight:700;font-variant-numeric:tabular-nums}
+.st-bpm{text-align:right}
+.st-bpm b{font-family:var(--f-mono);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.st-bpm .pct{display:block;font-family:var(--f-mono);font-size:11px;color:var(--scr-dim);font-variant-numeric:tabular-nums}
+.st-bpm .ms{display:inline-block;font-family:var(--f-panel);font-size:10px;letter-spacing:.08em;padding:0 4px;border-radius:2px;margin-right:4px;vertical-align:middle;color:var(--scr-dim);border:1px solid #2b3c55}
+.st-bpm .ms.master{background:var(--led-orange);border-color:var(--led-orange);color:#000}
+.st-bpm .ms.sync{background:var(--led-blue);border-color:var(--led-blue);color:#000}
+canvas.ph{width:100%;height:30px;display:block}
+.loading{position:absolute;inset:auto 0 0 0;top:56px;display:grid;place-items:center;background:rgba(2,3,6,.8);font-family:var(--f-panel);letter-spacing:.12em;color:var(--led-amber);font-size:14px}
+.hc-row{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;padding:0 2px}
+.hc{--hc:#444;height:34px;border-radius:3px;border:1px solid #000;cursor:pointer;font-family:var(--f-panel);font-weight:700;font-size:12px;color:#8a8e94;background:linear-gradient(#26272a,#1a1b1d);box-shadow:inset 0 1px 0 #ffffff12,0 2px 0 #000,0 0 0 1px #2a2c30;touch-action:manipulation;position:relative}
+.hc::before{content:"";position:absolute;left:5px;right:5px;top:4px;height:3px;border-radius:2px;background:#323438}
+.hc.set{color:#fff;background:linear-gradient(color-mix(in srgb,var(--hc) 75%,#111),color-mix(in srgb,var(--hc) 42%,#090909));box-shadow:0 0 12px color-mix(in srgb,var(--hc) 55%,transparent),inset 0 1px 0 #ffffff40,0 2px 0 #000}
+.hc.set::before{background:#fff;opacity:.7}
+.dk-b{display:grid;grid-template-columns:128px minmax(0,1fr) 112px;gap:8px;align-items:start}
+.dk-bl,.dk-br{display:flex;flex-direction:column;gap:5px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.g2 .btn{min-height:28px}
+.bigs{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:6px}
+.big{--led:#fff;width:78px;height:78px;border-radius:50%;cursor:pointer;position:relative;touch-action:manipulation;border:0;background:radial-gradient(circle at 45% 35%,#2e3034,#141517 70%);box-shadow:0 0 0 4px #0b0b0c,0 0 0 6px #2f3236,0 6px 10px #000;color:#e8e9eb;font-family:var(--f-panel);font-weight:700;font-size:16px;letter-spacing:.08em}
+.big::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:3px solid #2a2c2f}
+.big.cue{--led:var(--led-orange)} .big.play{--led:var(--led-green)}
+.big.on::after{border-color:var(--led);box-shadow:0 0 14px var(--led),inset 0 0 8px color-mix(in srgb,var(--led) 60%,transparent)}
+.big.on{color:var(--led)}
+.big.blink::after{animation:ringblink .9s steps(1) infinite}
+@keyframes ringblink{50%{border-color:var(--led);box-shadow:0 0 14px var(--led)}}
+.big:active{transform:translateY(1px)}
+.big svg{width:30px;height:20px;display:block;margin:auto;fill:currentColor}
+.jogcell{display:flex;flex-direction:column;align-items:center;gap:6px}
+.jog{width:316px;height:316px;border-radius:50%;position:relative;touch-action:none;cursor:grab;background:radial-gradient(circle,transparent 0 80%,#060607 80% 81.5%,transparent 81.5%),repeating-conic-gradient(#2a2b2e 0 1.2deg,#18191b 1.2deg 2.4deg);box-shadow:0 0 0 3px #050506,0 0 0 5px #2c2e32,0 0 0 8px #0a0a0b,0 14px 24px #000}
+.jog .ring{position:absolute;inset:-9px;border-radius:50%;border:2px solid color-mix(in srgb,var(--led-blue) 70%,transparent);box-shadow:0 0 14px color-mix(in srgb,var(--led-blue) 45%,transparent);pointer-events:none;opacity:.85}
+.jog .top{position:absolute;inset:11%;border-radius:50%;background:radial-gradient(circle at 50% 50%,transparent 0 40%,#0c0c0d 40% 41%,transparent 41%),repeating-radial-gradient(circle at 50% 50%,#1f2023 0 1px,#191a1c 1px 3px);box-shadow:inset 0 2px 0 #ffffff16,inset 0 -6px 14px #000a,0 0 0 2px #050506}
+.jog canvas{position:absolute;left:50%;top:50%;width:118px;height:118px;margin:-59px 0 0 -59px;border-radius:50%;background:#020306;box-shadow:0 0 0 3px #050506,0 0 0 5px #3a3d42}
+.jog.touch .top{background:radial-gradient(circle at 50% 50%,transparent 0 40%,#0c0c0d 40% 41%,transparent 41%),repeating-radial-gradient(circle at 50% 50%,#2a2c30 0 1px,#222427 1px 3px)}
+.jogsub{display:flex;gap:6px;align-items:center}
+.jogsub .btn{min-height:24px}
+.tempo-box{display:flex;gap:6px;align-items:stretch;justify-content:center;margin-top:2px}
+.tempo-scale{display:flex;flex-direction:column;justify-content:space-between;font-family:var(--f-mono);font-size:12px;color:var(--silk-dim);padding:4px 0}
+.vf{position:relative;width:24px;height:130px;touch-action:none;cursor:ns-resize}
+.vf::before{content:"";position:absolute;left:50%;top:6px;bottom:6px;width:4px;margin-left:-2px;background:var(--groove);border-radius:2px;box-shadow:0 0 0 1px #2a2c30}
+.vf .cap{position:absolute;left:0;right:0;top:0;height:22px;border-radius:2px;background:linear-gradient(#3a3c40,#1b1c1f 40%,#141517);box-shadow:0 3px 5px #000,inset 0 1px 0 #ffffff26,0 0 0 1px #000}
+.vf .cap::after{content:"";position:absolute;left:2px;right:2px;top:50%;height:2px;margin-top:-1px;background:#f0f1f2;border-radius:1px}
+.vf.tempo{width:38px;height:214px}
+.vf.tempo .led0{position:absolute;left:-8px;top:50%;width:4px;height:4px;margin-top:-2px;border-radius:50%;background:#1f2a22}
+.vf.tempo .led0.on{background:var(--led-green);box-shadow:0 0 6px var(--led-green)}
+.hf{position:relative;height:30px;width:210px;touch-action:none;cursor:ew-resize}
+.hf::before{content:"";position:absolute;top:50%;left:6px;right:6px;height:4px;margin-top:-2px;background:var(--groove);border-radius:2px;box-shadow:0 0 0 1px #2a2c30}
+.hf .cap{position:absolute;top:0;bottom:0;left:0;width:24px;border-radius:2px;background:linear-gradient(90deg,#3a3c40,#1b1c1f 40%,#141517);box-shadow:0 3px 5px #000,inset 0 1px 0 #ffffff26,0 0 0 1px #000}
+.hf .cap::after{content:"";position:absolute;top:2px;bottom:2px;left:50%;width:2px;margin-left:-1px;background:#f0f1f2}
+
+/* ---------------- DJM mixer (follows manual page 11 control panel) ---------------- */
+.mixer .chassis{width:870px;padding:16px 14px 18px;display:grid;gap:0 8px;grid-template-columns:112px 70px 70px 1fr 70px 70px 112px;align-items:start}
+.mcol{display:flex;flex-direction:column;align-items:center;gap:7px}
+.mcol.ch{border-left:1px solid #222427;border-right:1px solid #222427;padding:0 2px}
+.center{display:flex;flex-direction:column;align-items:center;gap:7px;padding:0 6px}
+.kw{display:flex;flex-direction:column;align-items:center;gap:1px}
+.knob{width:32px;height:32px;border-radius:50%;cursor:ns-resize;touch-action:none;position:relative;
+  background:conic-gradient(from 0deg,#f6f7f8,#9aa1a8 12%,#e9ecee 25%,#7c838a 38%,#f1f3f4 50%,#8f969d 63%,#e3e6e9 76%,#7a8188 88%,#f6f7f8);box-shadow:0 3px 5px #000,0 0 0 2px #050506}
+.knob::before{content:"";position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ffffff,#b5bbc1 55%,#80878e);box-shadow:inset 0 -1px 2px #0006}
+.knob::after{content:"";position:absolute;left:50%;top:1px;width:2.5px;height:11px;margin-left:-1.25px;background:#111;border-radius:1px}
+.knob.small{width:27px;height:27px}
+.knob.big{width:40px;height:40px}
+.kw .rng{display:flex;justify-content:space-between;width:44px;font-family:var(--f-panel);font-size:7.5px;color:var(--silk-dim);margin-top:-2px}
+.mcol .btn,.center .btn{width:100%}
+.mf{display:flex;gap:5px;align-items:stretch;margin-top:2px}
+canvas.meter{width:7px;height:150px;display:block;border-radius:1px;background:#050607}
+canvas.meter.tall{height:210px;width:16px}
+.strip-top{display:grid;grid-template-columns:1fr 9px;gap:3px;width:100%;align-items:start}
+.strip-top .knobs{display:flex;flex-direction:column;align-items:center;gap:6px}
+.chn{font-family:var(--f-panel);font-weight:700;font-size:15px;letter-spacing:.06em;color:var(--silk)}
+/* slide switches */
+.slide{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;background:none;border:0;padding:0;width:100%}
+.slide .lbls{display:flex;justify-content:space-between;width:100%;font-family:var(--f-panel);font-size:7.5px;letter-spacing:.02em;color:var(--silk-dim);line-height:1}
+.slide .lbls span{flex:1;text-align:center}
+.slide .lbls span.on{color:#fff}
+.slide .trk{width:calc(100% - 8px);height:12px;border-radius:2px;background:#050506;box-shadow:inset 0 0 0 1px #2c2e32;position:relative}
+.slide .trk i{position:absolute;top:1px;width:14px;height:10px;border-radius:2px;background:linear-gradient(#d7dade,#8d949b);transition:left .1s}
+.slide.inp .lbls span.on{color:#fff}
+.slide .val{font-family:var(--f-panel);font-size:9px;letter-spacing:.04em;color:#0b0b0b;background:#cfe4ff;border-radius:2px;padding:0 4px;margin-top:1px;white-space:nowrap}
+.slide .val.off{background:#3a2a1a;color:var(--led-amber)}
+.wire{font-size:9.5px;line-height:1.2;color:var(--silk-dim);text-align:center;border-top:1px dashed #3a3d42;padding-top:4px;width:100%;min-height:34px}
+.wire b{display:block;color:var(--silk);font-family:var(--f-panel);letter-spacing:.06em;font-size:11px}
+.jack{width:24px;height:24px;border-radius:50%;background:radial-gradient(circle,#000 0 34%,#9aa1a8 35% 48%,#2a2c30 50%);box-shadow:0 0 0 2px #050506}
+.instfx{display:grid;grid-template-columns:1fr 1fr;gap:4px;width:100%;padding:6px;border-radius:4px;background:repeating-linear-gradient(45deg,#1b1c1f 0 2px,#17181a 2px 4px);box-shadow:inset 0 0 0 1px #2a2c30}
+.instfx .btn{font-size:9.5px;min-height:24px}
+.chsel{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;width:100%}
+.rb{width:100%;aspect-ratio:1;border-radius:50%;font-family:var(--f-panel);font-weight:700;font-size:10px;cursor:pointer;border:1px solid #050506;background:radial-gradient(circle at 45% 35%,#33353a,#1a1b1d 70%);color:#d6d8db;box-shadow:0 2px 0 #000,0 0 0 1px #2c2e32;padding:0}
+.rb.on{background:radial-gradient(circle at 45% 35%,#ffffff,#cfd6de 70%);color:#111;box-shadow:0 0 10px #fff8,0 2px 0 #000}
+.fxsel{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;width:100%}
+.fxsel .btn{font-size:8.5px;min-height:28px;padding:2px}
+.beats{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;width:100%}
+.beats .rb{font-size:9px}
+.fxrow{display:flex;justify-content:space-around;align-items:flex-end;width:100%}
+.bfx-on{width:50px;height:50px;border-radius:50%;cursor:pointer;border:0;background:radial-gradient(circle at 45% 35%,#3a3c41,#151618 70%);box-shadow:0 0 0 3px #0b0b0c,0 0 0 5px #2e3135,0 4px 8px #000;font-family:var(--f-panel);font-weight:700;font-size:11px;color:#ddd}
+.bfx-on.on{box-shadow:0 0 0 3px #0b0b0c,0 0 0 5px #fff,0 0 18px #fff8;color:#fff}
+.bfx-on.blink{animation:wblink .8s steps(1) infinite}
+@keyframes wblink{50%{box-shadow:0 0 0 3px #0b0b0c,0 0 0 5px #2e3135}}
+.lcd{background:#0c1a10;border-radius:3px;box-shadow:0 0 0 2px #050506,0 0 0 3px #2d2f33;padding:4px 8px;font-family:var(--f-mono);color:#a8ffcf;font-size:11px;display:flex;justify-content:space-between;align-items:center;width:100%}
+.lcd b{font-size:17px;font-weight:700;letter-spacing:.04em}
+.lcd small{font-size:9px;color:#5fbf8a;display:block;line-height:1.1}
+.tp-area{display:grid;grid-template-columns:46px 1fr 50px;gap:6px;width:100%;align-items:start;margin-top:2px}
+.tp-side{display:flex;flex-direction:column;gap:6px;align-items:center}
+.tpanel{background:#020306;border-radius:4px;box-shadow:0 0 0 4px #050506,0 0 0 5px #2d2f33;height:246px;padding:6px;color:var(--scr-ink);display:flex;flex-direction:column;gap:4px;font-size:10px;position:relative;overflow:hidden}
+.tp-title{font-family:var(--f-panel);letter-spacing:.1em;font-size:10px;color:#9fd0ff;display:flex;justify-content:space-between}
+.tp-title .st{color:var(--scr-dim)}
+.tp-asg{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tp-asg div{display:flex;gap:2px}
+.tp-asg button{flex:1;font-family:var(--f-panel);font-size:9px;border:1px solid #1c3050;background:#0a1424;color:#9fb4cf;border-radius:2px;cursor:pointer;padding:1px 0}
+.tp-asg button.on{background:#2f6fd0;color:#fff;border-color:#5f9bff}
+.frrows{display:flex;flex-direction:column;gap:3px;flex:1}
+.frrow{display:grid;grid-template-columns:16px 1fr 16px;gap:3px;align-items:center;flex:1}
+.frrow button{font-size:9px;border:0;background:#0f1d33;color:#9fd0ff;border-radius:2px;cursor:pointer;height:100%;padding:0}
+.frtrk{position:relative;height:100%;min-height:16px;border-radius:2px;background:linear-gradient(90deg,#123a6e,#0a1424 50%,#5a2a0b);touch-action:none;cursor:ew-resize}
+.frtrk i{position:absolute;top:1px;bottom:1px;width:10px;margin-left:-5px;background:#e8f1ff;border-radius:2px;box-shadow:0 0 6px #9fd0ff}
+.frtrk span{position:absolute;left:4px;top:50%;transform:translateY(-50%);font-family:var(--f-mono);font-size:8px;color:#cfe4ff;pointer-events:none}
+.pads{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:4px}
+.pads span{aspect-ratio:1;border-radius:3px;background:#122744;display:grid;place-items:center;font-family:var(--f-mono);font-size:9px;color:#9fd0ff}
+.scgrid{flex:1;border-radius:3px;background:linear-gradient(#0e1d33,#081222);box-shadow:inset 0 0 0 1px #1c3050;display:grid;place-items:center;color:var(--scr-dim);text-align:center;padding:6px}
+.status{display:grid;grid-template-columns:auto repeat(4,1fr);gap:3px 4px;font-family:var(--f-mono);font-size:9px;align-items:center;margin-top:4px}
+.status span{text-align:center;color:#33465f}
+.status span.on{color:#a8ffcf}
+.status span.m{color:var(--led-orange)}
+.status b{font-family:var(--f-panel);font-size:9px;color:var(--scr-dim);font-weight:600}
+.tp-note{font-size:9.5px;color:var(--scr-dim);line-height:1.35}
+.bigw{width:46px;height:46px;border-radius:50%;cursor:pointer;border:0;background:radial-gradient(circle at 45% 35%,#3a3c41,#151618 70%);box-shadow:0 0 0 3px #0b0b0c,0 0 0 5px #2e3135,0 4px 8px #000;font-family:var(--f-panel);font-weight:700;font-size:10px;color:#ddd}
+.bigw.on{box-shadow:0 0 0 3px #0b0b0c,0 0 0 5px #fff,0 0 18px #fff8;color:#fff}
+.bigw.blink{animation:wblink .8s steps(1) infinite}
+.xf-row{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;margin-top:6px;padding-top:8px;border-top:1px solid #222427}
+.xf-row .silk{font-size:12px}
+.mon-sim{display:flex;gap:4px;align-items:center;font-family:var(--f-body);letter-spacing:0;font-size:11px}
+.mon-sim .btn{font-size:10.5px;text-transform:none;min-height:24px;padding:2px 8px}
+.curve{width:100%;display:flex;flex-direction:column;gap:5px;padding:6px 4px;border-radius:4px;box-shadow:inset 0 0 0 1px #2a2c30}
+
+/* ---------------- CDJ-3000 per manual (top panel p.14, touch display p.21, jog display p.26) ---------------- */
+.deck .chassis.cdj{width:610px;padding:16px 16px 20px;display:flex;flex-direction:column;gap:10px}
+.cdj-a{display:grid;grid-template-columns:84px minmax(0,1fr) 78px;gap:10px;align-items:start}
+.cdj-l,.cdj-r{display:flex;flex-direction:column;align-items:center;gap:8px}
+.cdj-l>.btn,.cdj-r>.btn{width:100%;min-height:28px}
+.media2{width:100%;display:flex;flex-direction:column;align-items:stretch;gap:5px;padding:6px;border-radius:5px;background:#0a0a0b;box-shadow:inset 0 1px 3px #000,0 0 0 1px #26282b}
+.media2 .mrow{display:flex;align-items:center;gap:5px}
+.media2 .usb-port{flex:1}
+.media2 .sdslot{flex:1;height:8px;border:0;cursor:pointer;padding:0}
+.media2 .btn{min-height:20px;font-size:8.5px}
+.ind{width:6px;height:6px;border-radius:50%;background:#1e2024;flex:none}
+.ind.on{background:var(--led-blue);box-shadow:0 0 6px var(--led-blue)}
+.cdj-c{display:flex;flex-direction:column;gap:7px;min-width:0}
+.navrow{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.navrow .btn{min-height:26px;font-size:9.5px}
+.hcrow2{display:grid;grid-template-columns:46px repeat(8,minmax(0,1fr));gap:5px}
+.hcrow2 .btn{min-height:34px;font-size:8.5px}
+.hc.loop{--hc:#ff8a1f!important}
+.rbtn{--led:#fff;width:42px;height:42px;border-radius:50%;cursor:pointer;border:1px solid #050506;background:radial-gradient(circle at 45% 35%,#303236,#17181a 70%);box-shadow:0 2px 0 #000,0 0 0 2px #26282c;color:#d6d8db;font-family:var(--f-panel);font-weight:700;font-size:9.5px;line-height:1;padding:0;touch-action:manipulation;flex:none}
+.rbtn.sm{width:32px;height:32px;font-size:9px}
+.rbtn.on{color:#fff;box-shadow:0 0 0 2px var(--led),0 0 12px var(--led),0 2px 0 #000}
+.rbtn.blink{animation:rblink .9s steps(1) infinite}
+@keyframes rblink{50%{box-shadow:0 0 0 2px var(--led),0 0 12px var(--led)}}
+.rbtn:active{transform:translateY(1px)}
+.lab{display:flex;flex-direction:column;align-items:center;gap:3px}
+.lab .silk{font-size:8.5px}
+.rowc{display:flex;gap:8px;justify-content:center;align-items:flex-start;width:100%}
+.cdj-b{display:grid;grid-template-columns:120px minmax(0,1fr) 120px;gap:8px;align-items:start}
+.cdj-bl,.cdj-br{display:flex;flex-direction:column;align-items:center;gap:6px}
+.cdj-br .g2,.cdj-bl .g2{width:100%}
+.cdj-br>.btn{width:100%}
+.dirlever{display:flex;flex-direction:column;gap:1px;width:60px;padding:3px;border-radius:3px;background:#0a0a0b;box-shadow:inset 0 0 0 1px #2c2e32;font-family:var(--f-panel);font-size:8px;color:var(--silk-dim);cursor:pointer;border:0}
+.dirlever span.on{color:#fff;background:#2a2c30;border-radius:2px}
+.vc{display:flex;flex-direction:column;gap:3px;font-family:var(--f-panel);font-size:9px;font-weight:700;letter-spacing:.06em}
+.vc i{font-style:normal;color:#3a3d42}
+.vc i.on{color:var(--led-blue);text-shadow:0 0 6px var(--led-blue)}
+.tempo-row{display:flex;gap:8px;align-items:flex-end}
+.cdj .jog{width:300px;height:300px;margin-top:14px}
+.cdj .bigs .big{width:70px;height:70px}
+.cdj-bl{gap:4px!important}
+.cdj-bl .g2 .btn{min-height:26px}
+.cdj .vf.tempo{height:200px}
+/* touch display: playback screen */
+.p-top{display:flex;align-items:center;gap:6px;padding:3px 6px;background:#0a111c;border-bottom:1px solid #18263a;min-width:0}
+.p-top .dev{font-family:var(--f-panel);font-size:10px;background:#2a5fa8;color:#fff;border-radius:2px;padding:1px 4px;flex:none}
+.p-top .dev.link{background:#0e6c7a}
+.p-top .tt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+.p-top .tt b{font-weight:600}
+.p-top .tt span{color:var(--scr-dim);margin-left:6px;font-size:11px}
+.p-top .k{font-family:var(--f-mono);font-size:10px;color:var(--scr-dim);white-space:nowrap}
+.tb{font-family:var(--f-panel);font-size:8.5px;line-height:1;border:1px solid #27405f;background:#0c1828;color:#cfe4ff;border-radius:2px;padding:2px 4px;cursor:pointer;flex:none}
+.p-strip{display:grid;grid-template-columns:62px 1fr;gap:6px;align-items:stretch;padding:3px 6px}
+.cnt{display:flex;flex-direction:column;justify-content:center;gap:1px;font-family:var(--f-mono);font-weight:700;padding:0 2px;line-height:1}
+.cnt>span{display:flex;align-items:baseline;justify-content:flex-end;gap:2px}
+.cnt .cm{color:#ff8a1f;font-size:11px}
+.cnt .cs{color:#3d8bff;font-size:15px}
+.cnt small{font-size:7.5px;font-family:var(--f-panel);font-weight:600}
+.p-strip canvas.ph{height:32px;border:1px solid #2b3c55;border-radius:2px;cursor:pointer}
+.wzbox{position:relative}
+.wzbox canvas.wz{height:106px}
+.wzbox .lpb{position:absolute;left:4px;bottom:3px;font-family:var(--f-mono);font-size:10px;color:#ff9a2e}
+.wzbox .zoomind{position:absolute;right:4px;bottom:3px;font-family:var(--f-panel);font-size:8px;color:var(--scr-dim);border:1px solid #2b3c55;padding:0 3px;border-radius:2px}
+.p-info{display:grid;grid-template-columns:38px 34px 58px minmax(0,1fr) auto auto;gap:6px;align-items:center;padding:4px 6px;border-top:1px solid #121c2a}
+.p-info small{display:block;font-family:var(--f-panel);font-size:8.5px;letter-spacing:.06em;color:var(--scr-dim);line-height:1.1}
+.p-info .pl{border:1px solid #c0392b;border-radius:3px;text-align:center;padding:1px}
+.p-info .pl b{font-family:var(--f-mono);font-size:16px;color:#ff6b5e}
+.p-info .tno b{font-family:var(--f-mono);font-size:16px}
+.flags{display:flex;flex-direction:column;gap:2px}
+.flags i{font-style:normal;font-family:var(--f-panel);font-size:8px;border:1px solid #2b3c55;color:#3d4e63;border-radius:2px;padding:0 2px;text-align:center}
+.flags i.on{border-color:#c0392b;color:#ff6b5e}
+.p-info .st-time{white-space:nowrap}
+.p-info .st-time b{font-family:var(--f-mono);font-size:21px;font-weight:700}
+.p-info .st-time em{font-style:normal;font-family:var(--f-mono);font-size:12px}
+.p-info .single{font-family:var(--f-panel);font-size:8px;color:var(--scr-dim);margin-left:4px}
+.p-info .tempo{text-align:right;border:1px solid #33465f;border-radius:3px;padding:1px 4px}
+.p-info .tempo .rg2{font-family:var(--f-panel);font-size:8.5px;background:#c0392b;color:#fff;border-radius:2px;padding:0 3px}
+.p-info .tempo .pct{display:block;font-family:var(--f-mono);font-size:14px;color:var(--scr-ink)}
+.p-info .st-bpm{text-align:right}
+.p-info .st-bpm b{font-family:var(--f-mono);font-size:22px;font-weight:700;color:#ff6b5e;display:block;line-height:1}
+.p-info .st-bpm .ms{display:inline-block;font-size:8px;padding:0 3px;border-radius:2px;margin:0 0 0 3px;border:0;color:#3d4e63}
+.p-info .st-bpm .ms.master{background:var(--led-orange);color:#000}
+.p-info .st-bpm .ms.sync{background:var(--led-blue);color:#000}
+.mtk{display:flex;gap:4px;justify-content:flex-end;align-items:center;font-family:var(--f-mono);font-size:10px}
+.mtk i{font-style:normal;font-family:var(--f-panel);font-size:8.5px;color:#3d4e63;border:1px solid #2b3c55;border-radius:2px;padding:0 2px}
+.mtk i.on{color:#ff6b5e;border-color:#c0392b}
+.k2{color:var(--scr-ink)}
+.k2.match{color:#22e07a}
+.p-ov{display:grid;grid-template-columns:44px minmax(0,1fr);gap:5px;padding:2px 6px 4px;align-items:stretch}
+.qb{display:grid;grid-template-columns:1fr;font-family:var(--f-panel);text-align:center;border:1px solid #2b3c55;border-radius:2px;line-height:1}
+.qb small{font-size:7px;color:var(--scr-dim)}
+.qb b{font-family:var(--f-mono);font-size:10px;color:var(--scr-ink)}
+.p-ov canvas.wo{height:30px}
+
+/* cards */
+.diff{margin-top:24px}
+.diff-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 16px;margin-bottom:12px}
+.diff-head p{margin:0;color:var(--silk-dim);max-width:84ch}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:10px}
+.dcard{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.dcard h3{font-size:15px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.kind{font-family:var(--f-panel);font-size:11px;letter-spacing:.08em;border-radius:3px;padding:1px 6px;white-space:nowrap;font-weight:600}
+.kind.same{color:var(--led-green);border:1px solid color-mix(in srgb,var(--led-green) 50%,transparent)}
+.kind.diff{color:var(--led-orange);border:1px solid color-mix(in srgb,var(--led-orange) 50%,transparent)}
+.kind.new{color:var(--hint);border:1px solid color-mix(in srgb,var(--hint) 50%,transparent)}
+.dcard .vs div{padding:6px 9px;font-size:12.5px}
+.dcard .foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto}
+.dcard .done{font-size:12px;color:var(--led-green)}
+.chk-card{margin-top:16px;background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:16px 18px}
+.chk-card h2{font-size:17px;margin-bottom:10px}
+.chk{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:6px 20px}
+.chk label{display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;cursor:pointer;align-items:start}
+.chk input{accent-color:var(--led-orange);margin-top:4px}
+.chk input:checked + span{color:var(--silk-dim);text-decoration:line-through}
+.keys{font-size:12px;color:var(--silk-dim);margin-top:12px}
+.disc{margin-top:14px;color:var(--faint);font-size:12px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#202226;border:1px solid var(--edge);color:var(--silk);padding:10px 16px;border-radius:8px;box-shadow:0 8px 24px #000a;max-width:min(620px,calc(100vw - 32px));transition:.2s;z-index:20;font-size:14px}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.toast.warn{border-color:var(--led-red)} .toast.good{border-color:var(--led-green)}
+@media (max-width:900px){
+  .coach{grid-template-columns:minmax(0,1fr)}
+  .mlist{flex-direction:row;overflow-x:auto;max-height:none}
+  .mlist button{white-space:nowrap;flex:none}
+  .mlist .grp{flex:none;align-self:center}
+  .usbband{grid-template-columns:minmax(0,1fr)}
+  .vs{grid-template-columns:minmax(0,1fr)}
+  .top h1{font-size:28px}
+}
+@media (prefers-reduced-motion:reduce){.hint{animation:none}.toast{transition:none}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <h1>CDJ-3000 <span>부스 연습</span></h1>
+    <p>XDJ-RX3에 익숙한 손으로, 클럽 부스(CDJ-3000 두 대 + DJM-2000NXS)를 미리 만져보는 연습기예요. 믹서는 DJM-2000NXS 사용 설명서의 컨트롤 패널 그림과 기능 설명을 따라 그렸어요.</p>
+  </div>
+  <div class="sound" id="sound"><i></i><span>화면 아무 곳이나 누르면 소리가 켜져요</span></div>
+</header>
+
+<section class="usbband" aria-label="내 USB">
+  <div>
+    <h2>내 USB로 연습 <span class="stat demo" id="usbStat">데모 USB · 8곡</span> <span class="prog" id="usbProg"></span></h2>
+    <p>rekordbox로 내보낸 USB를 컴퓨터에 꽂고 <b>USB 최상위 폴더</b>를 고르면 플레이리스트, BPM, 비트그리드, 핫큐·메모리 큐까지 읽어와요. rekordbox USB가 아니면 음악 파일만 골라도 돼요(BPM은 자동 추정). 파일은 이 브라우저 안에서만 읽고, 어디에도 올리지 않으며 USB에 아무것도 쓰지 않아요.</p>
+  </div>
+  <div class="acts">
+    <label class="pill primary" for="pickDir">rekordbox USB 폴더 고르기</label>
+    <input class="sr" type="file" id="pickDir" webkitdirectory directory multiple>
+    <label class="pill" for="pickFiles">음악 파일 고르기</label>
+    <input class="sr" type="file" id="pickFiles" multiple accept="audio/*,.mp3,.wav,.aif,.aiff,.m4a,.aac,.flac,.ogg">
+    <button class="pill" id="useDemo" disabled>데모 USB로</button>
+  </div>
+</section>
+
+<section class="coach">
+  <nav class="mlist" id="mlist" aria-label="미션 목록"></nav>
+  <div class="mcard" id="mcard"></div>
+</section>
+
+<div class="tabs" id="tabs">
+  <button data-tab="d1">PLAYER 2</button>
+  <button data-tab="mx">MIXER</button>
+  <button data-tab="d2">PLAYER 3</button>
+</div>
+</div>
+
+<div class="wrap booth-wrap" id="boothWrap">
+  <div class="booth" id="booth">
+    <div class="unit deck" id="deck1" data-unit="d1"></div>
+    <div class="unit mixer" id="mixer" data-unit="mx"></div>
+    <div class="unit deck" id="deck2" data-unit="d2"></div>
+  </div>
+</div>
+
+<div class="wrap">
+<section class="diff">
+  <div class="diff-head">
+    <h2>RX3 믹서와 다른 점, 직접 해보기</h2>
+    <p>카드마다 RX3에서 하던 방식과 DJM-2000NXS에서 하는 방식을 나란히 적었어요. <b>해보기</b>를 누르면 위 부스가 그 상황으로 세팅되고 미션 칸에 할 일이 떠요. 특히 <b>필터(INST FX)</b>와 <b>BEAT EFFECT</b>는 조작 방식이 크게 달라요.</p>
+  </div>
+  <div class="cards" id="cards"></div>
+</section>
+<section class="diff">
+  <div class="diff-head">
+    <h2>플레이어와 부스 흐름, 직접 해보기</h2>
+    <p>CDJ-3000 플레이어 쪽에서 RX3와 달라지는 부분이에요.</p>
+  </div>
+  <div class="cards" id="cards2"></div>
+</section>
+<section class="chk-card">
+  <h2>부스 도착 1분 체크</h2>
+  <ul class="chk" id="chk"></ul>
+  <p class="keys">조작 팁: 노브·페이더는 위아래로 드래그, 더블클릭하면 기본값. 슬라이드 스위치(입력 셀렉터, CROSS FADER ASSIGN, 커브 설정 등)는 누를 때마다 다음 위치로. 템포 페이더는 휠이나 Shift+드래그로 미세 조정. 조그는 돌리듯 드래그. 터치 패널의 FREQUENCY MIX 줄은 좌우로 드래그.</p>
+</section>
+<p class="disc">비공식 연습 도구예요. 믹서는 DJM-2000NXS 사용 설명서(컨트롤 패널, INST FX, BEAT EFFECT, TOUCH PANEL EFFECT 장)를 참고해 배치와 이름을 맞췄고, 소리는 브라우저에서 근사했어요(ZIP, GATE, PHASER, REV ROLL 등은 단순화, BEAT SLICE·SIDECHAIN REMIX·LIVE SAMPLER는 화면만). CDJ-3000은 사용 설명서(DRI1586A)의 상단 패널(p.14–16)·화면(p.21–23)·조그 표시창(p.26) 그림을 따라 배치했어요. 화면 위 BEAT LOOP·KEY SHIFT·BEAT JUMP 터치 버튼, DIRECTION 레버, TRACK FILTER, SHORTCUT 등은 모양만 있어요. 업로드한 곡은 MASTER TEMPO가 적용되지 않아요.</p>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* ================= helpers ================= */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const frac=x=>x-Math.floor(x);
+const wrapPhase=e=>{e=e%1;if(e>0.5)e-=1;if(e<-0.5)e+=1;return e;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function store(k,v){try{if(v===undefined){const s=localStorage.getItem(k);return s?JSON.parse(s):null;}localStorage.setItem(k,JSON.stringify(v));}catch(e){return null;}}
+let toastT=0;
+function toast(msg,kind=''){const t=$('#toast');t.textContent=msg;t.className='toast show '+kind;clearTimeout(toastT);toastT=setTimeout(()=>t.className='toast',3200);}
+/* Players are numbered by the DJM LINK port they sit on: deck 1 → PLAYER 2 on CH2, deck 2 → PLAYER 3 on CH3. */
+const PN=n=>n===1?2:3;
+const PL=n=>'PLAYER '+PN(n);
+const WIRING={1:2,2:3};
+
+/* ================= demo tracks ================= */
+const SEC={i:{k:1,h:1},d:{k:1,h:1,b:1,c:1},D:{k:1,h:1,b:1,c:1,l:1},b:{p:1},B:{k:1,r:1,p:1},o:{k:1,h:1}};
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const DEMO_DEF=[[1,'Paper Moons','Joon Park',120,'6B',43,'iidbBDDdoo'],[2,'Low Tide Signal','Mira Okafor',122,'8A',45,'iidDbBDDoo'],[3,'Concrete Garden','Hanul Seo',124,'5A',36,'iiddbBDDdoo'],[4,'Night Bus 404','Petra Vos',126.5,'11A',42,'idDDbBDDdo'],
+ [5,'Glass Elevator','Dua Lindqvist',125,'9A',40,'iidDbBDDoo'],[6,'Tunnel Vision (Dub)','Sefa K.',123,'1A',44,'iiddddbBddoo'],[7,'Afterhours Static','Kenji Arai',128,'2A',39,'idDbBDDbBDDo'],[8,'Wire Bloom','Alba Ruiz',130,'4A',41,'iidDbBDDoo']];
+const DEMO={kind:'demo',name:'DEMO',tracks:[],playlists:[{name:'Warm-up',ids:[1,2,6,3]},{name:'Peak Time',ids:[5,4,7,8]}],byId:new Map()};
+DEMO_DEF.forEach(([id,title,artist,bpm,key,root,form])=>{
+  const t={id,title,artist,bpm,key,root,form,synth:true,offset:0,startBeat:0,beats:form.length*32,ready:true,hot:[],memory:[]};
+  const n=t.beats*4;t.low=new Float32Array(n);t.mid=new Float32Array(n);t.high=new Float32Array(n);const r=rng(id*977);
+  for(let i=0;i<n;i++){const beat=i>>2,s4=i&3,bar=beat>>2,barIn=bar%8,sec=SEC[form[Math.floor(bar/8)]]||{};let lo=0,mi=.05,hi=.04;
+    if(sec.k)lo+=s4===0?1:s4===1?.55:.3;if(sec.b)lo+=.22,mi+=s4===2?.25:.08;if(sec.h)hi+=s4===2?.6:.2;
+    if(sec.c&&beat%2===1&&s4<2)mi+=.55;if(sec.l&&(i%16===3||i%16===10))mi+=.4,hi+=.2;if(sec.p)mi+=.35+.1*Math.sin(i/9);
+    if(sec.r){const dens=barIn<4?4:barIn<6?2:1;if(i%dens===0)mi+=.45;hi+=barIn/16;}
+    t.low[i]=clamp(lo*(.86+r()*.2),0,1);t.mid[i]=clamp(mi*(.85+r()*.25),0,1);t.high[i]=clamp(hi*(.8+r()*.35),0,1);}
+  DEMO.tracks.push(t);DEMO.byId.set(id,t);
+});
+let MEDIA=DEMO;
+const TR=id=>MEDIA.byId.get(id)||DEMO.byId.get(id);
+const spbOf=t=>60/t.bpm;
+const beatToSec=(t,b)=>t.offset+b*spbOf(t);
+function energy(t,band,b){const a=t[band];if(!a)return 0;const i=Math.floor((b-t.startBeat)*4);return i>=0&&i<a.length?a[i]:0;}
+
+/* ================= state ================= */
+const HC_COLORS=['#25d366','#ff4fa3','#ff8a1f','#ffd23f','#3aa0ff','#a66bff','#36e0d0','#ff5a4f'];
+const LETTERS='ABCDEFGH',RANGES=[6,10,16,100];
+const FR_HZ=[60,150,400,1000,2500,6000,12000],FR_LBL=['60','150','400','1k','2.5k','6k','12k'];
+/* manual: per-channel input selector positions */
+const INPUTS={1:['CD/DIGITAL','PHONO','USB 1/2'],2:['CD/DIGITAL','LINE','USB 3/4'],3:['CD/DIGITAL','LINE','USB 5/6'],4:['CD/DIGITAL','PHONO','USB 7/8']};
+const INST=['NOISE','JET','ZIP','HPF','CRUSH','LPF'];
+const BFX_ROWS=[['DELAY','MULTI TAP DELAY','ROLL','REV ROLL','TRANS','GATE'],['ECHO','REVERB','SLIP ROLL','FILTER','PHASER','SEND/ RETURN']];
+const BEATS=['1/8','1/4','1/2','3/4','1/1','2/1','4/1'],BEATV={'1/8':.125,'1/4':.25,'1/2':.5,'3/4':.75,'1/1':1,'2/1':2,'4/1':4};
+const CHSEL=['1','2','3','4','MIC','A','B','M'];
+function newDeck(n){return{n,view:'idle',browse:{dev:null,path:[],idx:0},srcIdx:0,track:null,srcOwner:null,pos:0,cue:0,playing:false,previewing:false,playLatch:false,
+  tempo:0,range:10,mt:true,sync:false,q:true,slip:false,jog:'VINYL',hc:Array(8).fill(null),mem:[],loop:{in:null,out:null,active:false},
+  nudge:0,syncAdj:0,jogHold:false,search:0,remain:true,tempoReset:false,delArm:0,shadow:0,nextStep:null,lastT:null,src:null,srcKey:'',srcRate:0,
+  st:{preview:0,hcJump:0,cueSet:0,call:0,loopGrow:0,loopExit:0,manualLoop:0,beatLoop:0}};}
+function defaultMixer(){const o=v=>({1:v,2:v,3:v,4:v});return{
+  input:{1:'PHONO',2:'CD/DIGITAL',3:'CD/DIGITAL',4:'USB 7/8'},trim:o(.5),hi:o(0),mid:o(0),low:o(0),filt:o(0),cue:o(false),fader:{1:0,2:.8,3:0,4:0},xfa:o('THRU'),
+  xf:0,xcurve:1,fcurve:1,eqmode:'EQ',inst:'HPF',param:.5,instUsed:new Set(),
+  bfx:{ch:'M',type:'ECHO',beat:'3/4',timeMs:null,level:.5,lo:1,mid:1,hi:1,on:false,tap:false,tapBpm:null,taps:[]},
+  tp:{mode:'status',on:false,L:1,R:2,f:Array(7).fill(.5)},
+  master:.75,balance:.5,mono:false,booth:.4,hpmix:-.5,hplevel:.6,split:false,monitor:'main',mic:0,micHi:.5,micLow:.5,talk:'OFF'};}
+const S={decks:{},usb:{1:false,2:false},usbStopped:{1:false,2:false},master:null,mx:defaultMixer(),safeEject:false};
+const RANGE=r=>r/100;
+const masterDeck=()=>S.master?S.decks[S.master]:null;
+function bpmOf(d){if(!d.track)return 0;const m=masterDeck();if(d.sync&&m&&m!==d&&m.track)return bpmOf(m);return d.track.bpm*(1+(d.tempoReset?0:d.tempo*RANGE(d.range)));}
+const tempoPct=d=>d.track?(bpmOf(d)/d.track.bpm-1)*100:0;
+const rateOf=d=>bpmOf(d)/60*(1+d.nudge+d.syncAdj);
+function seek(d,b){const t=d.track;d.pos=t?clamp(b,t.startBeat,t.beats-0.01):0;d.nextStep=null;d.srcKey='';}
+function resetWorld(){Object.values(S.decks).forEach(stopSrc);bfxTeardown();S.decks={1:newDeck(1),2:newDeck(2)};S.usb={1:false,2:false};S.usbStopped={1:false,2:false};S.master=null;S.mx=defaultMixer();S.safeEject=false;applyMixer();}
+
+/* ================= audio graph ================= */
+let AC=null,A=null,NOISE=null;
+const clock=()=>AC?AC.currentTime:performance.now()/1000;
+function crushCurve(steps){const n=1024,c=new Float32Array(n);for(let i=0;i<n;i++){const x=i/(n-1)*2-1;c[i]=Math.round(x*steps)/steps;}return c;}
+function initAudio(){
+  if(AC){if(AC.state==='suspended')AC.resume();return;}
+  try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
+  NOISE=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);const nd=NOISE.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
+  const G=v=>{const g=AC.createGain();g.gain.value=v;return g;};
+  const bq=(type,f,q)=>{const b=AC.createBiquadFilter();b.type=type;b.frequency.value=f;if(q)b.Q.value=q;return b;};
+  const ins=()=>{const o={pre:G(1),dry:G(1),post:G(1)};o.pre.connect(o.dry);o.dry.connect(o.post);return o;};
+  A={deck:{},ch:{},G,bq};
+  const comp=AC.createDynamicsCompressor();comp.threshold.value=-3;comp.ratio.value=12;comp.connect(AC.destination);
+  A.masterBus=G(1);A.mIns=ins();A.masterGain=G(.7);A.mAn=AC.createAnalyser();A.mAn.fftSize=512;
+  A.masterBus.connect(A.mIns.pre);A.mIns.post.connect(A.masterGain);A.masterGain.connect(A.mAn);
+  A.mainSel=G(1);A.masterGain.connect(A.mainSel);A.mainSel.connect(comp);
+  // headphones: CUE bus + master, STEREO or MONO SPLIT (cue left / master right)
+  A.cueBus=G(1);A.hpCue=G(1);A.hpMas=G(0);A.hpLevel=G(.6);A.hpSel=G(0);
+  A.cueBus.connect(A.hpCue);A.masterGain.connect(A.hpMas);
+  A.hpStCue=G(1);A.hpStMas=G(1);A.hpCue.connect(A.hpStCue);A.hpMas.connect(A.hpStMas);A.hpStCue.connect(A.hpLevel);A.hpStMas.connect(A.hpLevel);
+  const mono=()=>{const g=G(0);g.channelCount=1;g.channelCountMode='explicit';g.channelInterpretation='speakers';return g;};
+  A.hpSpCue=mono();A.hpSpMas=mono();const mg=AC.createChannelMerger(2);A.hpCue.connect(A.hpSpCue);A.hpMas.connect(A.hpSpMas);A.hpSpCue.connect(mg,0,0);A.hpSpMas.connect(mg,0,1);mg.connect(A.hpLevel);
+  A.hpLevel.connect(A.hpSel);A.hpSel.connect(comp);
+  for(let c=1;c<=4;c++){
+    const ch={in:G(0),trim:G(1),low:bq('lowshelf',180),mid:bq('peaking',1000,.7),hi:bq('highshelf',6000),fr:FR_HZ.map(f=>bq('peaking',f,1.4)),
+      ifx:bq('lowpass',22000,.7),dry:G(1),crush:AC.createWaveShaper(),crushG:G(0),jetD:AC.createDelay(.05),jetFb:G(0),jetG:G(0),noiseG:G(0),noiseF:bq('highpass',20000,1),
+      sum:G(1),an:AC.createAnalyser(),fader:G(0),ins:ins(),xf:G(1),cue:G(0)};
+    ch.an.fftSize=512;let node=ch.in;[ch.trim,ch.low,ch.mid,ch.hi,...ch.fr,ch.ifx].forEach(n=>{node.connect(n);node=n;});
+    ch.ifx.connect(ch.dry);ch.dry.connect(ch.sum);
+    ch.crush.curve=crushCurve(64);ch.ifx.connect(ch.crush);ch.crush.connect(ch.crushG);ch.crushG.connect(ch.sum);
+    ch.jetD.delayTime.value=.004;ch.ifx.connect(ch.jetD);ch.jetD.connect(ch.jetFb);ch.jetFb.connect(ch.jetD);ch.jetD.connect(ch.jetG);ch.jetG.connect(ch.sum);
+    const lfo=AC.createOscillator(),lg=G(.0028);lfo.frequency.value=.25;lfo.connect(lg);lg.connect(ch.jetD.delayTime);lfo.start();
+    const ns=AC.createBufferSource();ns.buffer=NOISE;ns.loop=true;ns.connect(ch.noiseF);ch.noiseF.connect(ch.noiseG);ch.noiseG.connect(ch.sum);ns.start();
+    ch.sum.connect(ch.an);ch.sum.connect(ch.fader);ch.fader.connect(ch.ins.pre);ch.ins.post.connect(ch.xf);ch.xf.connect(A.masterBus);ch.sum.connect(ch.cue);ch.cue.connect(A.cueBus);
+    A.ch[c]=ch;
+  }
+  for(const p of [1,2]){A.deck[p]={synth:G(.32),file:G(.9)};A.deck[p].synth.connect(A.ch[WIRING[p]].in);A.deck[p].file.connect(A.ch[WIRING[p]].in);}
+  Object.values(S.decks).forEach(d=>{d.lastT=null;d.nextStep=null;d.srcKey='';if(d.track&&!d.track.synth&&!d.track.buffer&&!d.track.loading)ensureDecoded(d.track);});
+  applyMixer();if(S.mx.bfx.on)bfxBuild();
+  const s=$('#sound');s.classList.add('on');s.querySelector('span').textContent='소리 켜짐';
+}
+document.addEventListener('pointerdown',initAudio,{capture:true});
+document.addEventListener('keydown',initAudio,{capture:true});
+const dbg=db=>Math.pow(10,db/20);
+const chAudibleInput=c=>S.mx.input[c]==='CD/DIGITAL'&&(c===2||c===3);
+function frGain(c){const tp=S.mx.tp;if(tp.mode!=='mix'||!tp.on)return null;if(c!==tp.L&&c!==tp.R)return null;return tp.f.map(p=>c===tp.L?Math.min(1,(1-p)*2):Math.min(1,p*2));}
+function applyMixer(){
+  if(!A)return;const mx=S.mx,t=AC.currentTime,set=(p,v)=>p.setTargetAtTime(v,t,.012);
+  for(let c=1;c<=4;c++){
+    const ch=A.ch[c];
+    set(ch.in.gain,mx.input[c]==='CD/DIGITAL'?1:0);
+    const tv=mx.trim[c];set(ch.trim.gain,tv<=.001?0:dbg(tv<.5?(tv-.5)*80:(tv-.5)*18));
+    const eq=v=>v>=0?v*6:(mx.eqmode==='ISOLATOR'?(v<-.97?-60:v*40):v*26);set(ch.hi.gain,eq(mx.hi[c]));set(ch.mid.gain,eq(mx.mid[c]));set(ch.low.gain,eq(mx.low[c]));
+    const fg=frGain(c);ch.fr.forEach((f,i)=>set(f.gain,fg?clamp(20*Math.log10(Math.max(fg[i],.001)),-40,0):0));
+    // INST FX: one type for all channels, FILTER knob MIN(off)→MAX per channel, PARAMETER shared
+    const fv=mx.filt[c],P=mx.param,on=fv>.02;let dry=1,crushG=0,jetG=0,jetFb=0,noiseG=0;
+    ch.ifx.type='lowpass';let freq=22000,q=.7;
+    if(on){switch(mx.inst){
+      case'HPF':ch.ifx.type='highpass';freq=20*Math.pow(2,fv*9.6);q=.7+P*14;break;
+      case'LPF':freq=20000*Math.pow(2,-fv*9.6);q=.7+P*14;break;
+      case'ZIP':freq=20000*Math.pow(2,-fv*7);q=6;jetG=.6*P;jetFb=.5;break;
+      case'CRUSH':ch.crush.curve=crushCurve(Math.max(2,Math.round(64*Math.pow(2,-fv*5))));crushG=.4+fv*.6;dry=1-fv*.9;break;
+      case'JET':jetG=.5+fv*.5;jetFb=.3+fv*.6;dry=.8;break;
+      case'NOISE':noiseG=P*.22;set(ch.noiseF.frequency,20000*Math.pow(2,-fv*8));break;}}
+    set(ch.ifx.frequency,freq);set(ch.ifx.Q,q);set(ch.dry.gain,dry);set(ch.crushG.gain,crushG);set(ch.jetG.gain,jetG);set(ch.jetFb.gain,jetFb);set(ch.noiseG.gain,on?noiseG:0);
+    const fc=mx.fader[c];set(ch.fader.gain,mx.fcurve===0?Math.pow(fc,4):Math.pow(fc,1.5));
+    set(ch.xf.gain,xfGain(c));set(ch.cue.gain,mx.cue[c]?1:0);
+  }
+  set(A.masterGain.gain,Math.pow(mx.master,1.5)*1.1);
+  const hp=mx.monitor==='hp';set(A.mainSel.gain,hp?0:1);set(A.hpSel.gain,hp?1:0);
+  set(A.hpCue.gain,Math.min(1,1-mx.hpmix));set(A.hpMas.gain,Math.min(1,1+mx.hpmix));set(A.hpLevel.gain,Math.pow(mx.hplevel,1.5)*1.3);
+  set(A.hpStCue.gain,mx.split?0:1);set(A.hpStMas.gain,mx.split?0:1);set(A.hpSpCue.gain,mx.split?1:0);set(A.hpSpMas.gain,mx.split?1:0);
+  bfxParams();
+}
+function xfGain(c){const a=S.mx.xfa[c];if(a==='THRU')return 1;const x=(S.mx.xf+1)/2,s=a==='A'?1-x:x;const cv=S.mx.xcurve;return cv===0?Math.min(1,s*16):cv===1?Math.min(1,s*2):Math.sin(s*Math.PI/2);}
+const audible=c=>chAudibleInput(c)&&S.mx.trim[c]>.3&&S.mx.fader[c]>.4&&xfGain(c)>.5&&S.mx.master>.2;
+
+/* ---- BEAT EFFECT (manual p.18, p.25) ---- */
+let FX=null;
+function fxBpm(){const b=S.mx.bfx;if(b.tap&&b.tapBpm)return b.tapBpm;const c=+b.ch;let d=null;if(c===2)d=S.decks[1];else if(c===3)d=S.decks[2];if(!d||!d.track)d=masterDeck()||Object.values(S.decks).find(x=>x.track&&x.playing);return d&&d.track?bpmOf(d):124;}
+function fxTime(){const b=S.mx.bfx;return b.timeMs?b.timeMs/1000:60/fxBpm()*BEATV[b.beat];}
+function fxTargets(){if(!A)return[];const b=S.mx.bfx;if(b.ch==='M')return[A.mIns];if(b.ch==='MIC')return[];if(b.ch==='A'||b.ch==='B')return[1,2,3,4].filter(c=>S.mx.xfa[c]===b.ch).map(c=>A.ch[c].ins);return[A.ch[+b.ch].ins];}
+function bfxTeardown(){if(!FX)return;FX.nodes.forEach(n=>{try{n.stop&&n.stop();}catch(e){}try{n.disconnect();}catch(e){}});FX.targets.forEach(t=>{try{t.pre.disconnect(FX.in);}catch(e){}t.dry.gain.setTargetAtTime(1,AC.currentTime,.01);});FX=null;}
+function bfxBuild(){
+  bfxTeardown();if(!A||!S.mx.bfx.on)return;
+  const b=S.mx.bfx,G=A.G,bq=A.bq,T=fxTime(),nodes=[];const targets=fxTargets();if(!targets.length)return;
+  const fin=G(1),wet=G(0),lo=bq('lowshelf',250),mi=bq('peaking',1200,.8),hi=bq('highshelf',5000);nodes.push(fin,wet,lo,mi,hi);
+  targets.forEach(t=>t.pre.connect(fin));
+  let src=fin,out;const type=b.type;
+  if(type==='DELAY'||type==='ECHO'||type==='MULTI TAP DELAY'){const dl=AC.createDelay(5),fb=G(type==='DELAY'?0:type==='ECHO'?.55:.35);dl.delayTime.value=type==='MULTI TAP DELAY'?T/2:T;fin.connect(dl);dl.connect(fb);fb.connect(dl);out=dl;nodes.push(dl,fb);FX={dl,fb};}
+  else if(type==='REVERB'){const cv=AC.createConvolver(),len=AC.sampleRate*2.4,ir=AC.createBuffer(2,len,AC.sampleRate);for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);}cv.buffer=ir;fin.connect(cv);out=cv;nodes.push(cv);FX={};}
+  else if(type==='TRANS'||type==='GATE'){const g=G(0),osc=AC.createOscillator(),og=G(.5),cs=AC.createConstantSource();osc.type='square';osc.frequency.value=1/T;cs.offset.value=.5;osc.connect(og);og.connect(g.gain);cs.connect(g.gain);osc.start();cs.start();fin.connect(g);out=g;nodes.push(g,osc,og,cs);FX={osc,chop:true};}
+  else if(type==='FILTER'){const f=bq('bandpass',800,4),osc=AC.createOscillator(),og=G(1800);osc.frequency.value=1/(T*4);osc.connect(og);og.connect(f.frequency);osc.start();fin.connect(f);out=f;nodes.push(f,osc,og);FX={osc,chop:true};}
+  else if(type==='PHASER'){let n=fin;const osc=AC.createOscillator();osc.frequency.value=1/(T*4);osc.start();nodes.push(osc);for(let i=0;i<4;i++){const ap=bq('allpass',600+i*300,.7),og=G(400+i*200);osc.connect(og);og.connect(ap.frequency);n.connect(ap);n=ap;nodes.push(ap,og);}out=n;FX={osc};}
+  else if(type==='ROLL'||type==='SLIP ROLL'||type==='REV ROLL'){const gate=G(1),dl=AC.createDelay(5),fb=G(1);dl.delayTime.value=T;fin.connect(gate);gate.connect(dl);dl.connect(fb);fb.connect(dl);gate.gain.setValueAtTime(1,AC.currentTime);gate.gain.setValueAtTime(0,AC.currentTime+T);out=dl;nodes.push(gate,dl,fb);FX={dl,roll:true,chop:true};}
+  else{toast('SEND/RETURN: 뒷면 단자에 외부 이펙터를 연결해 쓰는 기능이에요. 연습기에는 연결된 장비가 없어요');return;}
+  out.connect(lo);lo.connect(mi);mi.connect(hi);hi.connect(wet);wet.connect(targets[0].post);
+  Object.assign(FX,{in:fin,wet,lo,mi,hi,nodes,targets,type});bfxParams();
+}
+function bfxParams(){
+  if(!FX||!A)return;const b=S.mx.bfx,t=AC.currentTime,set=(p,v)=>p.setTargetAtTime(v,t,.02),T=fxTime(),L=b.level;
+  const bandDb=v=>(v-1)*30;set(FX.lo.gain,bandDb(b.lo));set(FX.mi.gain,bandDb(b.mid));set(FX.hi.gain,bandDb(b.hi));
+  if(FX.dl&&!FX.roll)set(FX.dl.delayTime,FX.type==='MULTI TAP DELAY'?T/2:T);
+  if(FX.osc)set(FX.osc.frequency,FX.type==='TRANS'||FX.type==='GATE'?1/T:1/(T*4));
+  set(FX.wet.gain,FX.chop?L:L*.9);FX.targets.forEach(x=>set(x.dry.gain,FX.chop?1-L:1));
+}
+
+/* ================= synth voices (demo tracks) ================= */
+const mtof=m=>440*Math.pow(2,(m-69)/12);
+function vKick(o,t,p){const s=AC.createOscillator(),g=AC.createGain();s.frequency.setValueAtTime(140*p,t);s.frequency.exponentialRampToValueAtTime(46*p,t+.09);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(.001,t+.36);s.connect(g);g.connect(o);s.start(t);s.stop(t+.38);}
+function vNoise(o,t,p,type,freq,q,peak,dec){const s=AC.createBufferSource();s.buffer=NOISE;s.playbackRate.value=p;const f=AC.createBiquadFilter();f.type=type;f.frequency.value=freq*p;f.Q.value=q;const g=AC.createGain();g.gain.setValueAtTime(peak,t);g.gain.exponentialRampToValueAtTime(.001,t+dec);s.connect(f);f.connect(g);g.connect(o);s.start(t,Math.random()*1.5);s.stop(t+dec+.02);}
+function vBass(o,t,m,p,dur){const s=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain();s.type='sawtooth';s.frequency.value=mtof(m)*p;f.type='lowpass';f.Q.value=5;f.frequency.setValueAtTime(950*p,t);f.frequency.exponentialRampToValueAtTime(170*p,t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.38,t+.006);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(f);f.connect(g);g.connect(o);s.start(t);s.stop(t+dur+.02);}
+function vStab(o,t,ms,p){const f=AC.createBiquadFilter(),g=AC.createGain();f.type='lowpass';f.frequency.setValueAtTime(3200*p,t);f.frequency.exponentialRampToValueAtTime(500*p,t+.25);g.gain.setValueAtTime(.16,t);g.gain.exponentialRampToValueAtTime(.001,t+.3);f.connect(g);g.connect(o);ms.forEach(m=>{const s=AC.createOscillator();s.type='square';s.frequency.value=mtof(m)*p;s.connect(f);s.start(t);s.stop(t+.32);});}
+function vPad(o,t,ms,p,dur){const f=AC.createBiquadFilter(),g=AC.createGain();f.type='lowpass';f.frequency.value=1200*p;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.11,t+dur*.3);g.gain.setValueAtTime(.11,t+dur*.7);g.gain.exponentialRampToValueAtTime(.0001,t+dur);f.connect(g);g.connect(o);ms.forEach(m=>{for(const det of [-7,7]){const s=AC.createOscillator();s.type='sawtooth';s.frequency.value=mtof(m)*p;s.detune.value=det;s.connect(f);s.start(t);s.stop(t+dur+.05);}});}
+function scheduleStep(d,step,t){
+  const tr=d.track,beat=step>>2,s4=step&3,bar=beat>>2,s16=step&15,barIn=bar%8,sec=SEC[tr.form[Math.floor(bar/8)]]||{};
+  const bpm=bpmOf(d),pm=d.mt?1:bpm/tr.bpm,spb=60/bpm,o=A.deck[d.n].synth,r=tr.root;
+  if(sec.k&&s4===0)vKick(o,t,pm);
+  if(sec.r){const dens=barIn<4?4:barIn<6?2:1;if(step%dens===0)vNoise(o,t,pm,'bandpass',1500,.8,.25+barIn*.04,.1);}
+  if(sec.h){if(s4===2)vNoise(o,t,pm,'highpass',7000,.7,sec.b?.22:.17,sec.b?.16:.05);else if(sec.b&&s4!==0)vNoise(o,t,pm,'highpass',8000,.7,.07,.03);}
+  if(sec.c&&s4===0&&beat%2===1)vNoise(o,t,pm,'bandpass',1400,.9,.6,.15);
+  if(sec.b&&(s4===2||(s4===3&&beat%2===1))){const off=[0,0,5,-2][bar%4];vBass(o,t,r+off+(s4===3?12:0),pm,spb*.24);}
+  if(sec.l&&bar%2===0&&(s16===3||s16===10))vStab(o,t,[r+24,r+27,r+31],pm);
+  if(sec.p&&s16===0&&bar%2===0)vPad(o,t,[r+12,r+15,r+19,r+22],pm,spb*8);
+}
+const wantsSound=d=>AC&&d.track&&d.track.ready&&d.playing&&!d.jogHold&&!d.search;
+function scheduleSynth(d){
+  if(!wantsSound(d)||!d.track.synth){d.nextStep=null;return;}
+  const rate=rateOf(d);if(rate<=.05)return;
+  const p4=d.pos*4;if(d.nextStep==null||d.nextStep<p4-1.5||d.nextStep>p4+16)d.nextStep=Math.ceil(p4-1e-6);
+  const horizon=(d.pos+rate*.12)*4,now=AC.currentTime;let g=0;
+  while(d.nextStep<horizon&&g++<32){const sb=d.nextStep/4;if(d.loop.active&&d.loop.out!=null&&sb>=d.loop.out-1e-6)break;if(sb>=d.track.beats)break;if(sb>=0)scheduleStep(d,d.nextStep,now+Math.max(0,(sb-d.pos)/rate));d.nextStep++;}
+}
+function stopSrc(d){if(d.src){try{d.src.stop();}catch(e){}d.src.disconnect();d.src=null;}}
+function syncFileSrc(d){
+  const t=d.track;if(!t||t.synth||!wantsSound(d)||!t.buffer){stopSrc(d);d.srcKey='';return;}
+  const ratio=rateOf(d)*spbOf(t),key=(d.loop.active?d.loop.in+'-'+d.loop.out:'n');
+  if(!d.src||d.srcKey!==key){stopSrc(d);const s=AC.createBufferSource();s.buffer=t.buffer;s.playbackRate.value=ratio;
+    if(d.loop.active){s.loop=true;s.loopStart=Math.max(0,beatToSec(t,d.loop.in));s.loopEnd=beatToSec(t,d.loop.out);}
+    s.connect(A.deck[d.n].file);s.start(0,Math.max(0,beatToSec(t,d.pos)));d.src=s;d.srcKey=key;d.srcRate=ratio;}
+  else if(Math.abs(ratio-d.srcRate)>1e-5){d.src.playbackRate.setTargetAtTime(ratio,AC.currentTime,.01);d.srcRate=ratio;}
+}
+function update(d,now){
+  if(d.lastT==null){d.lastT=now;return;}
+  let dt=now-d.lastT;d.lastT=now;if(dt<0||dt>.25)dt=.02;
+  d.nudge*=Math.exp(-dt*5);if(d.delArm&&now>d.delArm)d.delArm=0;
+  const t=d.track;if(!t||!t.ready)return;
+  const bps=bpmOf(d)/60;
+  if(d.slip&&d.playing)d.shadow+=bps*dt;else if(!d.slip)d.shadow=d.pos;
+  if(d.search){seek(d,d.pos+d.search*14*dt);return;}
+  d.syncAdj=0;if(d.sync){const m=masterDeck();if(m&&m!==d&&m.track&&m.playing)d.syncAdj=clamp(wrapPhase(frac(m.pos)-frac(d.pos))*1.5,-.04,.04);}
+  if(d.jogHold||!d.playing)return;
+  d.pos+=rateOf(d)*dt;
+  if(d.loop.active&&d.loop.out!=null&&d.pos>=d.loop.out){const len=d.loop.out-d.loop.in;d.pos=d.loop.in+((d.pos-d.loop.out)%len);d.nextStep=Math.floor(d.pos*4+1e-6);}
+  if(d.pos>=t.beats){d.pos=t.beats-.01;d.playing=false;}
+}
+let fxBpmLast=0;
+setInterval(()=>{const now=clock();for(const d of Object.values(S.decks)){update(d,now);if(AC){scheduleSynth(d);syncFileSrc(d);}}const fb=fxBpm();if(Math.abs(fb-fxBpmLast)>.05){fxBpmLast=fb;bfxParams();}},20);
+
+/* ================= browse ================= */
+function sources(n){
+  const out=[];for(const p of [n,n===1?2:1])if(S.usb[p]&&!S.usbStopped[p])out.push({label:'USB · '+MEDIA.name,sub:p===n?'이 플레이어':PL(p)+' · LINK',owner:p});
+  out.push({label:'SD',sub:'카드 없음',dis:true});out.push({label:'rekordbox',sub:'연결된 컴퓨터 없음',dis:true});
+  if(!out.some(o=>o.owner))out.unshift({label:'USB 장치 없음',sub:'USB 포트를 눌러 꽂으세요',dis:true});return out;
+}
+const trackItem=t=>({label:t.title,sub:t.artist,bpm:t.bpm,key:t.key,track:t.id});
+function items(d){
+  if(d.view==='source')return sources(d.n);const b=d.browse;if(!b.dev)return[];const p=b.path;
+  if(!p.length)return[{label:'PLAYLIST',go:['pl']},{label:'TRACK',sub:MEDIA.tracks.length+'곡',go:['all']}];
+  if(p[0]==='all')return MEDIA.allSorted||(MEDIA.allSorted=[...MEDIA.tracks].sort((a,b)=>a.title.localeCompare(b.title)).map(trackItem));
+  if(p.length===1)return MEDIA.playlists.length?MEDIA.playlists.map((pl,i)=>({label:pl.name,sub:pl.ids.length+'곡',go:['pl',i]})):[{label:'플레이리스트 없음',sub:'TRACK에서 고르세요',dis:true}];
+  return MEDIA.playlists[p[1]].ids.map(id=>TR(id)).filter(Boolean).map(trackItem);
+}
+function crumb(d){if(d.view==='source')return'SOURCE · 기기를 고르세요';const b=d.browse;if(!b.dev)return'';let s=b.dev.owner===d.n?'USB':'USB ('+PL(b.dev.owner)+') · LINK';const p=b.path;
+  if(p[0]==='pl'){s+=' › PLAYLIST';if(p.length>1)s+=' › '+MEDIA.playlists[p[1]].name;}else if(p[0]==='all')s+=' › TRACK';return s;}
+const getIdx=d=>d.view==='source'?d.srcIdx:d.browse.idx;
+function setIdx(d,i){const n=items(d).length;i=clamp(i,0,Math.max(0,n-1));if(d.view==='source')d.srcIdx=i;else d.browse.idx=i;}
+function push(d){
+  if(d.view!=='source'&&d.view!=='browse')return;const it=items(d)[getIdx(d)];if(!it)return;
+  if(it.dis){toast(it.sub||'선택할 수 없어요');return;}
+  if(it.owner){d.browse={dev:{owner:it.owner},path:[],idx:0};d.view='browse';return;}
+  if(it.go){d.browse.path=it.go.slice();d.browse.idx=0;return;}
+  if(it.track!=null)load(d,it.track,d.browse.dev.owner);
+}
+function back(d){if(d.view==='browse'){if(d.browse.path.length){const p=d.browse.path;p.pop();if(p.length===1&&p[0]!=='pl')p.pop();d.browse.idx=0;}else d.view='source';}else if(d.view==='source')d.view=d.track?'play':(d.browse.dev?'browse':'idle');}
+function releaseBuffers(){const used=new Set(Object.values(S.decks).map(d=>d.track).filter(Boolean));MEDIA.tracks.forEach(t=>{if(!t.synth&&t.buffer&&!used.has(t))t.buffer=null;});}
+function load(d,id,owner){
+  const t=TR(id);if(!t)return;
+  if(d.playing&&d.track)toast('재생 중인 플레이어에 곡을 로드했어요. 실전이라면 나가던 음악이 끊겨요!','warn');
+  stopSrc(d);
+  Object.assign(d,{track:t,srcOwner:owner,pos:0,cue:0,playing:false,previewing:false,hc:Array(8).fill(null),mem:[],loop:{in:null,out:null,active:false},view:'play',nextStep:null,jogHold:false,search:0,srcKey:''});
+  applyCues(d);d.shadow=d.pos;if(!t.synth&&!t.buffer)ensureDecoded(t);releaseBuffers();
+}
+function applyCues(d){const t=d.track;d.hc=Array(8).fill(null);(t.hot||[]).forEach(h=>{if(h.slot>=0&&h.slot<8)d.hc[h.slot]=h.beat;});d.mem=[...(t.memory||[])].sort((a,b)=>a-b);d.cue=d.mem.length?d.mem[0]:(t.synth?0:Math.max(t.startBeat,0));d.pos=d.cue;}
+function forgetUsb(p){for(const d of Object.values(S.decks))if(d.browse.dev&&d.browse.dev.owner===p){d.browse.dev=null;d.browse.path=[];if(d.view==='browse'||d.view==='source')d.view=d.track?'play':'idle';}}
+
+/* ================= deck actions ================= */
+const NOTIMPL={taglist:'TAG LIST: 곡을 임시 목록에 모아두는 기능 (연습기에선 생략)',searchbtn:'SEARCH: 화면 키보드로 곡 검색 (연습기에선 생략)',menu:'MENU/UTILITY: 플레이어 설정 (연습기에선 생략)',tag:'TAG TRACK: 선택한 곡을 TAG LIST에 추가 (연습기에선 생략)',keysync:'KEY SYNC: 마스터 곡과 키를 맞추는 기능 (연습기에선 생략)',sdslot:'SD 카드 슬롯 (연습기에선 생략)'};
+function act_base(name,n,phase){
+  const d=S.decks[n];
+  if(phase==='up'){if(name==='cue'&&d.previewing){d.previewing=false;if(d.playLatch)d.playLatch=false;else{d.playing=false;seek(d,d.cue);}}if(name==='srch_b'||name==='srch_f')d.search=0;return;}
+  if(NOTIMPL[name]){toast(NOTIMPL[name]);return;}
+  const t=d.track;
+  if(t&&!t.ready&&['play','cue','sync','beatloop','in','out'].includes(name)){toast('곡을 읽는 중이에요. 잠시만요');return;}
+  switch(name){
+    case'usbslot':
+      if(!S.usb[n]){S.usb[n]=true;S.usbStopped[n]=false;toast(PL(n)+'에 USB('+MEDIA.name+')를 꽂았어요. SOURCE를 눌러보세요');}
+      else{if(!S.usbStopped[n])toast('USB STOP 없이 뽑았어요. 실제로는 데이터가 손상되거나 LINK로 쓰던 플레이어가 곤란해질 수 있어요','warn');else{S.safeEject=true;toast('안전하게 뺐어요','good');}S.usb[n]=false;S.usbStopped[n]=false;forgetUsb(n);}
+      break;
+    case'usbstop':{if(!S.usb[n]||S.usbStopped[n])break;const busy=Object.values(S.decks).filter(x=>x.playing&&x.track&&x.srcOwner===n);
+      if(busy.length){toast(busy.map(x=>PL(x.n)).join(', ')+'가 이 USB의 곡을 재생 중이에요. 먼저 멈추세요','warn');break;}S.usbStopped[n]=true;forgetUsb(n);toast('USB 정지됨. LED가 꺼졌으니 빼도 돼요','good');break;}
+    case'source':d.view=d.view==='source'?(t?'play':(d.browse.dev?'browse':'idle')):'source';if(d.view==='source')d.srcIdx=0;break;
+    case'browse':if(d.view==='play'||d.view==='idle')d.view=d.browse.dev?'browse':'source';else if(t)d.view='play';break;
+    case'playlist':if(d.browse.dev){d.view='browse';d.browse.path=['pl'];d.browse.idx=0;}else d.view='source';break;
+    case'back':back(d);break;
+    case'cue':if(!t)break;if(d.playing){d.playing=false;seek(d,d.cue);}else if(Math.abs(d.pos-d.cue)<.02){d.previewing=true;d.playing=true;d.playLatch=false;d.st.preview++;d.nextStep=null;d.srcKey='';}else{d.cue=d.q?Math.round(d.pos):d.pos;seek(d,d.cue);d.st.cueSet++;}break;
+    case'play':if(!t)break;if(d.previewing){d.playLatch=true;break;}d.playing=!d.playing;if(d.playing&&d.sync)phaseAlign(d);break;
+    case'srch_b':case'srch_f':if(t)d.search=name==='srch_b'?-1:1;break;
+    case'trk_prev':if(t){d.cue=d.mem[0]??Math.max(t.startBeat,0);seek(d,d.cue);}break;
+    case'trk_next':{if(!t||!d.browse.dev){toast('다음 곡: 브라우즈 중인 폴더가 있어야 해요');break;}const its=(d.browse.path.length?items(d):[]).filter(x=>x.track!=null);const i=its.findIndex(x=>x.track===t.id);if(i>=0&&i<its.length-1)load(d,its[i+1].track,d.browse.dev.owner);else toast('폴더의 마지막 곡이에요');break;}
+    case'master':if(t){S.master=n;toast(PL(n)+'이(가) 템포 마스터');}else toast('곡을 먼저 로드하세요');break;
+    case'sync':if(!t){toast('곡을 먼저 로드하세요');break;}
+      if(!d.sync){const o=S.decks[n===1?2:1];if(!S.master||!masterDeck().track)S.master=o.track?o.n:n;d.sync=true;phaseAlign(d);}else{const b=bpmOf(d);d.sync=false;d.tempoReset=false;d.tempo=clamp((b/t.bpm-1)/RANGE(d.range),-1,1);}break;
+    case'range':{const i=RANGES.indexOf(d.range),nr=RANGES[(i+1)%RANGES.length];d.tempo=clamp(d.tempo*d.range/nr,-1,1);d.range=nr;break;}
+    case'mt':d.mt=!d.mt;if(t&&!t.synth&&d.mt)toast('업로드한 곡은 MASTER TEMPO가 적용되지 않아요 (연습기 한계)');break;
+    case'treset':d.tempoReset=!d.tempoReset;break;
+    case'jogmode':d.jog=d.jog==='VINYL'?'CDJ':'VINYL';break;
+    case'slip':d.slip=!d.slip;d.shadow=d.pos;break;
+    case'quantize':d.q=!d.q;break;
+    case'time':d.remain=!d.remain;break;
+    case'in':if(!t)break;{const p=d.q?Math.round(d.pos):d.pos;d.loop={in:p,out:null,active:false};if(!d.playing)d.cue=p;}break;
+    case'out':if(!t||d.loop.in==null||(d.loop.out!=null&&!d.loop.active))break;if(d.pos<=d.loop.in+.1){toast('OUT은 IN보다 뒤에서 눌러야 해요');break;}
+      d.loop.out=d.q?Math.max(d.loop.in+1,Math.round(d.pos)):d.pos;d.loop.active=true;d.st.manualLoop++;if(d.pos>=d.loop.out)seek(d,d.loop.in);break;
+    case'reloop':if(d.loop.active){d.loop.active=false;d.st.loopExit++;if(d.slip)seek(d,d.shadow);else d.srcKey='';}else if(d.loop.in!=null&&d.loop.out!=null){d.loop.active=true;seek(d,d.loop.in);}break;
+    case'beatloop':if(!t)break;{const s=d.q?Math.floor(d.pos):d.pos;d.loop={in:s,out:s+4,active:true};d.st.beatLoop++;}break;
+    case'half':if(d.loop.active){const len=(d.loop.out-d.loop.in)/2;if(len>=1/16){d.loop.out=d.loop.in+len;if(d.pos>=d.loop.out)seek(d,d.loop.in+((d.pos-d.loop.in)%len));}}break;
+    case'double':if(d.loop.active){const len=(d.loop.out-d.loop.in)*2;if(len<=64){d.loop.out=d.loop.in+len;d.st.loopGrow++;}}break;
+    case'memory':if(!t)break;if(d.mem.some(m=>Math.abs(m-d.cue)<.01)){toast('이미 저장된 메모리 큐예요');break;}d.mem.push(d.cue);d.mem.sort((a,b)=>a-b);toast('메모리 큐 저장 ('+d.mem.length+'개)');break;
+    case'call_prev':case'call_next':{if(!t||!d.mem.length){toast('저장된 메모리 큐가 없어요');break;}let m=name==='call_next'?d.mem.find(x=>x>d.cue+.01):[...d.mem].reverse().find(x=>x<d.cue-.01);if(m==null)m=name==='call_next'?d.mem[0]:d.mem[d.mem.length-1];d.cue=m;d.playing=false;seek(d,m);d.st.call++;break;}
+    case'delete':d.delArm=clock()+3;toast('지울 HOT CUE 버튼을 누르세요 (3초)');break;
+    default:
+      if(name.startsWith('hc')){const i=+name.slice(2);if(!t)break;
+        if(d.delArm){if(d.hc[i]!=null){d.hc[i]=null;toast('HOT CUE '+LETTERS[i]+' 삭제');}d.delArm=0;break;}
+        if(d.hc[i]==null){d.hc[i]=d.q?Math.round(d.pos):d.pos;toast('HOT CUE '+LETTERS[i]+' 저장');}
+        else{let tgt=d.hc[i];if(d.q&&d.playing&&Math.abs(tgt-Math.round(tgt))<1e-6)tgt=Math.round(tgt)+frac(d.pos);if(d.loop.active&&(tgt<d.loop.in||tgt>=d.loop.out))d.loop.active=false;seek(d,tgt);d.playing=true;d.st.hcJump++;}}
+  }
+}
+function phaseAlign(d){const m=masterDeck();if(!m||m===d||!m.track)return;const fm=frac(m.pos);seek(d,fm+Math.round(d.pos-fm));}
+
+/* ================= CDJ-3000 button behaviour per manual =================
+   p.54–56: 4 BEAT LOOP (1/2X) / 8 BEAT LOOP (2X) start a loop, and halve/double it while looping (CUE/LOOP CALL ◀▶ too).
+   p.58–59: a hot cue pressed during a loop stores the loop; delete = press A–H while holding CALL/DELETE.
+   p.62: BEAT JUMP ◀▶ jumps by the set beats, moves the loop while looping; CALL/DELETE + BEAT JUMP changes the beat count. */
+const callOn=d=>d.callHeld||clock()<(d.callLatch||0);
+function act(name,n,phase){
+  const d=S.decks[n],t=d.track;
+  if(name==='calldel'){
+    if(phase==='up'){d.callHeld=false;if(clock()-(d.callDown||0)<.35){d.callLatch=clock()+4;toast('CALL/DELETE 고정(4초). 실제 기기에선 누른 채로 A–H나 BEAT JUMP를 눌러요');}}
+    else{d.callHeld=true;d.callDown=clock();}
+    return;
+  }
+  if(phase==='up')return act_base(name,n,phase);
+  const NI2={trkfilter:'TRACK FILTER/EDIT: BPM·키 같은 조건으로 목록을 걸러요 (연습기에선 생략)',shortcut:'SHORTCUT: 자주 쓰는 설정 화면 (연습기에선 생략)',direction:'DIRECTION 레버: FWD / REV(역재생) / SLIP REV (연습기에선 생략)',
+    t_kshift:'KEY SHIFT: 키를 반음 단위로 올리고 내려요 (연습기에선 생략)',t_bloop:'화면의 BEAT LOOP: 루프 박자 수를 골라 바로 루프. 연습기에선 4 BEAT / 8 BEAT LOOP 버튼을 쓰세요',t_bjump:'화면의 BEAT JUMP: 점프할 박자 수를 골라요. 하드웨어에선 CALL/DELETE를 누른 채 BEAT JUMP ◀▶로도 바꿔요'};
+  if(NI2[name]){toast(NI2[name]);return;}
+  if(t&&!t.ready&&['beatloop','beatloop8','bj_b','bj_f'].includes(name)){toast('곡을 읽는 중이에요. 잠시만요');return;}
+  switch(name){
+    case'beatloop':case'beatloop8':{
+      if(!t)return;
+      if(d.loop.active)return act_base(name==='beatloop'?'half':'double',n,'down');
+      const s=d.q?Math.floor(d.pos):d.pos;d.loop={in:s,out:s+(name==='beatloop'?4:8),active:true};d.st.beatLoop++;return;}
+    case'call_prev':case'call_next':
+      if(d.loop.active)return act_base(name==='call_prev'?'half':'double',n,'down');
+      return act_base(name,n,phase);
+    case'bj_b':case'bj_f':{
+      if(callOn(d)){const V=[1,2,4,8,16,32,64];let i=V.indexOf(d.bj||16);i=clamp(i+(name==='bj_f'?1:-1),0,V.length-1);d.bj=V[i];d.callLatch=0;toast('BEAT JUMP '+d.bj+'박');return;}
+      if(!t)return;const j=(d.bj||16)*(name==='bj_f'?1:-1);
+      if(d.loop.active){d.loop.in+=j;d.loop.out+=j;d.st.loopMove=(d.st.loopMove||0)+1;}
+      seek(d,d.pos+j);d.st.bj=(d.st.bj||0)+1;return;}
+    case'delete':{
+      if(!t)return;const i=d.mem.findIndex(m=>Math.abs(m-d.pos)<.05);
+      if(!d.playing&&i>=0){d.mem.splice(i,1);toast('메모리 큐 삭제');}
+      else toast('DELETE는 메모리 큐용이에요: CALL로 그 지점에 멈춘 뒤 누르세요. 핫큐는 CALL/DELETE를 누른 채 A–H');
+      return;}
+  }
+  if(name.startsWith('hc')&&t){
+    const i=+name.slice(2);if(d.hclTrack!==t){d.hcl=[];d.hclTrack=t;}
+    if(callOn(d)){if(d.hc[i]!=null){d.hc[i]=null;d.hcl[i]=null;d.st.hcDel=(d.st.hcDel||0)+1;toast('HOT CUE '+LETTERS[i]+' 삭제');}d.callLatch=0;return;}
+    if(d.hc[i]==null&&d.loop.active){d.hc[i]=d.loop.in;d.hcl[i]=d.loop.out-d.loop.in;toast('HOT CUE '+LETTERS[i]+'에 루프 저장');return;}
+    if(d.hc[i]!=null&&d.hcl[i]){d.loop={in:d.hc[i],out:d.hc[i]+d.hcl[i],active:true};seek(d,d.hc[i]);d.playing=true;d.st.hcJump++;return;}
+    if(d.hc[i]==null){d.hc[i]=d.q?Math.round(d.pos):d.pos;toast('HOT CUE '+LETTERS[i]+' 저장');return;}
+  }
+  return act_base(name,n,phase);
+}
+function camelotOk(a,b){const p=s=>{const m=/^(\d{1,2})([AB])$/.exec(s||'');return m?[+m[1],m[2]]:null;};const x=p(a),y=p(b);if(!x||!y)return false;if(x[0]===y[0])return true;if(x[1]!==y[1])return false;const df=Math.abs(x[0]-y[0]);return df===1||df===11;}
+function nextCueDist(d){let best=Infinity;[d.cue,...d.mem,...d.hc.filter(v=>v!=null)].forEach(c=>{const x=c-d.pos;if(x>.01&&x<best)best=x;});return best;}
+function fmtMs(sec){sec=Math.max(0,sec);const m=Math.floor(sec/60),s=Math.floor(sec-m*60),ms=Math.floor((sec-Math.floor(sec))*1000);return{a:String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'),b:'.'+String(ms).padStart(3,'0')};}
+const fmtBeats=b=>b>=1?String(Math.round(b)):'1/'+Math.round(1/b);
+/* manual p.22 item 10: "Waveform/phase meter — displays the bar and beat deviations from the sync master; touch to switch".
+   Reference deck = the sync master when it is another player, otherwise the other loaded player. */
+/* Drawn after the manual's figure (p.21, item 10, factory setting WAVEFORM):
+   blue line = this player's beat grid (white beat ticks rising from the line, red bar ticks across it),
+   orange line = the sync master's grid (plain in the figure, which shows no sync master: its countdown reads "--.-"),
+   white line = playback point. About four bars span the strip, as in the figure. */
+/* Standard: CDJ-3000 (manual DRI1586A). Item 10 "Waveform/phase meter" shows the deviation from the sync master and
+   switches between a waveform and a phase meter on touch (p.22); SHORTCUT setting WAVEFORM is the factory setting (p.80).
+   CDJ-3000 firmware 3.16 lists a fix for "Master Player Waveform display issues", i.e. the waveform shown is the master player's.
+   Secondary (CDJ-3000X manual DRI1957, p.111): the setting chooses "phase meter or enlarged waveform".
+   WAVEFORM: the sync master's waveform in the slot, at this deck's zoom. PHASE METER: the two-line ruler of the p.21 figure. */
+function drawRef(d,cv){
+  if((d.refMode||'phase')==='phase')return drawPhaseMeter(d,cv); // practice default: PHASE METER (user's call); touch → WAVEFORM
+  const[w,h]=fit(cv),g=cv.getContext('2d'),dpr=DPR();if(w<4)return;g.fillStyle='#000';g.fillRect(0,0,w,h);
+  const sm=masterDeck(),cx=Math.round(w/2);
+  if(!sm||sm===d||!sm.track||!sm.track.ready){g.fillStyle='#fff';g.fillRect(cx-dpr*.7,0,Math.max(2,dpr*1.4),h);return;}
+  const rt=sm.track,ppb=28*dpr*(bpmOf(d)||1)/(bpmOf(sm)||1),mid=h/2; // same seconds-per-pixel as this deck's enlarged waveform
+  for(const[col,band,sc]of [['#1f5fff','low',.92],['#ff9a2e','mid',.58],['#f4f7ff','high',.3]]){g.fillStyle=col;for(let x=0;x<w;x++){const v=energy(rt,band,sm.pos+(x-cx)/ppb);if(v>0){const hh=v*mid*sc*.8;g.fillRect(x,mid-hh,1,hh*2);}}}
+  const b0=Math.ceil(sm.pos-cx/ppb),b1=Math.floor(sm.pos+(w-cx)/ppb);
+  for(let b=b0;b<=b1;b++){const x=Math.round(cx+(b-sm.pos)*ppb),bar=((b%4)+4)%4===0;g.fillStyle=bar?'#e23a2e':'rgba(255,255,255,.7)';const L=(bar?6:3)*dpr,W=bar?2*dpr:dpr;g.fillRect(x,0,W,L);g.fillRect(x,h-L,W,L);}
+  g.fillStyle='#fff';g.fillRect(cx-dpr*.7,0,Math.max(2,dpr*1.4),h);
+}
+function drawPhaseMeter(d,cv){
+  const[w,h]=fit(cv),g=cv.getContext('2d'),dpr=DPR();if(w<4)return;g.fillStyle='#000';g.fillRect(0,0,w,h);
+  const cx=Math.round(w/2),ppb=w/17,yO=Math.round(h*.22),yB=Math.round(h*.78),lw=Math.max(2,Math.round(1.6*dpr));
+  const grid=(dk,y,dir)=>{const b0=Math.ceil(dk.pos-cx/ppb),b1=Math.floor(dk.pos+(w-cx)/ppb);for(let b=b0;b<=b1;b++){const x=Math.round(cx+(b-dk.pos)*ppb);
+      if(((b%4)+4)%4===0){g.fillStyle='#e23a2e';g.fillRect(x-dpr*.7,y-h*.14,lw,h*.28);}else{g.fillStyle='#e8e8e8';const L=h*.3;g.fillRect(x-dpr*.5,dir<0?y-L:y,Math.max(1,dpr),L);}}};
+  g.fillStyle='#ff8a1f';g.fillRect(0,yO-lw/2,w,lw);
+  g.fillStyle='#2f7dff';g.fillRect(0,yB-lw/2,w,lw);
+  const sm=masterDeck();
+  if(d.track&&d.track.ready)grid(d,yB,-1);
+  if(sm&&sm!==d&&sm.track&&sm.track.ready)grid(sm,yO,1);
+  g.fillStyle='#ffffff';g.fillRect(cx-dpr*.7,0,lw,h);
+}
+function drawRef_unused(d,cv){
+  const[w,h]=fit(cv),g=cv.getContext('2d'),dpr=DPR();if(w<4)return;g.fillStyle='#020306';g.fillRect(0,0,w,h);
+  const r=null,t=d.track;
+  const label=(txt,col)=>{g.font=`700 ${9*dpr}px "Barlow Condensed",sans-serif`;g.textBaseline='top';g.fillStyle=col;g.fillText(txt,3*dpr,2*dpr);};
+  if(!r||!t||!t.ready){label('NO SYNC MASTER','#3d4e63');return;}
+  const e=wrapPhase(frac(d.pos)-frac(r.pos)),ms=e*60/bpmOf(d)*1000,barOff=(((Math.floor(d.pos)-Math.floor(r.pos))%4)+4)%4,ok=Math.abs(ms)<25,cx=Math.round(w/2);
+  if((d.refMode||'wave')==='wave'){
+    const ppb=28*dpr,rt=r.track,mid=h/2;
+    for(const[col,band,sc]of [['#1f5fff','low',.95],['#ff9a2e','mid',.6],['#f4f7ff','high',.3]]){g.fillStyle=col;for(let x=0;x<w;x++){const v=energy(rt,band,r.pos+(x-cx)/ppb);if(v>0){const hh=v*mid*sc;g.fillRect(x,mid-hh,1,hh*2);}}}
+    const b0=Math.ceil(r.pos-cx/ppb),b1=Math.floor(r.pos+(w-cx)/ppb);
+    for(let b=b0;b<=b1;b++){const x=Math.round(cx+(b-r.pos)*ppb),bar=((b%4)+4)%4===0;g.fillStyle=bar?'#ff3b30':'rgba(255,255,255,.6)';g.fillRect(x,0,bar?2*dpr:dpr,bar?h:4*dpr);}
+    // this deck's own nearest beat, for comparison
+    const myB=Math.round(d.pos),mx=Math.round(cx+(myB-d.pos)*ppb);g.fillStyle=ok?'#22e07a':'#ffd23f';g.fillRect(mx-dpr,h-5*dpr,2*dpr,5*dpr);
+    g.fillStyle='#fff';g.fillRect(cx-dpr,0,2*dpr,h);
+    g.fillStyle='rgba(2,3,6,.75)';g.fillRect(0,0,64*dpr,12*dpr);label((r===masterDeck()?'MASTER ':'')+PL(r.n).replace('PLAYER ','P'),'#ff8a1f');
+  }else{
+    const cw=(w-9*dpr)/4,rowH=(h-4*dpr)/2;
+    const row=(y,dk,col)=>{const beat=((Math.floor(dk.pos)%4)+4)%4;for(let i=0;i<4;i++){g.fillStyle=i===beat?col:'#14243a';g.fillRect(i*(cw+3*dpr),y,cw,rowH);}};
+    row(0,d,'#e8f1ff');row(rowH+4*dpr,r,'#ff8a1f');
+    const x=w/2+clamp(e*2,-1,1)*w/2;g.fillStyle=ok?'#22e07a':'#ff3d33';g.fillRect(x-2*dpr,0,4*dpr,h);
+  }
+  g.font=`700 ${9*dpr}px "JetBrains Mono",monospace`;g.textBaseline='top';g.textAlign='right';g.fillStyle='rgba(2,3,6,.75)';g.fillRect(w-74*dpr,0,74*dpr,12*dpr);
+  g.fillStyle=ok?'#22e07a':'#ff3d33';g.fillText((barOff?barOff+'B ':'')+(ms>=0?'+':'')+Math.round(ms)+'ms',w-3*dpr,2*dpr);g.textAlign='left';
+}
+function renderDeck(n){
+  const d=S.decks[n],e=E[n],t=d.track,v=d.view==='source'||d.view==='browse'?'list':(t?'play':'idle');
+  e.idle.hidden=v!=='idle';e.list.hidden=v!=='list';e.play.hidden=v!=='play';e.bar.hidden=v==='play';
+  if(v==='list')renderList(d,e);else e.listSig='';
+  setT(e.src,t?(d.srcOwner===n?'USB · ':'LINK P'+PN(d.srcOwner)+' · ')+t.title:(S.usb[n]&&!S.usbStopped[n]?'USB 인식됨 · '+MEDIA.name:'—'));setC(e.src,'link',!!t&&d.srcOwner!==n);
+  setC(e.bq,'on',d.q);setC(e.bmt,'on',d.mt);setC(e.bsl,'on',d.slip);setC(e.bjm,'on',d.jog==='VINYL');
+  const rl=d.range===100?'WIDE':'±'+d.range;setT(e.brg,rl);setT(e.bjm,d.jog);setT(e.rv,rl);
+  setC(e.vI,'on',d.jog==='VINYL');setC(e.cI,'on',d.jog==='CDJ');setC(e.usbInd,'on',S.usb[n]&&!S.usbStopped[n]);
+  if(v==='play'){
+    e.loading.hidden=t.ready;setT(e.loading,t.error?'읽기 실패: '+t.error:'LOADING…');
+    setT(e.dev,d.srcOwner===n?'USB':'LINK '+PN(d.srcOwner));setC(e.dev,'link',d.srcOwner!==n);
+    setT(e.title,t.title);setT(e.artist,t.artist||'');setT(e.key,(t.bpm?t.bpm.toFixed(1):'')+'  '+(t.key||''));
+    if(t.ready){const total=(t.beats-t.startBeat)*spbOf(t),cur=(d.pos-t.startBeat)*spbOf(t),f=fmtMs(d.remain?total-cur:cur);
+      setT(e.tm,d.remain?'REMAIN':'ELAPSED');setT(e.time,f.a);setT(e.msec,f.b);
+      const cd=x=>{const nc=x?nextCueDist(x):Infinity;return isFinite(nc)?String(Math.floor(nc/4)).padStart(2,'0')+'.'+Math.floor(nc%4):'--.-';};
+      const sm=masterDeck();setT(e.cnt,cd(d));setT(e.cntM,sm&&sm!==d&&sm.track&&sm.track.ready?cd(sm):'--.-');}
+    setT(e.bpm,bpmOf(d).toFixed(1));const p=tempoPct(d);setT(e.pct,(p>=0?'+':'')+p.toFixed(2)+'%');setT(e.rg2,d.tempoReset?'RESET':rl);
+    const isM=S.master===n,isS=d.sync&&!isM;setT(e.ms,isM?'MASTER':isS?'SYNC':'');setC(e.ms,'master',isM);setC(e.ms,'sync',isS);
+    const m=masterDeck();setC(e.mt2,'on',d.mt);setT(e.k2,t.key||'');setC(e.k2,'match',!!(m&&m!==d&&m.track&&camelotOk(t.key,m.track.key)));
+    setC(e.ahc,'on',(t.hot||[]).length>0);setT(e.tno,String(Math.max(1,MEDIA.tracks.indexOf(t)+1)).padStart(2,'0'));
+    setT(e.lpb,d.loop.active?fmtBeats(d.loop.out-d.loop.in):'');setT(e.qv,d.q?'1':'-');setT(e.bjv,String(d.bj||16));
+    drawZoom(d,e.wz);drawOverview(d,e.wo);drawRef(d,e.ph);
+  }
+  drawJog(d,e.jd);
+  const Bt=e.btn,atCue=t&&Math.abs(d.pos-d.cue)<.02,len=d.loop.active?d.loop.out-d.loop.in:0;
+  setC(Bt.play,'on',!!t&&d.playing&&!d.previewing);setC(Bt.play,'blink',!!t&&!d.playing);setC(Bt.cue,'on',!!t&&(d.previewing||(!d.playing&&atCue)));setC(Bt.cue,'blink',!!t&&!d.playing&&!atCue);
+  setC(Bt.master,'on',S.master===n);setC(Bt.sync,'on',d.sync);setC(Bt.mt,'on',d.mt);setC(Bt.quantize,'on',d.q);setC(Bt.slip,'on',d.slip);setC(Bt.treset,'on',d.tempoReset);setC(Bt.jogmode,'on',d.jog==='VINYL');
+  setC(Bt.calldel,'on',callOn(d));setC(Bt.time,'on',!d.remain);
+  setC(Bt.in,'on',d.loop.active);setC(Bt.in,'blink',d.loop.in!=null&&d.loop.out==null);setC(Bt.out,'on',d.loop.active);setC(Bt.reloop,'on',d.loop.active);setC(Bt.reloop,'blink',!d.loop.active&&d.loop.out!=null);
+  setC(Bt.beatloop,'on',Math.abs(len-4)<1e-6);setC(Bt.beatloop8,'on',Math.abs(len-8)<1e-6);
+  setC(Bt.usbstop,'on',S.usb[n]&&!S.usbStopped[n]);setC(e.usb,'in',S.usb[n]);setC(Bt.memory,'on',d.mem.length>0);setC(e.led0,'on',!!t&&Math.abs(tempoPct(d))<.005);
+  for(let i=0;i<8;i++){const b=Bt['hc'+i],isLoop=!!(d.hcl&&d.hclTrack===t&&d.hcl[i]&&d.hc[i]!=null);setC(b,'set',d.hc[i]!=null);setC(b,'loop',isLoop);}
+}
+/* jog display per manual p.26: artwork, playback point indicator, cue point, SLIP / SYNC / VINYL / MASTER indicators */
+function drawJog(d,cv){
+  const[w,h]=fit(cv),g=cv.getContext('2d'),r=w/2,dpr=DPR();if(w<40)return;g.clearRect(0,0,w,h);g.save();g.translate(r,r);const t=d.track;
+  g.beginPath();g.arc(0,0,r*.46,0,Math.PI*2);
+  if(t){const hue=(String(t.title).charCodeAt(0)*47+String(t.title).length*13)%360,gr=g.createRadialGradient(-r*.1,-r*.1,2,0,0,r*.46);gr.addColorStop(0,`hsl(${hue} 60% 50%)`);gr.addColorStop(1,`hsl(${(hue+40)%360} 55% 18%)`);g.fillStyle=gr;}else g.fillStyle='#0b1220';
+  g.fill();
+  if(t){g.fillStyle='rgba(255,255,255,.9)';g.font=`700 ${15*dpr}px "Barlow Condensed",sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText((t.title||'?').slice(0,1).toUpperCase(),0,1);}
+  g.strokeStyle='#12233a';g.lineWidth=6*dpr;g.beginPath();g.arc(0,0,r-9*dpr,0,Math.PI*2);g.stroke();
+  if(t&&t.ready){const A_=s=>s/1.8*Math.PI*2-Math.PI/2,ang=A_(d.pos*spbOf(t));
+    if(Math.abs(d.pos-d.cue)<8){const ca=A_(d.cue*spbOf(t));g.strokeStyle='#ff8a1f';g.beginPath();g.arc(0,0,r-9*dpr,ca-.07,ca+.07);g.stroke();}
+    g.strokeStyle='#ffffff';g.beginPath();g.arc(0,0,r-9*dpr,ang-.13,ang+.13);g.stroke();}
+  const lab=(txt,x,y,on,col)=>{g.fillStyle=on?col:'#1c2838';g.font=`700 ${8*dpr}px "Barlow Condensed",sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText(txt,x,y);};
+  lab('SLIP',-r*.46,-r*.62,d.slip,'#ff8a1f');lab('SYNC',r*.46,-r*.62,d.sync,'#2f9bff');lab('VINYL',-r*.44,r*.64,d.jog==='VINYL','#a9d4ff');lab('MASTER',r*.44,r*.64,S.master===d.n,'#ff8a1f');
+  g.restore();
+}
+
+/* ================= mixer actions ================= */
+const SLIDES={
+  input:{opts:c=>INPUTS[c],get:c=>S.mx.input[c],set:(c,v)=>S.mx.input[c]=v},
+  xfa:{opts:()=>['A','THRU','B'],get:c=>S.mx.xfa[c],set:(c,v)=>S.mx.xfa[c]=v},
+  split:{opts:()=>['MONO SPLIT','STEREO'],get:()=>S.mx.split?'MONO SPLIT':'STEREO',set:(c,v)=>S.mx.split=v==='MONO SPLIT'},
+  mono:{opts:()=>['MONO','STEREO'],get:()=>S.mx.mono?'MONO':'STEREO',set:(c,v)=>S.mx.mono=v==='MONO'},
+  eqmode:{opts:()=>['ISOLATOR','EQ'],get:()=>S.mx.eqmode,set:(c,v)=>S.mx.eqmode=v},
+  fcurve:{opts:()=>['급격','완만'],get:()=>['급격','완만'][S.mx.fcurve],set:(c,v)=>S.mx.fcurve=v==='급격'?0:1},
+  xcurve:{opts:()=>['급격','중간','완만'],get:()=>['급격','중간','완만'][S.mx.xcurve],set:(c,v)=>S.mx.xcurve=['급격','중간','완만'].indexOf(v)},
+  talk:{opts:()=>['OFF','ON','TALK OVER'],get:()=>S.mx.talk,set:(c,v)=>S.mx.talk=v},
+};
+const TP_INFO={slice:'BEAT SLICE REMIX: 지정한 채널을 4·8박 샘플링해 8조각으로 나누고, 화면의 ROLL PAD로 순서를 바꿔 반복 재생해요. (연습기에선 화면만)',
+  side:'SIDECHAIN REMIX: 한 채널의 특정 대역(예: LOW = 킥)을 트리거로 다른 채널에 효과를 걸어요. 컨트롤 영역을 터치하는 동안만 동작. (연습기에선 화면만)'};
+function mxAct(name,c,el){
+  const mx=S.mx,b=mx.bfx;
+  if(SLIDES[name]){const s=SLIDES[name],o=s.opts(c);s.set(c,o[(o.indexOf(s.get(c))+1)%o.length]);if(name==='mono'&&mx.mono)toast('MONO: 모든 출력이 모노로 나가요');if(name==='xfa'&&b.on&&(b.ch==='A'||b.ch==='B'))bfxBuild();}
+  else if(name==='mxcue')mx.cue[c]=!mx.cue[c];
+  else if(name==='monitor')mx.monitor=el.dataset.v;
+  else if(name==='inst'){mx.inst=el.dataset.v;if(mx.inst==='ZIP'||mx.inst==='NOISE'||mx.inst==='JET'||mx.inst==='CRUSH')toast(mx.inst+': '+{ZIP:'음정을 끌어내리는 효과 (연습기는 근사)',NOISE:'화이트 노이즈를 필터 통과시켜 섞어요. PARAMETER = 노이즈 양',JET:'플랜저. FILTER를 돌릴수록 강해져요',CRUSH:'소리를 뭉개요. FILTER = 뭉개는 정도'}[mx.inst]);}
+  else if(name==='chsel'){b.ch=el.dataset.v;if(b.ch==='MIC')toast('MIC 채널에 BEAT EFFECT를 걸어요 (연습기엔 마이크 입력 없음)');if(b.on)bfxBuild();}
+  else if(name==='fxsel'){b.type=el.dataset.v;b.timeMs=null;if(b.on)bfxBuild();}
+  else if(name==='beat'){b.beat=el.dataset.v;b.timeMs=null;bfxParams();}
+  else if(name==='bfxon'){b.on=!b.on;if(b.on)bfxBuild();else bfxTeardown();}
+  else if(name==='autotap'){b.tap=!b.tap;if(!b.tap)b.tapBpm=null;toast(b.tap?'TAP 모드: TAP 버튼을 박자에 맞춰 두 번 이상 두드리세요':'AUTO 모드: 들어오는 소리에서 BPM을 자동 측정');}
+  else if(name==='tap'){const now=performance.now();b.taps=b.taps.filter(x=>now-x<2500);b.taps.push(now);b.tap=true;if(b.taps.length>=2){const iv=(b.taps[b.taps.length-1]-b.taps[0])/(b.taps.length-1);b.tapBpm=clamp(60000/iv,70,180);b.beat='1/1';b.timeMs=null;}bfxParams();}
+  else if(name==='tpmix'){if(mx.tp.on&&mx.tp.mode!=='mix'){toast('다른 효과가 켜져 있어요. 먼저 터치 패널 ON/OFF로 끄세요 (설명서 순서)');return;}mx.tp.mode='mix';}
+  else if(name==='tpremix'){if(mx.tp.on){toast('먼저 터치 패널 ON/OFF로 효과를 끄세요');return;}mx.tp.mode=mx.tp.mode==='slice'?'side':'slice';toast(TP_INFO[mx.tp.mode]);}
+  else if(name==='tpon'){if(mx.tp.mode==='status'){toast('먼저 MIX 또는 REMIX로 효과를 고르세요');return;}mx.tp.on=!mx.tp.on;}
+  else if(name==='tpL'||name==='tpR'){const v=+el.dataset.v;if(name==='tpL'){if(v!==mx.tp.R)mx.tp.L=v;}else if(v!==mx.tp.L)mx.tp.R=v;}
+  else if(name==='frl')mx.tp.f[+el.dataset.i]=0;
+  else if(name==='frr')mx.tp.f[+el.dataset.i]=1;
+  else if(name==='frall')mx.tp.f=mx.tp.f.map(()=>el.dataset.v==='r'?1:0);
+  else if(name==='mxinfo')toast(el.dataset.info);
+  applyMixer();
+}
+
+/* ================= build DOM ================= */
+const B=(act,label,n,cls='')=>`<button class="btn ${cls}" data-act="${act}" data-d="${n}">${label}</button>`;
+const PLAY_SVG='<svg viewBox="0 0 30 20" aria-hidden="true"><path d="M2 2 L13 10 L2 18Z"/><rect x="18" y="2" width="3.5" height="16"/><rect x="24.5" y="2" width="3.5" height="16"/></svg>';
+/* CDJ-3000 top panel, laid out after the manual's "Part names / Top panel" diagram (DRI1586A p.14–16) */
+function deckHTML(n){
+  const R=(act,label,cls='',sm)=>`<button class="rbtn ${sm?'sm':''} ${cls}" data-act="${act}" data-d="${n}">${label}</button>`;
+  const L=(inner,label)=>`<div class="lab">${inner}<span class="silk dim">${label}</span></div>`;
+  return `<div class="cap-line"><b>${PL(n)}</b><span>CDJ-3000 · 설명서 상단 패널 그림 기준</span></div>
+  <div class="chassis cdj">
+   <div class="cdj-a">
+    <div class="cdj-l">
+      <div class="media2">
+        <div class="mrow"><button class="usb-port" data-act="usbslot" data-d="${n}" aria-label="USB 포트"><span class="stick"></span></button><span class="ind usbind" title="USB 인디케이터"></span></div>
+        ${B('usbstop','USB STOP',n,'led-green')}
+        <div class="mrow"><button class="sdslot" data-act="sdslot" data-d="${n}" aria-label="SD 슬롯"></button><span class="ind"></span></div>
+        <span class="silk dim">SD</span>
+      </div>
+      ${L(R('time','','',1),'TIME MODE<br>AUTO CUE')}
+      <div class="rowc">${L(R('slip','','led-orange',1),'SLIP')}${L(R('quantize','','led-red',1),'QUANTIZE')}</div>
+    </div>
+    <div class="cdj-c">
+      <div class="navrow">${B('source','SOURCE',n)}${B('browse','BROWSE',n)}${B('taglist','TAG LIST',n)}${B('playlist','PLAYLIST',n)}${B('searchbtn','SEARCH',n)}${B('menu','MENU<br><small>UTILITY</small>',n)}</div>
+      <div class="bezel"><div class="screen" id="scr${n}">
+        <div class="scr-bar"><b class="pn">${PL(n)}</b><span class="src">—</span><span class="badges"><i class="q">Q</i><i class="mtb">MT</i><i class="rg">±10</i><i class="sl">SLIP</i><i class="jm">VINYL</i></span></div>
+        <div class="scr-idle"><div><b>NO TRACK</b>SOURCE를 눌러 기기를 고르세요</div></div>
+        <div class="scr-list" hidden><div class="crumb"></div><ul></ul></div>
+        <div class="scr-play" hidden>
+          <div class="p-top"><span class="dev">USB</span><div class="tt"><b></b><span></span></div><span class="k"></span>
+            <button class="tb" data-act="t_bloop" data-d="${n}">BEAT<br>LOOP</button><button class="tb" data-act="t_kshift" data-d="${n}">KEY<br>SHIFT</button><button class="tb" data-act="t_bjump" data-d="${n}">BEAT<br>JUMP</button></div>
+          <div class="p-strip"><span class="cnt" title="3. Beat countdown"><span class="cm"><b>--.-</b><small>Bars</small></span><span class="cs"><b>--.-</b><small>Bars</small></span></span><canvas class="ph" title="10. Waveform/phase meter — 싱크 마스터와의 마디·박 어긋남"></canvas></div>
+          <div class="wzbox"><canvas class="wz"></canvas><span class="lpb"></span><span class="zoomind">ZOOM</span></div>
+          <div class="p-info">
+            <div class="pl"><small>PLAYER</small><b>${PN(n)}</b></div>
+            <div class="tno"><small>TRACK</small><b>--</b></div>
+            <div class="flags"><i class="ahc">A.HOT CUE</i><i class="acue on">AUTO CUE</i></div>
+            <div class="st-time" title="눌러서 남은 시간/지난 시간 전환"><small class="tm">REMAIN</small><b>--:--</b><em class="msec">.000</em><span class="single">SINGLE</span></div>
+            <div class="tempo"><small>TEMPO <span class="rg2">±10</span></small><b class="pct">+0.00%</b></div>
+            <div class="st-bpm"><small>BPM <span class="ms">—</span></small><b>---.-</b><span class="mtk"><i class="mtb2">MT</i><span class="k2"></span></span></div>
+          </div>
+          <div class="p-ov"><div class="qb"><small>QUANTIZE</small><b class="qv">1</b><small>BEAT JUMP</small><b class="bjv">16</b></div><canvas class="wo" title="터치해서 원하는 위치로 이동"></canvas></div>
+          <div class="loading" hidden>LOADING…</div>
+        </div>
+      </div></div>
+      <div class="hcrow2">${B('calldel','CALL/<br>DELETE',n,'led-red')}${[...LETTERS].map((Lt,i)=>`<button class="hc" data-act="hc${i}" data-d="${n}" style="--hc:${HC_COLORS[i]}">${Lt}</button>`).join('')}</div>
+    </div>
+    <div class="cdj-r">
+      ${B('back','BACK',n)}${B('tag','TAG TRACK<br><small>REMOVE</small>',n)}
+      <div class="rotary" data-rot="${n}" title="돌리기: 휠/위아래 드래그 · 누르기: 클릭"><div class="cap"></div></div>
+      ${B('trkfilter','TRACK FILTER<br><small>EDIT</small>',n)}${B('shortcut','SHORTCUT',n)}
+      ${K('vsa:'+n,'VINYL SPEED ADJ.','small')}
+    </div>
+   </div>
+   <div class="cdj-b">
+    <div class="cdj-bl">
+      <div class="sect">LOOP</div>
+      <div class="rowc">${L(R('in','IN/<br>CUE','led-orange'),'IN ADJUST')}${L(R('out','OUT','led-orange'),'OUT ADJUST')}${L(R('reloop','RELOOP<br>EXIT','led-orange',1),'')}</div>
+      <div class="sect">BEAT LOOP</div>
+      <div class="rowc">${L(R('beatloop','4','led-orange',1),'1/2X')}${L(R('beatloop8','8','led-orange',1),'2X')}</div>
+      <div class="sect">BEAT JUMP</div>
+      <div class="g2">${B('bj_b','◀',n)}${B('bj_f','▶',n)}</div>
+      <button class="dirlever" data-act="direction" data-d="${n}"><span>SLIP REV</span><span class="on">FWD</span><span>REV</span></button><span class="silk dim">DIRECTION</span>
+      <div class="sect">TRACK SEARCH</div><div class="rowc">${R('trk_prev','|◀◀','',1)}${R('trk_next','▶▶|','',1)}</div>
+      <div class="sect">SEARCH</div><div class="rowc">${R('srch_b','◀◀','',1)}${R('srch_f','▶▶','',1)}</div>
+      <div class="bigs"><button class="big cue" data-act="cue" data-d="${n}">CUE</button><button class="big play" data-act="play" data-d="${n}" aria-label="PLAY/PAUSE">${PLAY_SVG}</button></div>
+    </div>
+    <div class="jogcell"><div class="jog" data-jog="${n}"><div class="ring"></div><div class="top"></div><canvas class="jd"></canvas></div></div>
+    <div class="cdj-br">
+      <div class="rowc">${R('call_prev','◀','',1)}${R('call_next','▶','',1)}</div><span class="silk dim">CUE/LOOP CALL</span>
+      <div class="rowc">${L(R('delete','','led-red',1),'DELETE')}${L(R('memory','','led-red',1),'MEMORY')}</div>
+      <div class="rowc">${B('jogmode','JOG<br>MODE',n,'led-blue')}<span class="vc"><i class="v">VINYL</i><i class="c">CDJ</i></span></div>
+      ${K('jadj:'+n,'JOG ADJUST','small')}
+      <div class="g2">${B('sync','BEAT<br>SYNC',n,'led-blue')}${B('master','MASTER',n,'led-orange')}</div>
+      <span class="silk dim" style="margin-top:-4px">INST.DOUBLES</span>
+      ${B('keysync','KEY SYNC',n)}
+      <div class="rowc">${L(R('range','<span class="rv">±10</span>','',1),'TEMPO')}${L(R('mt','','led-red',1),'MASTER<br>TEMPO')}</div>
+      <div class="tempo-row">${L(R('treset','','led-green',1),'TEMPO<br>RESET')}<div class="tempo-box"><div class="tempo-scale"><span>−</span><span>0</span><span>+</span></div><div class="vf tempo" data-ctl="tempo:${n}"><span class="led0"></span><div class="cap"></div></div></div></div>
+    </div>
+   </div>
+  </div>`;
+}
+function deckHTML_old(n){
+  return `<div class="cap-line"><b>${PL(n)}</b><span>CDJ-3000 · 연습용 근사</span></div>
+  <div class="chassis">
+  <div class="dk-a">
+    <div class="dk-left">
+      <div class="media"><div class="row"><span class="lbl">SD</span><button class="sdslot" data-act="sdslot" data-d="${n}" aria-label="SD 슬롯" style="flex:1;border:0;cursor:pointer"></button></div>
+        <button class="usb-port" data-act="usbslot" data-d="${n}" aria-label="USB 포트"><span class="stick"></span></button>${B('usbstop','USB STOP',n,'led-green')}</div>
+      ${B('source','SOURCE',n)}${B('browse','BROWSE',n)}${B('taglist','TAG LIST',n)}${B('playlist','PLAYLIST',n)}${B('searchbtn','SEARCH',n)}${B('menu','MENU',n)}
+    </div>
+    <div class="bezel"><div class="screen" id="scr${n}">
+      <div class="scr-bar"><b class="pn">${PL(n)}</b><span class="src">—</span><span class="badges"><i class="q">Q</i><i class="mtb">MT</i><i class="rg">±10</i><i class="sl">SLIP</i><i class="jm">VINYL</i></span></div>
+      <div class="scr-idle"><div><b>NO TRACK</b>SOURCE를 눌러 기기를 고르세요</div></div>
+      <div class="scr-list" hidden><div class="crumb"></div><ul></ul></div>
+      <div class="scr-play" hidden>
+        <div class="ti"><div class="tt"><b></b><span></span></div><span class="k"></span></div>
+        <canvas class="wz"></canvas><canvas class="wo" title="터치해서 원하는 위치로 이동"></canvas>
+        <div class="st"><div class="st-time" title="눌러서 남은 시간/지난 시간 전환"><small class="tm">REMAIN</small><b>--:--.-</b></div>
+          <div><small>PHASE · BEAT</small><canvas class="ph"></canvas></div>
+          <div class="st-bpm"><span class="ms">—</span><b>---.--</b><span class="pct">+0.00%</span></div></div>
+        <div class="loading" hidden>LOADING…</div>
+      </div>
+    </div></div>
+    <div class="dk-right"><div class="rotary" data-rot="${n}" title="돌리기: 휠/위아래 드래그 · 누르기: 클릭"><div class="cap"></div></div><span class="silk dim">PUSH</span>${B('back','BACK',n)}${B('tag','TAG TRACK',n)}${B('time','TIME MODE',n)}</div>
+  </div>
+  <div class="sect">HOT CUE</div>
+  <div class="hc-row">${[...LETTERS].map((L,i)=>`<button class="hc" data-act="hc${i}" data-d="${n}" style="--hc:${HC_COLORS[i]}">${L}</button>`).join('')}</div>
+  <div class="dk-b">
+    <div class="dk-bl">
+      <div class="sect">LOOP</div>
+      <div class="g2">${B('in','IN/CUE',n,'led-orange')}${B('out','OUT',n,'led-orange')}${B('reloop','RELOOP/<br>EXIT',n,'led-orange')}${B('beatloop','4 BEAT<br>LOOP',n,'led-orange')}${B('half','LOOP<br>1/2X',n)}${B('double','LOOP<br>2X',n)}</div>
+      <div class="sect">CUE/LOOP CALL</div>
+      <div class="g2">${B('call_prev','◀',n)}${B('call_next','▶',n)}${B('delete','DELETE',n,'led-red')}${B('memory','MEMORY',n,'led-red')}</div>
+      <div class="g2">${B('srch_b','◀◀',n)}${B('srch_f','▶▶',n)}${B('trk_prev','|◀◀',n)}${B('trk_next','▶▶|',n)}</div>
+      <div class="bigs"><button class="big cue" data-act="cue" data-d="${n}">CUE</button><button class="big play" data-act="play" data-d="${n}" aria-label="PLAY/PAUSE">${PLAY_SVG}</button></div>
+    </div>
+    <div class="jogcell"><div class="jog" data-jog="${n}"><div class="ring"></div><div class="top"></div><canvas class="jd"></canvas></div>
+      <div class="jogsub">${B('jogmode','JOG MODE <span class="jm2">VINYL</span>',n,'led-blue')}${B('slip','SLIP',n,'led-orange')}${B('quantize','QUANTIZE',n,'led-red')}</div></div>
+    <div class="dk-br">
+      <div class="g2">${B('keysync','KEY<br>SYNC',n)}${B('master','MASTER',n,'led-orange')}</div>
+      ${B('sync','BEAT SYNC<br><small>INST.DOUBLES</small>',n,'led-blue')}
+      <div class="g2">${B('range','TEMPO<br><span class="rv">±10</span>',n)}${B('mt','MASTER<br>TEMPO',n,'led-red')}</div>
+      <div class="tempo-box"><div class="tempo-scale"><span>−</span><span>0</span><span>+</span></div><div class="vf tempo" data-ctl="tempo:${n}"><span class="led0"></span><div class="cap"></div></div></div>
+      ${B('treset','TEMPO RESET',n,'led-green')}
+    </div>
+  </div></div>`;
+}
+const K=(ctl,label,cls='',rng)=>`<div class="kw"><div class="knob ${cls}" data-ctl="${ctl}" tabindex="0" aria-label="${label}"></div><span class="silk">${label}</span>${rng?`<span class="rng"><span>${rng[0]}</span><span>${rng[1]}</span></span>`:''}</div>`;
+const SHORT={'CD/DIGITAL':'CD/DIG','PHONO':'PHONO','LINE':'LINE','USB 1/2':'USB','USB 3/4':'USB','USB 5/6':'USB','USB 7/8':'USB'};
+const SL=(act,c,cls='')=>{const o=SLIDES[act].opts(c);return`<button class="slide ${cls}" data-act="${act}" ${c?`data-ch="${c}"`:''} aria-label="${act}"><span class="lbls">${o.map(x=>`<span>${act==='input'?SHORT[x]||x:x}</span>`).join('')}</span><span class="trk"><i></i></span>${act==='input'?'<span class="val"></span>':''}</button>`;};
+const MI=(label,info,cls='')=>`<button class="btn ${cls}" data-act="mxinfo" data-info="${esc(info)}">${label}</button>`;
+function mixerHTML(){
+  const wires={1:['PHONO','턴테이블 (없음)'],2:['PLAYER 2','LINK CH2 · CD/DIGITAL'],3:['PLAYER 3','LINK CH3 · CD/DIGITAL'],4:['USB 7/8','노트북 (없음)']};
+  const strip=c=>`<div class="mcol ch" data-chs="${c}">
+    ${SL('input',c,'inp')}
+    <div class="strip-top"><div class="knobs">${K('trim:'+c,'TRIM','',['-∞','+9'])}${K('hi:'+c,'HI','small')}${K('mid:'+c,'MID','small')}${K('low:'+c,'LOW','small')}</div><canvas class="meter" data-meter="${c}"></canvas></div>
+    <span class="chn">${c}</span>
+    ${K('filt:'+c,'FILTER','',['MIN','MAX'])}
+    <button class="btn white" data-act="mxcue" data-ch="${c}">CUE</button>
+    <div class="vf" data-ctl="fader:${c}" style="height:150px"><div class="cap"></div></div>
+    ${SL('xfa',c)}
+    <div class="wire"><b>${wires[c][0]}</b>${wires[c][1]}</div>
+  </div>`;
+  return `<div class="cap-line"><b>MIXER</b><span class="mon-sim">연습기 출력: <button class="btn led-green" data-act="monitor" data-v="main">메인 스피커</button><button class="btn led-orange" data-act="monitor" data-v="hp">헤드폰</button></span><span>DJM-2000NXS</span></div>
+  <div class="chassis">
+    <div class="mcol">
+      <div class="sect">MIC</div><span class="jack" title="MIC 입력"></span>
+      ${K('mic:0','MIC LEVEL','small')}<div style="display:flex;gap:6px">${K('micHi:0','HI','small')}${K('micLow:0','LOW','small')}</div>
+      ${SL('talk',0)}
+      <div class="sect">INST FX</div>
+      <div class="instfx">${INST.map(x=>`<button class="btn white" data-act="inst" data-v="${x}">${x}</button>`).join('')}</div>
+      ${K('param:0','PARAMETER','',['MIN','MAX'])}
+      <div class="sect">LINK</div>${MI('CUE','LINK CUE: rekordbox가 깔린 컴퓨터의 곡을 헤드폰으로 미리 듣는 LINK MONITOR 기능 (연습기에선 생략)','white')}
+      <div class="sect">HEADPHONES</div>
+      ${SL('split',0)}
+      ${K('hpmix:0','MIXING','',['CUE','MASTER'])}${K('hplevel:0','LEVEL')}
+      <span class="jack" title="PHONES"></span><span class="silk dim">PHONES</span>
+    </div>
+    ${strip(1)}${strip(2)}
+    <div class="center">
+      <div class="chsel">${CHSEL.map(x=>`<button class="rb" data-act="chsel" data-v="${x}">${x}</button>`).join('')}</div>
+      <span class="silk dim">CH SELECT</span>
+      <div class="fxsel">${BFX_ROWS.flat().map(x=>`<button class="btn white" data-act="fxsel" data-v="${x.replace(' ','').replace('SEND/RETURN','SEND/RETURN')}">${x}</button>`).join('')}</div>
+      <span class="silk dim">EFFECT SELECT</span>
+      <div class="fxrow">${K('efLo:0','LOW','',['MIN','MAX'])}${K('efMid:0','MID','',['MIN','MAX'])}${K('efHi:0','HI','',['MIN','MAX'])}</div>
+      <span class="silk dim">EFFECT FREQUENCY</span>
+      <div class="beats">${BEATS.map(x=>`<button class="rb" data-act="beat" data-v="${x}">${x}</button>`).join('')}</div>
+      <div class="fxrow">${K('bfxtime:0','TIME')}${K('bfxlevel:0','LEVEL/DEPTH','big',['MIN','MAX'])}
+        <div class="kw"><button class="rb" style="width:30px" data-act="autotap">A/T</button><span class="silk">AUTO/TAP</span></div>
+        <div class="kw"><button class="rb" style="width:30px" data-act="tap">TAP</button><span class="silk">TAP</span></div>
+        <div class="kw"><button class="bfx-on" data-act="bfxon">ON/OFF</button></div></div>
+      <div class="lcd"><span><small id="bfxMode">AUTO · BPM</small><b id="bfxBpm">124.0</b></span><span style="text-align:right"><small id="bfxName">ECHO · M</small><b id="bfxTime" style="font-size:13px">363 ms</b></span></div>
+      <div class="tp-area">
+        <div class="tp-side">${MI('CUE','BEAT EFFECT CUE: 이펙트 소리를 헤드폰으로 미리 들어요 (연습기에선 생략)','white')}<span class="silk dim" style="font-size:8px">LIVE SAMPLER</span>${MI('LIVE<br>SAMPLER','LIVE SAMPLER: MIC나 MASTER 소리를 최대 8초 샘플링해 PRO DJ LINK로 플레이어에서 재생 (연습기에선 생략)')}${MI('CUE','TOUCH PANEL EFFECT CUE (연습기에선 생략)','white')}</div>
+        <div class="tpanel" id="tpanel"></div>
+        <div class="tp-side">${MI('SYNC<br>MASTER','SYNC MASTER: 믹서의 마스터 클럭에 CDJ 비트를 맞추는 기능 (연습기에선 생략)')}<button class="btn white" data-act="tpmix">MIX</button><button class="btn white" data-act="tpremix">REMIX</button><button class="bigw" data-act="tpon">ON/<br>OFF</button></div>
+      </div>
+      <div class="xf-row"><span class="silk">A</span><div class="hf" data-ctl="xf:0"><div class="cap"></div></div><span class="silk">B</span></div>
+      <span class="silk dim">CROSS FADER</span>
+    </div>
+    ${strip(3)}${strip(4)}
+    <div class="mcol">
+      <div class="sect">MASTER</div>
+      <div style="display:flex;gap:8px;align-items:flex-start">${K('master:0','MASTER','big')}<canvas class="meter tall" data-meter="m"></canvas></div>
+      ${K('balance:0','BALANCE','',['L','R'])}
+      <button class="btn white" data-act="mxinfo" data-info="MASTER CUE: 마스터 출력을 헤드폰으로 들어요 (연습기는 MIXING 노브로 대신)">CUE</button>
+      ${SL('mono',0)}
+      ${K('booth:0','BOOTH MONITOR')}
+      <div class="sect">MIDI</div>
+      <div style="display:flex;gap:4px;width:100%">${MI('ON/OFF','MIDI ON/OFF: 믹서를 MIDI 컨트롤러로 쓸 때 (연습기에선 생략)')}${MI('START/<br>STOP','START/STOP (SNAPSHOT): MIDI 시작/정지 (연습기에선 생략)')}</div>
+      <div class="sect">CURVE SETTING</div>
+      <div class="curve"><span class="silk dim">CH EQ</span>${SL('eqmode',0)}<span class="silk dim">CH FADER</span>${SL('fcurve',0)}<span class="silk dim">CROSS FADER</span>${SL('xcurve',0)}</div>
+    </div>
+  </div>`;
+}
+$('#deck1').innerHTML=deckHTML(1);$('#deck2').innerHTML=deckHTML(2);$('#mixer').innerHTML=mixerHTML();
+$$('#mixer [data-act="fxsel"]').forEach(b=>{b.dataset.v=b.textContent.trim().replace(/\s*\/\s*/,'/');});
+const E={};
+for(const n of [1,2]){
+  const root=$('#deck'+n),scr=$('#scr'+n),btn={};$$('[data-act]',root).forEach(b=>btn[b.dataset.act]=b);
+  E[n]={root,scr,btn,src:$('.src',scr),bq:$('.q',scr),bmt:$('.mtb',scr),brg:$('.rg',scr),bsl:$('.sl',scr),bjm:$('.jm',scr),idle:$('.scr-idle',scr),list:$('.scr-list',scr),ul:$('ul',scr),crumb:$('.crumb',scr),play:$('.scr-play',scr),loading:$('.loading',scr),
+    title:$('.tt b',scr),artist:$('.tt span',scr),key:$('.k',scr),wz:$('.wz',scr),wo:$('.wo',scr),ph:$('.ph',scr),time:$('.st-time b',scr),tm:$('.tm',scr),bpm:$('.st-bpm b',scr),pct:$('.pct',scr),ms:$('.ms',scr),
+    jog:$('.jog',root),jd:$('.jd',root),usb:$('.usb-port',root),rv:$('.rv',root),jm2:$('.jm2',root),led0:$('.led0',root),listSig:''};
+}
+
+/* ================= knobs & faders ================= */
+const mxK=(k,min,max,def,after)=>({min,max,def,kind:'k',get:()=>S.mx[k],set:(c,v)=>{S.mx[k]=v;}});
+const bK=(k,min,max,def)=>({min,max,def,kind:'k',get:()=>S.mx.bfx[k],set:(c,v)=>{S.mx.bfx[k]=v;}});
+const CTL={
+  tempo:{min:-1,max:1,def:0,kind:'v',inv:true,gain:.5,get:n=>S.decks[n].tempo,set:(n,v)=>S.decks[n].tempo=v},
+  trim:{min:0,max:1,def:.5,kind:'k',get:c=>S.mx.trim[c],set:(c,v)=>S.mx.trim[c]=v},
+  hi:{min:-1,max:1,def:0,kind:'k',get:c=>S.mx.hi[c],set:(c,v)=>S.mx.hi[c]=v},
+  mid:{min:-1,max:1,def:0,kind:'k',get:c=>S.mx.mid[c],set:(c,v)=>S.mx.mid[c]=v},
+  low:{min:-1,max:1,def:0,kind:'k',get:c=>S.mx.low[c],set:(c,v)=>S.mx.low[c]=v},
+  filt:{min:0,max:1,def:0,kind:'k',get:c=>S.mx.filt[c],set:(c,v)=>{S.mx.filt[c]=v;if(v>.3)S.mx.instUsed.add(S.mx.inst);}},
+  fader:{min:0,max:1,def:0,kind:'v',gain:1,get:c=>S.mx.fader[c],set:(c,v)=>S.mx.fader[c]=v},
+  xf:{min:-1,max:1,def:0,kind:'h',gain:1,get:()=>S.mx.xf,set:(c,v)=>S.mx.xf=v},
+  param:mxK('param',0,1,.5),master:mxK('master',0,1,.75),balance:mxK('balance',0,1,.5),booth:mxK('booth',0,1,.4),
+  hpmix:mxK('hpmix',-1,1,-.5),hplevel:mxK('hplevel',0,1,.6),mic:mxK('mic',0,1,0),micHi:mxK('micHi',0,1,.5),micLow:mxK('micLow',0,1,.5),
+  efLo:bK('lo',0,1,1),efMid:bK('mid',0,1,1),efHi:bK('hi',0,1,1),bfxlevel:bK('level',0,1,.5),
+  bfxtime:{min:0,max:1,def:.5,kind:'k',get:()=>{const ms=fxTime()*1000;return clamp(Math.log(ms)/Math.log(4000),0,1);},set:(c,v)=>{S.mx.bfx.timeMs=Math.round(clamp(Math.exp(v*Math.log(4000)),1,4000));}},
+};
+CTL.vsa={min:0,max:1,def:.5,kind:'k',get:n=>S.decks[n].vsa??.5,set:(n,v)=>{S.decks[n].vsa=v;}};
+CTL.jadj={min:0,max:1,def:.5,kind:'k',get:n=>S.decks[n].jadj??.5,set:(n,v)=>{S.decks[n].jadj=v;}};
+for(const n of [1,2]){const scr=E[n].scr,root=E[n].root;Object.assign(E[n],{bar:$('.scr-bar',scr),dev:$('.dev',scr),cnt:$('.cnt .cs b',scr),cntM:$('.cnt .cm b',scr),msec:$('.msec',scr),rg2:$('.rg2',scr),mt2:$('.mtb2',scr),k2:$('.k2',scr),
+  acue:$('.acue',scr),ahc:$('.ahc',scr),tno:$('.tno b',scr),lpb:$('.lpb',scr),qv:$('.qv',scr),bjv:$('.bjv',scr),vI:$('.vc .v',root),cI:$('.vc .c',root),usbInd:$('.usbind',root)});
+  E[n].ph.addEventListener('click',()=>{const d=S.decks[n];d.refMode=(d.refMode||'phase')==='phase'?'wave':'phase';toast(d.refMode==='wave'?'WAVEFORM: 싱크 마스터 곡의 파형':'PHASE METER: 주황 = 싱크 마스터, 파랑 = 이 플레이어의 박·마디');});}
+const ctlOf=el=>{const[k,a]=el.dataset.ctl.split(':');return{c:CTL[k],a:+a,k};};
+function setCtl(el,v){const{c,a,k}=ctlOf(el);c.set(a,clamp(v,c.min,c.max));if(k!=='tempo')applyMixer();}
+let drag=null;
+document.addEventListener('pointerdown',e=>{const el=e.target.closest('[data-ctl]');if(!el)return;e.preventDefault();el.setPointerCapture(e.pointerId);const o=ctlOf(el);drag={el,x:e.clientX,y:e.clientY,v:o.c.get(o.a)};});
+document.addEventListener('pointermove',e=>{
+  if(!drag)return;const{c}=ctlOf(drag.el),el=drag.el,range=c.max-c.min,fine=e.shiftKey?.15:1,sc=boothScale||1;
+  if(c.kind==='k')setCtl(el,drag.v+(drag.y-e.clientY)/sc/160*range*fine);
+  else if(c.kind==='h')setCtl(el,drag.v+(e.clientX-drag.x)/sc/(el.offsetWidth-24)*range*c.gain*fine);
+  else{const dy=(e.clientY-drag.y)/sc/(el.offsetHeight-22)*range*c.gain*fine;setCtl(el,drag.v+(c.inv?dy:-dy));}
+});
+document.addEventListener('pointerup',()=>drag=null);document.addEventListener('pointercancel',()=>drag=null);
+document.addEventListener('dblclick',e=>{const el=e.target.closest('[data-ctl]');if(el)setCtl(el,ctlOf(el).c.def);});
+document.addEventListener('wheel',e=>{const el=e.target.closest('[data-ctl]');if(!el)return;e.preventDefault();const{c,a,k}=ctlOf(el),dir=e.deltaY>0?1:-1;
+  if(k==='tempo')setCtl(el,c.get(a)+dir*.0002/RANGE(S.decks[a].range));else setCtl(el,c.get(a)+(c.kind==='h'?dir:-dir)*(c.max-c.min)*.02);},{passive:false});
+document.addEventListener('keydown',e=>{const el=e.target.closest&&e.target.closest('[data-ctl]');if(!el)return;const{c,a}=ctlOf(el),s=(c.max-c.min)*.02;
+  if(e.key==='ArrowUp'||e.key==='ArrowRight'){setCtl(el,c.get(a)+s);e.preventDefault();}if(e.key==='ArrowDown'||e.key==='ArrowLeft'){setCtl(el,c.get(a)-s);e.preventDefault();}});
+
+/* ================= buttons ================= */
+const HOLD=new Set(['cue','srch_b','srch_f']);
+HOLD.add('calldel');
+const MXA=new Set(['mxcue','monitor','inst','chsel','fxsel','beat','bfxon','autotap','tap','tpmix','tpremix','tpon','tpL','tpR','frl','frr','frall','mxinfo',...Object.keys(SLIDES)]);
+let held=null;
+function press(b){const a=b.dataset.act;if(MXA.has(a)){mxAct(a,+b.dataset.ch||0,b);return null;}const n=+b.dataset.d;if(!n)return null;act(a,n,'down');return HOLD.has(a)?{a,n}:null;}
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-act]');if(!b||b.closest('[data-ctl]'))return;const h=press(b);if(h){held=h;try{b.setPointerCapture(e.pointerId);}catch(_){}}});
+const release=()=>{if(held){act(held.a,held.n,'up');held=null;}};
+document.addEventListener('pointerup',release);document.addEventListener('pointercancel',release);
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('button[data-act]')){e.preventDefault();const h=press(e.target);if(h)setTimeout(()=>act(h.a,h.n,'up'),400);}});
+/* frequency mix touch faders */
+let frDrag=null;
+document.addEventListener('pointerdown',e=>{const tr=e.target.closest('.frtrk');if(!tr)return;e.preventDefault();tr.setPointerCapture(e.pointerId);frDrag=tr;frSet(e);});
+document.addEventListener('pointermove',e=>{if(frDrag)frSet(e);});
+document.addEventListener('pointerup',()=>frDrag=null);
+function frSet(e){const r=frDrag.getBoundingClientRect();S.mx.tp.f[+frDrag.dataset.i]=clamp((e.clientX-r.left)/r.width,0,1);applyMixer();}
+
+/* screens, rotary, jog */
+for(const n of [1,2]){
+  const e=E[n],Dk=()=>S.decks[n];
+  e.ul.addEventListener('click',ev=>{const li=ev.target.closest('li[data-i]');if(!li)return;setIdx(Dk(),+li.dataset.i);push(Dk());});
+  e.ul.addEventListener('wheel',ev=>{ev.preventDefault();setIdx(Dk(),getIdx(Dk())+(ev.deltaY>0?1:-1));},{passive:false});
+  e.wo.addEventListener('pointerdown',ev=>{const d=Dk(),t=d.track;if(!t||!t.ready)return;const r=e.wo.getBoundingClientRect();let b=t.startBeat+clamp((ev.clientX-r.left)/r.width,0,1)*(t.beats-t.startBeat);if(d.playing&&d.q)b=Math.floor(b)+frac(d.pos);if(d.loop.active)d.loop.active=false;seek(d,b);});
+  $('.st-time',e.scr).addEventListener('click',()=>act('time',n,'down'));
+  const rot=$('[data-rot="'+n+'"]');let rd=null;
+  rot.addEventListener('pointerdown',ev=>{ev.preventDefault();rot.setPointerCapture(ev.pointerId);rd={y:ev.clientY,acc:0,moved:0};});
+  rot.addEventListener('pointermove',ev=>{if(!rd)return;const dy=ev.clientY-rd.y;rd.y=ev.clientY;rd.acc+=dy;rd.moved+=Math.abs(dy);while(Math.abs(rd.acc)>=14){const s=Math.sign(rd.acc);rd.acc-=s*14;if(Dk().view==='source'||Dk().view==='browse')setIdx(Dk(),getIdx(Dk())+s);}rot.querySelector('.cap').style.transform=`rotate(${(rd.moved*3)%360}deg)`;});
+  rot.addEventListener('pointerup',()=>{if(rd&&rd.moved<5)push(Dk());rd=null;});
+  rot.addEventListener('wheel',ev=>{ev.preventDefault();if(Dk().view==='source'||Dk().view==='browse')setIdx(Dk(),getIdx(Dk())+(ev.deltaY>0?1:-1));},{passive:false});
+  let jg=null;const jog=e.jog;
+  const ang=ev=>{const r=jog.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;return{a:Math.atan2(ev.clientY-cy,ev.clientX-cx),r:Math.hypot(ev.clientY-cy,ev.clientX-cx)/(r.width/2)};};
+  jog.addEventListener('pointerdown',ev=>{const p=ang(ev);if(p.r>1.05)return;ev.preventDefault();jog.setPointerCapture(ev.pointerId);const d=Dk();jg={a:p.a,top:p.r<.8};if(d.track&&d.jog==='VINYL'&&jg.top&&d.playing){d.jogHold=true;d.nextStep=null;}jog.classList.toggle('touch',jg.top);});
+  jog.addEventListener('pointermove',ev=>{if(!jg)return;const d=Dk();if(!d.track||!d.track.ready)return;const p=ang(ev);let da=p.a-jg.a;if(da>Math.PI)da-=2*Math.PI;if(da<-Math.PI)da+=2*Math.PI;jg.a=p.a;
+    if(d.jogHold)seek(d,d.pos+da/(2*Math.PI)*3);else if(d.playing)d.nudge=clamp(d.nudge+da*.5,-.25,.25);else seek(d,d.pos+da/(2*Math.PI)*2);});
+  const jEnd=()=>{if(!jg)return;const d=Dk();if(d.jogHold){d.jogHold=false;if(d.slip)seek(d,d.shadow);d.nextStep=null;d.srcKey='';}jg=null;jog.classList.remove('touch');};
+  jog.addEventListener('pointerup',jEnd);jog.addEventListener('pointercancel',jEnd);
+  jog.addEventListener('wheel',ev=>{ev.preventDefault();const d=Dk();if(!d.track)return;if(d.playing)d.nudge=clamp(d.nudge-ev.deltaY*.0012,-.25,.25);else seek(d,d.pos+ev.deltaY*.004);},{passive:false});
+}
+
+/* ================= rendering ================= */
+const DPR=()=>Math.min(2,window.devicePixelRatio||1);
+function fit(cv){const w=Math.round(cv.clientWidth*DPR()),h=Math.round(cv.clientHeight*DPR());if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}return[w,h];}
+const setT=(el,s)=>{if(el&&el._t!==s){el._t=s;el.textContent=s;}};
+const setH=(el,s)=>{if(el&&el._h!==s){el._h=s;el.innerHTML=s;}};
+const setC=(el,c,on)=>{if(!el)return;if(!el._c)el._c={};if(el._c[c]!==on){el._c[c]=on;el.classList.toggle(c,on);}};
+function fmtTime(sec){sec=Math.max(0,sec);const m=Math.floor(sec/60),s=sec-m*60;return String(m).padStart(2,'0')+':'+s.toFixed(1).padStart(4,'0');}
+const ovCache=new Map();
+function overview(t,w,h){const key=t.id+':'+w+'x'+h+':'+(t.low?t.low.length:0);if(ovCache.has(key))return ovCache.get(key);
+  const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d'),n=t.low.length,mid=h/2;
+  for(let x=0;x<w;x++){const a=Math.floor(x/w*n),b=Math.max(a+1,Math.floor((x+1)/w*n));let lo=0,mi=0,hi=0;for(let i=a;i<b;i++){lo=Math.max(lo,t.low[i]);mi=Math.max(mi,t.mid[i]);hi=Math.max(hi,t.high[i]);}
+    g.fillStyle='#1f5fff';g.fillRect(x,mid-lo*mid*.95,1,lo*mid*1.9);g.fillStyle='#ff9a2e';g.fillRect(x,mid-mi*mid*.6,1,mi*mid*1.2);g.fillStyle='#f4f7ff';g.fillRect(x,mid-hi*mid*.3,1,hi*mid*.6);}
+  ovCache.set(key,c);return c;}
+function drawZoom(d,cv){
+  const[w,h]=fit(cv),g=cv.getContext('2d');g.fillStyle='#020306';g.fillRect(0,0,w,h);const t=d.track;if(!t||!t.ready||w<4)return;
+  const dpr=DPR(),ppb=28*dpr,cx=Math.round(w/2),mid=h/2;
+  if(d.loop.in!=null){const x1=cx+(d.loop.in-d.pos)*ppb,x2=d.loop.out!=null?cx+(d.loop.out-d.pos)*ppb:cx;g.fillStyle=d.loop.active?'rgba(255,170,30,.22)':'rgba(140,150,160,.14)';g.fillRect(x1,0,Math.max(2,x2-x1),h);}
+  for(const[col,band,sc]of [['#1f5fff','low',.92],['#ff9a2e','mid',.58],['#f4f7ff','high',.3]]){g.fillStyle=col;for(let x=0;x<w;x++){const v=energy(t,band,d.pos+(x-cx)/ppb);if(v>0){const hh=v*mid*sc;g.fillRect(x,mid-hh,1,hh*2);}}}
+  const b0=Math.ceil(d.pos-cx/ppb),b1=Math.floor(d.pos+(w-cx)/ppb);
+  for(let b=Math.max(Math.ceil(t.startBeat),b0);b<=Math.min(t.beats,b1);b++){const x=Math.round(cx+(b-d.pos)*ppb),bar=((b%4)+4)%4===0;g.fillStyle=bar?'#ff3b30':'rgba(255,255,255,.55)';const L=(bar?9:5)*dpr,W=bar?2*dpr:dpr;g.fillRect(x,0,W,L);g.fillRect(x,h-L,W,L);}
+  const tri=(x,y,s,col,down)=>{g.fillStyle=col;g.beginPath();g.moveTo(x-s,y);g.lineTo(x+s,y);g.lineTo(x,y+(down?s*1.4:-s*1.4));g.fill();};
+  d.mem.forEach(m=>tri(cx+(m-d.pos)*ppb,h,5*dpr,'#ff3b30',false));tri(cx+(d.cue-d.pos)*ppb,0,6*dpr,'#ff8a1f',true);
+  g.font=`700 ${10*dpr}px "Barlow Condensed",sans-serif`;g.textBaseline='top';
+  d.hc.forEach((v,i)=>{if(v==null)return;const x=cx+(v-d.pos)*ppb;g.fillStyle=HC_COLORS[i];g.fillRect(x,0,dpr*1.5,h);g.fillRect(x,0,12*dpr,12*dpr);g.fillStyle='#000';g.fillText(LETTERS[i],x+3*dpr,dpr);});
+  g.fillStyle='#fff';g.fillRect(cx-dpr,0,2*dpr,h);if(d.jogHold){g.fillStyle='rgba(255,255,255,.08)';g.fillRect(0,0,w,h);}
+}
+function drawOverview(d,cv){const[w,h]=fit(cv),g=cv.getContext('2d');g.fillStyle='#020306';g.fillRect(0,0,w,h);const t=d.track;if(!t||!t.ready||w<4)return;
+  g.drawImage(overview(t,w,h),0,0);const dpr=DPR(),X=b=>(b-t.startBeat)/(t.beats-t.startBeat)*w,px=X(d.pos);
+  g.fillStyle='rgba(2,3,6,.55)';g.fillRect(0,0,px,h);g.fillStyle='#ff8a1f';g.fillRect(X(d.cue)-dpr,0,2*dpr,h*.4);
+  d.mem.forEach(m=>{g.fillStyle='#ff3b30';g.fillRect(X(m)-dpr,h*.6,2*dpr,h*.4);});d.hc.forEach((v,i)=>{if(v!=null){g.fillStyle=HC_COLORS[i];g.fillRect(X(v)-dpr,0,2*dpr,h);}});
+  g.fillStyle='#ff3b30';g.fillRect(px-dpr,0,2*dpr,h);}
+function drawPhase(d,cv){const[w,h]=fit(cv),g=cv.getContext('2d');g.clearRect(0,0,w,h);const dpr=DPR();if(!d.track||w<4)return;const m=masterDeck(),cw=(w-9*dpr)/4,rowH=(h-4*dpr)/2;
+  const row=(y,dk,col)=>{const beat=((Math.floor(dk.pos)%4)+4)%4;for(let i=0;i<4;i++){g.fillStyle=i===beat?col:'#14243a';g.fillRect(i*(cw+3*dpr),y,cw,rowH);}};row(0,d,'#e8f1ff');
+  if(m&&m!==d&&m.track){row(rowH+4*dpr,m,'#ff8a1f');const e=wrapPhase(frac(d.pos)-frac(m.pos)),ms=e*60/bpmOf(d)*1000,x=w/2+clamp(e*2,-1,1)*w/2;g.fillStyle=Math.abs(ms)<25?'#22e07a':'#ff3d33';g.fillRect(x-1.5*dpr,0,3*dpr,h);}}
+function drawJog_old(d,cv){const[w,h]=fit(cv),g=cv.getContext('2d'),r=w/2,dpr=DPR();if(w<40)return;g.clearRect(0,0,w,h);g.save();g.translate(r,r);
+  g.strokeStyle='#12233a';g.lineWidth=5*dpr;g.beginPath();g.arc(0,0,r-6*dpr,0,Math.PI*2);g.stroke();const t=d.track;
+  if(t&&t.ready){g.strokeStyle='#2f9bff';g.beginPath();g.arc(0,0,r-6*dpr,-Math.PI/2,-Math.PI/2+(d.pos-t.startBeat)/(t.beats-t.startBeat)*Math.PI*2);g.stroke();
+    const A_=s=>s/1.8*Math.PI*2-Math.PI/2,ang=A_(d.pos*spbOf(t));g.strokeStyle='#fff';g.lineWidth=3*dpr;g.beginPath();g.moveTo(Math.cos(ang)*r*.45,Math.sin(ang)*r*.45);g.lineTo(Math.cos(ang)*(r-12*dpr),Math.sin(ang)*(r-12*dpr));g.stroke();
+    if(Math.abs(d.pos-d.cue)<8){const ca=A_(d.cue*spbOf(t));g.fillStyle='#ff8a1f';g.beginPath();g.arc(Math.cos(ca)*(r-12*dpr),Math.sin(ca)*(r-12*dpr),3.5*dpr,0,Math.PI*2);g.fill();}}
+  g.fillStyle=d.jog==='VINYL'?'#a9d4ff':'#7d8a9c';g.font=`700 ${11*dpr}px "Barlow Condensed",sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText(d.jog,0,-6*dpr);
+  if(t&&d.playing&&frac(d.pos)<.12){g.fillStyle='#ff8a1f';g.beginPath();g.arc(0,10*dpr,3*dpr,0,Math.PI*2);g.fill();}g.restore();}
+function renderList(d,e){
+  const its=items(d),idx=getIdx(d),vis=8,start=clamp(idx-3,0,Math.max(0,its.length-vis)),sig=d.view+'|'+crumb(d)+'|'+idx+'|'+its.length+'|'+start+'|'+MEDIA.name;
+  if(sig===e.listSig)return;e.listSig=sig;e.crumb.textContent=crumb(d)+(its.length>vis?`  (${idx+1}/${its.length})`:'');
+  e.ul.innerHTML=its.slice(start,start+vis).map((it,j)=>{const i=start+j;const meta=it.track!=null?`<span class="m">${it.bpm?it.bpm.toFixed(2):'--.--'}</span><span class="m">${esc(it.key||'')}</span>`:`<span></span><span class="chev">${it.dis?'':'›'}</span>`;
+    return `<li data-i="${i}" class="${i===idx?'sel':''} ${it.dis?'dis':''}"><span class="t">${esc(it.label)}${it.sub?`<small>${esc(it.sub)}</small>`:''}</span>${meta}</li>`;}).join('');
+}
+function renderDeck_old(n){
+  const d=S.decks[n],e=E[n],t=d.track,v=d.view==='source'||d.view==='browse'?'list':(t?'play':'idle');
+  e.idle.hidden=v!=='idle';e.list.hidden=v!=='list';e.play.hidden=v!=='play';if(v==='list')renderList(d,e);else e.listSig='';
+  setT(e.src,t?(d.srcOwner===n?'USB · ':'LINK P'+PN(d.srcOwner)+' · ')+t.title:(S.usb[n]&&!S.usbStopped[n]?'USB 인식됨 · '+MEDIA.name:'—'));setC(e.src,'link',!!t&&d.srcOwner!==n);
+  setC(e.bq,'on',d.q);setC(e.bmt,'on',d.mt);setC(e.bsl,'on',d.slip);setC(e.bjm,'on',d.jog==='VINYL');
+  const rl=d.range===100?'WIDE':'±'+d.range;setT(e.brg,rl);setT(e.bjm,d.jog);setT(e.rv,rl);setT(e.jm2,d.jog);
+  if(v==='play'){
+    e.loading.hidden=t.ready;setT(e.loading,t.error?'읽기 실패: '+t.error:'LOADING…');setT(e.title,t.title);setT(e.artist,t.artist||'');setT(e.key,t.key||'');
+    if(t.ready){const total=(t.beats-t.startBeat)*spbOf(t),cur=(d.pos-t.startBeat)*spbOf(t);setT(e.tm,d.remain?'REMAIN':'ELAPSED');setT(e.time,(d.remain?'-':'')+fmtTime(d.remain?total-cur:cur));}
+    setT(e.bpm,bpmOf(d).toFixed(2));const p=tempoPct(d);setT(e.pct,(d.tempoReset?'RESET ':'')+(p>=0?'+':'')+p.toFixed(2)+'%  '+rl);
+    const isM=S.master===n,isS=d.sync&&!isM;setT(e.ms,isM?'MASTER':isS?'SYNC':'—');setC(e.ms,'master',isM);setC(e.ms,'sync',isS);
+    drawZoom(d,e.wz);drawOverview(d,e.wo);drawPhase(d,e.ph);
+  }
+  drawJog(d,e.jd);
+  const Bt=e.btn,atCue=t&&Math.abs(d.pos-d.cue)<.02;
+  setC(Bt.play,'on',!!t&&d.playing&&!d.previewing);setC(Bt.play,'blink',!!t&&!d.playing);setC(Bt.cue,'on',!!t&&(d.previewing||(!d.playing&&atCue)));setC(Bt.cue,'blink',!!t&&!d.playing&&!atCue);
+  setC(Bt.master,'on',S.master===n);setC(Bt.sync,'on',d.sync);setC(Bt.mt,'on',d.mt);setC(Bt.quantize,'on',d.q);setC(Bt.slip,'on',d.slip);setC(Bt.treset,'on',d.tempoReset);setC(Bt.jogmode,'on',d.jog==='VINYL');setC(Bt.delete,'blink',!!d.delArm);
+  setC(Bt.in,'on',d.loop.active);setC(Bt.in,'blink',d.loop.in!=null&&d.loop.out==null);setC(Bt.out,'on',d.loop.active);setC(Bt.reloop,'on',d.loop.active);setC(Bt.reloop,'blink',!d.loop.active&&d.loop.out!=null);setC(Bt.beatloop,'on',d.loop.active&&Math.abs(d.loop.out-d.loop.in-4)<1e-6);
+  setC(Bt.usbstop,'on',S.usb[n]&&!S.usbStopped[n]);setC(e.usb,'in',S.usb[n]);setC(Bt.memory,'on',d.mem.length>0);setC(e.led0,'on',!!t&&Math.abs(tempoPct(d))<.005);
+  for(let i=0;i<8;i++)setC(Bt['hc'+i],'set',d.hc[i]!=null);
+}
+const meterBuf=new Float32Array(512),meterLv={};
+function peakDb(an){an.getFloatTimeDomainData(meterBuf);let p=0;for(let i=0;i<meterBuf.length;i++){const a=Math.abs(meterBuf[i]);if(a>p)p=a;}return p>0?20*Math.log10(p):-90;}
+/* manual meter scale: -24 … 10 dB + OVER; we map dBFS so that 0 dB on the meter ≈ -12 dBFS */
+const SEG=[-24,-15,-10,-7,-5,-3,-2,-1,0,1,2,4,7,10,12];
+function drawMeter(cv,db){const[w,h]=fit(cv),g=cv.getContext('2d');if(w<2)return;g.fillStyle='#050607';g.fillRect(0,0,w,h);const v=db+12,sh=h/SEG.length;
+  SEG.forEach((s,i)=>{g.fillStyle=v>=s?(i>=SEG.length-1?'#ff3d33':i>=9?'#ffb31a':'#22e07a'):'#141719';g.fillRect(1,h-(i+1)*sh+1,w-2,sh-2);});}
+function tpHTML(){
+  const tp=S.mx.tp,st=tp.on?'ON':'OFF';
+  if(tp.mode==='mix'){
+    const asg=side=>[1,2,3,4].map(c=>`<button data-act="tp${side}" data-v="${c}" class="${tp[side]===c?'on':''}">CH${c}</button>`).join('');
+    return `<div class="tp-title"><span>FREQUENCY MIX</span><span class="st">${st}</span></div>
+      <div class="tp-asg"><div>${asg('L')}</div><div>${asg('R')}</div></div>
+      <div class="frrows">${[6,5,4,3,2,1,0].map(i=>`<div class="frrow"><button data-act="frl" data-i="${i}">&lt;&lt;</button><div class="frtrk" data-i="${i}"><span>${FR_LBL[i]}</span><i></i></div><button data-act="frr" data-i="${i}">&gt;&gt;</button></div>`).join('')}</div>
+      <div class="tp-asg"><button data-act="frall" data-v="l" style="flex:1">ALL &lt;&lt;</button><button data-act="frall" data-v="r" style="flex:1">ALL &gt;&gt;</button></div>`;}
+  if(tp.mode==='slice')return `<div class="tp-title"><span>BEAT SLICE REMIX</span><span class="st">${st}</span></div><div class="tp-note">CH 선택 → ON/OFF로 4·8박 샘플링 → ROLL PAD로 조각을 재배열. SEQ REC, MUTE, SEQUENCE LENGTH(4BEAT/8BEAT), SYNC SOURCE 설정이 있어요.</div><div class="pads">${[1,2,3,4,5,6,7,8].map(i=>`<span>${i}</span>`).join('')}</div><div class="tp-note">연습기에선 화면만 있어요.</div>`;
+  if(tp.mode==='side')return `<div class="tp-title"><span>SIDECHAIN REMIX</span><span class="st">${st}</span></div><div class="tp-note">CH(효과 걸 채널) · EFFECT · LEVEL/DEPTH · TRIGGER(트리거 채널과 LOW/MID/HI 대역) · HOLD</div><div class="scgrid">컨트롤 영역<br>터치하는 동안만 동작<br><small>연습기에선 화면만</small></div>`;
+  const m=masterDeck();
+  return `<div class="tp-title"><span>STATUS INFORMATION</span><span class="st">TOUCH PANEL</span></div>
+    <div class="status"><b></b><b>1</b><b>2</b><b>3</b><b>4</b>
+    <b>LINK</b>${[1,2,3,4].map(c=>`<span class="${c===2||c===3?'on':''}">●</span>`).join('')}
+    <b>SYNC</b>${[1,2,3,4].map(c=>{const d=c===2?S.decks[1]:c===3?S.decks[2]:null;return`<span class="${d&&d.sync?'on':''}">●</span>`;}).join('')}
+    <b>MASTER</b>${[1,2,3,4].map(c=>{const d=c===2?S.decks[1]:c===3?S.decks[2]:null;return`<span class="${d&&S.master===d.n?'m':''}">●</span>`;}).join('')}</div>
+    <div class="tp-note" style="margin-top:6px">MASTER BPM <b style="font-family:var(--f-mono);color:#a8ffcf">${m&&m.track?bpmOf(m).toFixed(1):'---.-'}</b></div>
+    <div class="tp-note" style="margin-top:auto">[MIX] = FREQUENCY MIX<br>[REMIX] = BEAT SLICE ↔ SIDECHAIN<br>효과는 오른쪽 [ON/OFF]로 켜고 꺼요.</div>`;
+}
+function renderMixer(){
+  const mx=S.mx,b=mx.bfx;
+  $$('#mixer .slide').forEach(el=>{const s=SLIDES[el.dataset.act],c=+el.dataset.ch||0,o=s.opts(c),i=o.indexOf(s.get(c));const k=el._k||(el._k=$('.trk i',el)),tr=el._tr||(el._tr=$('.trk',el));
+    const l=(o.length>1?i/(o.length-1):0)*(tr.offsetWidth-16)+1+'px';if(k.style.left!==l)k.style.left=l;$$('.lbls span',el).forEach((sp,j)=>setC(sp,'on',j===i));
+    if(el.dataset.act==='input'){const v=el._val||(el._val=$('.val',el));setT(v,o[i]);setC(v,'off',o[i]!=='CD/DIGITAL');}});
+  $$('#mixer [data-act="mxcue"]').forEach(x=>setC(x,'on',mx.cue[+x.dataset.ch]));
+  $$('#mixer [data-act="monitor"]').forEach(x=>setC(x,'on',mx.monitor===x.dataset.v));
+  $$('#mixer [data-act="inst"]').forEach(x=>setC(x,'on',mx.inst===x.dataset.v));
+  $$('#mixer [data-act="chsel"]').forEach(x=>setC(x,'on',b.ch===x.dataset.v));
+  $$('#mixer [data-act="fxsel"]').forEach(x=>setC(x,'on',b.type===x.dataset.v));
+  $$('#mixer [data-act="beat"]').forEach(x=>setC(x,'on',!b.timeMs&&b.beat===x.dataset.v));
+  const on=$('#mixer [data-act="bfxon"]');setC(on,'blink',b.on);setC(on,'on',b.on);
+  setC($('#mixer [data-act="autotap"]'),'on',!b.tap);
+  setT($('#bfxMode'),(b.tap?'TAP':'AUTO')+' · BPM');setT($('#bfxBpm'),fxBpm().toFixed(1));setT($('#bfxName'),b.type+' · '+b.ch);setT($('#bfxTime'),Math.round(fxTime()*1000)+' ms');
+  setC($('#mixer [data-act="tpmix"]'),'on',mx.tp.mode==='mix');setC($('#mixer [data-act="tpremix"]'),'on',mx.tp.mode==='slice'||mx.tp.mode==='side');
+  const tpo=$('#mixer [data-act="tpon"]');setC(tpo,'on',mx.tp.on);setC(tpo,'blink',mx.tp.on);
+  const sig=JSON.stringify([mx.tp.mode,mx.tp.on,mx.tp.L,mx.tp.R,mx.tp.mode==='status'?[S.master,S.decks[1].sync,S.decks[2].sync,Math.round((masterDeck()&&masterDeck().track?bpmOf(masterDeck()):0)*10)]:0]);
+  const tpEl=$('#tpanel');if(tpEl._sig!==sig){tpEl._sig=sig;tpEl.innerHTML=tpHTML();}
+  if(mx.tp.mode==='mix')$$('.frtrk',tpEl).forEach(tr=>{const i=+tr.dataset.i;const k=tr._k||(tr._k=$('i',tr));const l=(mx.tp.f[i]*100)+'%';if(k.style.left!==l)k.style.left=l;});
+  for(let c=1;c<=4;c++){const lv=A?peakDb(A.ch[c].an):-90;meterLv[c]=Math.max(lv,(meterLv[c]??-90)-1.2);drawMeter($('[data-meter="'+c+'"]'),meterLv[c]);}
+  const ml=A?peakDb(A.mAn):-90;meterLv.m=Math.max(ml,(meterLv.m??-90)-1.2);drawMeter($('[data-meter="m"]'),meterLv.m);
+}
+function renderCtls(){$$('[data-ctl]').forEach(el=>{const{c,a}=ctlOf(el),v=c.get(a);if(el._v===v&&el._w===el.offsetHeight)return;el._v=v;el._w=el.offsetHeight;const nrm=(v-c.min)/(c.max-c.min);
+  if(c.kind==='k')el.style.transform=`rotate(${-135+nrm*270}deg)`;else if(c.kind==='h')el.querySelector('.cap').style.left=(nrm*(el.offsetWidth-24))+'px';else el.querySelector('.cap').style.top=((c.inv?nrm:1-nrm)*(el.offsetHeight-22))+'px';});}
+
+/* ================= my USB: rekordbox export.pdb + ANLZ ================= */
+const AUDIO_EXT=/\.(mp3|wav|aiff?|m4a|aac|flac|ogg|mp4)$/i;
+let fileMap=new Map();
+function readDevStr(u8,dv,pos){const b=u8[pos];if(b&1){const len=(b>>1)-1;return new TextDecoder('utf-8').decode(u8.subarray(pos+1,pos+1+Math.max(0,len)));}
+  const len=dv.getUint16(pos+1,true)-4;if(b===0x40)return new TextDecoder('utf-8').decode(u8.subarray(pos+4,pos+4+len));if(b===0x90)return new TextDecoder('utf-16le').decode(u8.subarray(pos+4,pos+4+len)).replace(/\0+$/,'');return'';}
+function parsePdb(buf){
+  const dv=new DataView(buf),u8=new Uint8Array(buf),lenPage=dv.getUint32(4,true),nT=dv.getUint32(8,true),tables={};
+  if(!lenPage||lenPage>65536)throw new Error('export.pdb 형식이 아니에요');
+  for(let i=0;i<nT;i++){const o=28+i*16;tables[dv.getUint32(o,true)]={first:dv.getUint32(o+8,true),last:dv.getUint32(o+12,true)};}
+  const rows=type=>{const out=[],tb=tables[type];if(!tb)return out;let p=tb.first;const seen=new Set();
+    while(!seen.has(p)){seen.add(p);const base=p*lenPage;if(base+lenPage>buf.byteLength)break;const ptype=dv.getUint32(base+8,true),next=dv.getUint32(base+12,true),nS=u8[base+24],flags=u8[base+27],nL=dv.getUint16(base+34,true);
+      if(ptype===type&&(flags&0x40)===0){const nR=(nL>nS&&nL!==0x1fff)?nL:nS,groups=nR?Math.floor((nR-1)/16)+1:0;for(let g=0;g<groups;g++){const gb=base+lenPage-g*0x24,present=dv.getUint16(gb-4,true);for(let r=0;r<16;r++){if(!((present>>r)&1))continue;out.push(base+0x28+dv.getUint16(gb-6-r*2,true));}}}
+      if(p===tb.last)break;p=next;}return out;};
+  const S_=p=>{try{return readDevStr(u8,dv,p);}catch(e){return'';}};
+  const artists=new Map();rows(2).forEach(r=>{const sub=dv.getUint16(r,true),id=dv.getUint32(r+4,true);const ofs=sub===0x64?dv.getUint16(r+10,true):u8[r+9];artists.set(id,S_(r+ofs));});
+  const keys=new Map();rows(5).forEach(r=>keys.set(dv.getUint32(r,true),S_(r+8)));
+  const tracks=rows(0).map(r=>{const so=i=>r+dv.getUint16(r+0x5e+i*2,true);return{pid:dv.getUint32(r+72,true),bpm:dv.getUint32(r+56,true)/100,key:keys.get(dv.getUint32(r+32,true))||'',artist:artists.get(dv.getUint32(r+68,true))||'',dur:dv.getUint16(r+84,true),title:S_(so(17)),path:S_(so(20)),anlz:S_(so(14))};});
+  const tree=rows(7).map(r=>({parent:dv.getUint32(r,true),sort:dv.getUint32(r+8,true),id:dv.getUint32(r+12,true),folder:dv.getUint32(r+16,true)!==0,name:S_(r+20)}));
+  const entries=rows(8).map(r=>({idx:dv.getUint32(r,true),track:dv.getUint32(r+4,true),pl:dv.getUint32(r+8,true)}));
+  return{tracks,tree,entries};
+}
+function parseAnlz(buf){const dv=new DataView(buf),u8=new Uint8Array(buf),cc=p=>String.fromCharCode(u8[p],u8[p+1],u8[p+2],u8[p+3]);if(buf.byteLength<28||cc(0)!=='PMAI')return null;
+  const out={beats:[],cues:[]};let p=dv.getUint32(4);
+  while(p+12<=buf.byteLength){const tag=cc(p),lh=dv.getUint32(p+4),lt=dv.getUint32(p+8);if(lt<12||p+lt>buf.byteLength)break;
+    if(tag==='PQTZ'){const n=dv.getUint32(p+20);for(let i=0;i<n;i++){const q=p+lh+i*8;if(q+8>p+lt)break;out.beats.push({n:dv.getUint16(q),ms:dv.getUint32(q+4)});}}
+    if(tag==='PCOB'){const n=dv.getUint16(p+18);let q=p+lh;for(let i=0;i<n&&q+40<=p+lt;i++){if(cc(q)!=='PCPT')break;const elt=dv.getUint32(q+8);const ms=dv.getUint32(q+32);if(ms!==0xffffffff)out.cues.push({hot:dv.getUint32(q+12),ms});q+=elt||56;}}
+    p+=lt;}return out;}
+function setStatus(txt,kind){const el=$('#usbStat');el.textContent=txt;el.classList.toggle('demo',kind==='demo');}
+const prog=t=>$('#usbProg').textContent=t||'';
+async function importDir(files){
+  prog('읽는 중…');fileMap=new Map();let pdbFile=null,prefix='';
+  for(const f of files){const rp=(f.webkitRelativePath||f.name);fileMap.set(rp.toLowerCase(),f);if(/(^|\/)pioneer\/rekordbox\/export\.pdb$/i.test(rp)){pdbFile=f;prefix=rp.slice(0,rp.toLowerCase().lastIndexOf('pioneer/rekordbox/export.pdb'));}}
+  const lookup=p=>p?fileMap.get((prefix+p.replace(/^\//,'')).toLowerCase()):null;
+  if(pdbFile){try{
+      const db=parsePdb(await pdbFile.arrayBuffer()),byPid=new Map(),tracks=[];
+      for(const r of db.tracks){const file=lookup(r.path);const t={id:'r'+r.pid,title:r.title||(r.path.split('/').pop()||'?'),artist:r.artist,bpm:r.bpm||0,key:r.key,file,anlzPath:r.anlz?prefix+r.anlz.replace(/^\//,''):'',synth:false,ready:false,offset:0,startBeat:0,beats:Math.max(1,r.dur)*(r.bpm||120)/60,hot:[],memory:[]};if(!file)t.missing=true;byPid.set(r.pid,t);tracks.push(t);}
+      const kids=new Map();db.tree.forEach(n=>{if(!kids.has(n.parent))kids.set(n.parent,[]);kids.get(n.parent).push(n);});const ent=new Map();db.entries.forEach(e=>{if(!ent.has(e.pl))ent.set(e.pl,[]);ent.get(e.pl).push(e);});
+      const playlists=[];const walk=(pid,pre,depth)=>{if(depth>12)return;(kids.get(pid)||[]).sort((a,b)=>a.sort-b.sort).forEach(n=>{const nm=pre?pre+' / '+n.name:n.name;if(n.folder)walk(n.id,nm,depth+1);else playlists.push({name:nm,ids:(ent.get(n.id)||[]).sort((a,b)=>a.idx-b.idx).map(e=>byPid.get(e.track)).filter(Boolean).map(t=>t.id)});});};walk(0,'',0);
+      const usable=tracks.filter(t=>!t.missing);if(!usable.length)throw new Error('export.pdb는 읽었지만 음악 파일을 찾지 못했어요. USB 최상위 폴더를 골랐는지 확인하세요');
+      const ok=new Set(usable.map(t=>t.id));
+      setMedia({kind:'rekordbox',name:(prefix.split('/')[0]||'MY USB'),tracks:usable,playlists:playlists.map(p=>({name:p.name,ids:p.ids.filter(id=>ok.has(id))})).filter(p=>p.ids.length)});
+      prog('');toast(`rekordbox USB를 읽었어요: ${usable.length}곡, 플레이리스트 ${MEDIA.playlists.length}개`,'good');return;
+    }catch(e){prog('');toast('export.pdb를 읽지 못했어요: '+e.message+' · 음악 파일만 불러올게요','warn');}}
+  importFiles(files.filter(f=>AUDIO_EXT.test(f.name)),true);
+}
+function importFiles(files,fromDir){
+  files=[...files].filter(f=>AUDIO_EXT.test(f.name)||(f.type||'').startsWith('audio/'));if(!files.length){toast('음악 파일을 찾지 못했어요','warn');prog('');return;}
+  const tracks=files.map((f,i)=>({id:'f'+i,title:f.name.replace(/\.[^.]+$/,''),artist:'',bpm:0,key:'',file:f,synth:false,ready:false,offset:0,startBeat:0,beats:1,hot:[],memory:[],detect:true}));
+  const groups=new Map();if(fromDir)files.forEach((f,i)=>{const parts=(f.webkitRelativePath||'').split('/');const folder=parts.length>2?parts[parts.length-2]:'';if(folder){if(!groups.has(folder))groups.set(folder,[]);groups.get(folder).push('f'+i);}});
+  setMedia({kind:'files',name:'MY FILES',tracks,playlists:[...groups].map(([name,ids])=>({name,ids}))});prog('');toast(`음악 파일 ${tracks.length}개를 불러왔어요. 곡을 로드하면 BPM을 추정해요`,'good');
+}
+function setMedia(m){m.byId=new Map(m.tracks.map(t=>[t.id,t]));MEDIA=m;ovCache.clear();setStatus(m.kind==='demo'?'데모 USB · 8곡':`${m.name} · ${m.tracks.length}곡`,m.kind==='demo'?'demo':'');$('#useDemo').disabled=m.kind==='demo';startMission(0);}
+$('#pickDir').addEventListener('change',e=>{const f=[...e.target.files];e.target.value='';if(f.length)importDir(f);});
+$('#pickFiles').addEventListener('change',e=>{const f=[...e.target.files];e.target.value='';if(f.length)importFiles(f,false);});
+$('#useDemo').addEventListener('click',()=>{fileMap=new Map();setMedia(DEMO);toast('데모 USB로 돌아왔어요');});
+async function ensureDecoded(t){
+  if(t.synth||t.buffer||t.loading)return;if(!AC){initAudio();if(!AC)return;}
+  t.loading=true;t.ready=false;t.error=null;
+  try{const ab=await t.file.arrayBuffer();const buf=await new Promise((res,rej)=>{const p=AC.decodeAudioData(ab,res,rej);if(p&&p.catch)p.catch(rej);});t.buffer=buf;
+    if(!t.gridDone){let grid=null;if(t.anlzPath){const af=fileMap.get(t.anlzPath.toLowerCase());if(af){try{grid=parseAnlz(await af.arrayBuffer());}catch(e){}}}applyGrid(t,buf,grid);t.gridDone=true;analyzeBands(t,buf);}
+    t.ready=true;Object.values(S.decks).forEach(d=>{if(d.track===t){applyCues(d);if(d.pendingPos!=null){seek(d,d.pendingPos);d.pendingPos=null;}d.lastT=null;}});
+  }catch(e){t.error='이 형식은 브라우저에서 재생할 수 없어요';toast(t.title+': '+t.error,'warn');}
+  t.loading=false;
+}
+function applyGrid(t,buf,grid){
+  const dur=buf.duration;
+  if(grid&&grid.beats.length>4){const bs=grid.beats,first=bs.findIndex(b=>b.n===1),fi=first>=0?first:0,fb=bs[fi];const span=(bs[bs.length-1].ms-fb.ms)/1000,cnt=bs.length-1-fi;const gb=cnt>0?60*cnt/span:t.bpm;
+    t.bpm=t.bpm&&Math.abs(t.bpm-gb)<1?t.bpm:+gb.toFixed(2);t.offset=fb.ms/1000;const spb=60/t.bpm,toBeat=ms=>(ms/1000-t.offset)/spb;
+    t.hot=grid.cues.filter(c=>c.hot>0).map(c=>({slot:c.hot-1,beat:toBeat(c.ms)}));t.memory=grid.cues.filter(c=>c.hot===0).map(c=>toBeat(c.ms));}
+  else{const det=detectGrid(buf,t.detect?0:t.bpm||0);if(!t.bpm||t.detect)t.bpm=det.bpm;t.offset=det.offset;if(t.detect)t.key='추정';}
+  const spb=60/t.bpm;t.startBeat=-t.offset/spb;t.beats=(dur-t.offset)/spb;MEDIA.allSorted=null;
+}
+function detectGrid(buf,knownBpm){
+  const sr=buf.sampleRate,x=buf.getChannelData(0),y=buf.numberOfChannels>1?buf.getChannelData(1):x,hop=Math.round(sr/100),nF=Math.floor(x.length/hop),env=new Float32Array(nF),a=1-Math.exp(-2*Math.PI*150/sr);let lp=0;
+  for(let f=0;f<nF;f++){let e=0;const s=f*hop;for(let i=s;i<s+hop;i++){lp+=a*((x[i]+y[i])*.5-lp);e+=lp*lp;}env[f]=Math.sqrt(e/hop);}
+  const on=new Float32Array(nF);for(let f=1;f<nF;f++)on[f]=Math.max(0,env[f]-env[f-1]);
+  const comb=(P,full)=>{let best=0,bo=0;const steps=Math.ceil(P);for(let o=0;o<steps;o++){let s=0;for(let k=o;k<nF;k+=P)s+=on[Math.round(k)]||0;if(s>best){best=s;bo=o;}}return full?{s:best,o:bo}:best;};
+  let bpm=knownBpm;if(!bpm){let best=0;for(let b=80;b<=175;b+=.5){const s=comb(6000/b);if(s>best){best=s;bpm=b;}}let fine=bpm,fb=0;for(let b=bpm-.6;b<=bpm+.6;b+=.02){const s=comb(6000/b);if(s>fb){fb=s;fine=b;}}bpm=fine;if(Math.abs(bpm-Math.round(bpm))<.12)bpm=Math.round(bpm);}
+  const{o}=comb(6000/bpm,true);return{bpm:+bpm.toFixed(2),offset:o/100};
+}
+function analyzeBands(t,buf){
+  const sr=buf.sampleRate,x=buf.getChannelData(0),y=buf.numberOfChannels>1?buf.getChannelData(1):x,stepS=Math.max(1,Math.round(60/t.bpm/4*sr)),n=Math.ceil(x.length/stepS);
+  const L=new Float32Array(n),M=new Float32Array(n),H=new Float32Array(n),aL=1-Math.exp(-2*Math.PI*200/sr),aH=1-Math.exp(-2*Math.PI*3000/sr);let l1=0,l2=0;
+  for(let k=0;k<n;k++){let sl=0,sm=0,sh=0;const s=k*stepS,e=Math.min(x.length,s+stepS);for(let i=s;i<e;i++){const v=(x[i]+y[i])*.5;l1+=aL*(v-l1);l2+=aH*(v-l2);sl+=l1*l1;sm+=(l2-l1)*(l2-l1);sh+=(v-l2)*(v-l2);}const c=Math.max(1,e-s);L[k]=Math.sqrt(sl/c);M[k]=Math.sqrt(sm/c);H[k]=Math.sqrt(sh/c);}
+  const norm=a=>{const s=[...a].sort((p,q)=>p-q),ref=s[Math.floor(s.length*.98)]||1;for(let i=0;i<a.length;i++)a[i]=clamp(Math.sqrt(a[i]/ref),0,1);};norm(L);norm(M);norm(H);t.low=L;t.mid=M;t.high=H;
+}
+
+/* ================= missions ================= */
+const D=n=>S.decks[n];
+const H=(n,a)=>`[data-d="${n}"][data-act="${a}"]`;
+const MH=(a,c)=>`#mixer [data-act="${a}"][data-ch="${c}"]`;
+const MA=(a,v)=>v?`#mixer [data-act="${a}"][data-v="${v}"]`:`#mixer [data-act="${a}"]`;
+const MC=k=>`#mixer [data-ctl="${k}"]`;
+const P2='PLAYER 2',P3='PLAYER 3';
+function pickTrack(demoId){if(MEDIA.kind==='demo')return demoId;const ts=MEDIA.tracks;return ts.length?ts[(demoId-1)%ts.length].id:demoId;}
+function play(n,demoId,pos,owner=n,playing=false){const d=D(n);S.usb[owner]=true;load(d,pickTrack(demoId),owner);d.browse={dev:{owner},path:['all'],idx:0};const t=d.track;if(t.ready)seek(d,pos||0);else d.pendingPos=pos||0;d.playing=playing;d.lastT=null;}
+function phaseErrMs(){const a=D(1),b=D(2);if(!a.track||!b.track)return 999;return Math.abs(wrapPhase(frac(a.pos)-frac(b.pos)))*60/bpmOf(a)*1000;}
+function both(){play(1,3,64,1,true);S.master=1;play(2,4,64,1,true);D(2).sync=true;}
+const MISSIONS=[
+ {grp:'booth',title:'자유 연습',tag:'FREE PLAY',why:`${P2}에 USB가 꽂혀 있어요. SOURCE → USB → PLAYLIST로 곡을 불러오고, ${P3}에서는 LINK로 같은 USB를 쓸 수 있어요. 위에서 내 USB를 불러오면 여기서 내 곡으로 연습해요.`,setup(){S.usb[1]=true;S.mx.fader[2]=.8;S.mx.fader[3]=.8;},steps:[]},
+ {grp:'booth',title:'USB 꽂고 첫 곡 재생',tag:'BROWSE',rx:'USB 하나를 꽂으면 가운데 화면 하나로 두 덱이 함께 써요.',djm:'플레이어마다 USB 포트와 화면이 따로 있어요. 내 USB가 어느 플레이어에 꽂혔는지가 출발점.',setup(){S.mx.fader[2]=.8;},steps:[
+   {text:`${P2} 왼쪽 위 <b>USB 포트</b>를 눌러 USB 꽂기`,hint:[H(1,'usbslot')],check:()=>S.usb[1]},
+   {text:'<b>SOURCE</b>로 기기 선택 화면 열기',hint:[H(1,'source')],check:()=>D(1).view==='source'},
+   {text:'화면에서 <b>USB (이 플레이어)</b> 고르기. 화면 터치나 로터리 노브(돌리고 누르기) 둘 다 돼요',hint:['#scr1','[data-rot="1"]'],check:()=>!!D(1).browse.dev},
+   {text:'<b>PLAYLIST</b>나 <b>TRACK</b>에서 곡을 골라 로드',hint:['#scr1'],check:()=>!!D(1).track&&D(1).track.ready},
+   {text:'멈춘 상태에서 <b>CUE를 누르고 있으면</b> 미리듣기, 떼면 큐 지점으로',hint:[H(1,'cue')],check:()=>D(1).st.preview>0&&!D(1).previewing},
+   {text:'<b>PLAY/PAUSE</b>로 재생',hint:[H(1,'play')],check:()=>D(1).playing&&!D(1).previewing}]},
+ {grp:'booth',title:'다른 플레이어의 USB 쓰기',tag:'PRO DJ LINK',rx:'USB 하나로 두 덱을 다 써요.',djm:'USB를 하나만 꽂아도 LAN(PRO DJ LINK)으로 다른 플레이어가 그 USB를 읽어요. 곡은 로드할 플레이어 화면에서 골라요.',setup(){play(1,1,32,1,true);S.mx.fader[2]=.8;},steps:[
+   {text:`<b>${P3}</b>의 SOURCE 누르기`,hint:[H(2,'source')],check:()=>D(2).view==='source'},
+   {text:`<b>USB · ${P2} · LINK</b> 고르기`,hint:['#scr2'],check:()=>D(2).browse.dev&&D(2).browse.dev.owner===1},
+   {text:`곡을 골라 <b>${P3}</b>에 로드 (화면 위 플레이어 번호 확인)`,hint:['#scr2'],check:()=>D(2).track&&D(2).srcOwner===1}]},
+ {grp:'booth',title:'MASTER와 BEAT SYNC',tag:'SYNC',rx:'덱 두 개의 BEAT SYNC/MASTER가 한 본체에 있어요.',djm:'플레이어마다 MASTER·BEAT SYNC 버튼이 따로 있고, 네트워크로 템포를 주고받아요. 믹서 터치 패널의 STATUS 화면에 SYNC·MASTER가 표시돼요.',setup(){play(1,3,64,1,true);play(2,4,0,1);S.mx.fader[2]=.8;},steps:[
+   {text:`<b>${P2}</b>의 MASTER 누르기`,hint:[H(1,'master')],check:()=>S.master===1},
+   {text:`<b>${P3}</b>의 BEAT SYNC 켜기 → 화면 BPM이 같아지는지 보기`,hint:[H(2,'sync')],check:()=>D(2).sync},
+   {text:`<b>${P3}</b> 재생 → 박자가 자동으로 맞아요`,hint:[H(2,'play')],check:()=>D(2).playing&&D(2).sync},
+   {text:'CH3 <b>채널 페이더</b>를 올려 겹쳐 듣기',hint:[MC('fader:3')],check:()=>S.mx.fader[3]>.6}]},
+ {grp:'booth',title:'손으로 비트매칭',tag:'BEATMATCH',rx:'가운데 화면에 두 덱의 파형과 그리드가 위아래로 같이 떠서, 눈으로 킥 위치를 맞춰볼 수 있어요.',djm:'큰 파형은 자기 곡이에요. 그 위의 가는 띠(10번)가 싱크 마스터와의 마디·박 어긋남을 보여줘요. 연습기 기본은 PHASE METER(주황 = 싱크 마스터, 파랑 = 내 곡의 박·마디 눈금)이고, 띠를 누르면 WAVEFORM(싱크 마스터 곡의 파형, 같은 배율)으로 바뀌어요. 실제 기기는 SHORTCUT에서 기본 표시를 정해요(공장 기본값 WAVEFORM). 왼쪽 파란 숫자는 가장 가까운 큐까지 남은 마디(3번). 템포 페이더는 아래가 +.',src:'CDJ-3000 설명서 p.21–22, 80 · 펌웨어 3.16 공지 (보조: CDJ-3000X 설명서 p.111)',setup(){play(1,3,32,1,true);S.master=1;play(2,4,0,1);S.mx.fader[2]=.8;S.mx.hpmix=-1;},steps:[
+   {text:'연습기 출력을 <b>헤드폰</b>으로, 믹서 <b>CH3 CUE</b> 켜기',hint:[MA('monitor','hp'),MH('mxcue',3)],check:()=>S.mx.monitor==='hp'&&S.mx.cue[3]},
+   {text:`<b>${P3}</b> 재생`,hint:[H(2,'play')],check:()=>D(2).playing},
+   {text:`${P3} <b>템포 페이더</b>로 BPM을 ${P2}와 ±0.10 이내로`,hint:['[data-ctl="tempo:2"]'],check:()=>D(2).track&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.1},
+   {text:`${P3} <b>조그 바깥 링</b>으로 위상 맞추기. 화면 위 띠(PHASE METER)에서 주황 줄(싱크 마스터 ${P2})과 파란 줄(내 곡)의 눈금이 같은 자리에 오게, 3초 유지. 띠를 누르면 WAVEFORM(싱크 마스터의 파형)으로 바뀌어요`,hint:['[data-jog="2"]'],check:dt=>{const ok=D(1).playing&&D(2).playing&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.12&&phaseErrMs()<25;M.hold=ok?M.hold+dt:0;return M.hold>3;}},
+   {text:'출력을 <b>메인 스피커</b>로 돌리고 CH3 페이더 올려 믹스',hint:[MA('monitor','main'),MC('fader:3')],check:()=>S.mx.monitor==='main'&&S.mx.fader[3]>.6}]},
+ {grp:'booth',title:'핫큐와 메모리 큐',tag:'HOT CUE',rx:'퍼포먼스 패드를 HOT CUE 모드로 바꿔서 써요.',djm:'화면 아래 A–H 전용 버튼 8개. 모드 전환이 없어요. 루프 중에 빈 버튼을 누르면 루프가 저장되고(주황), 지울 땐 CALL/DELETE를 누른 채 눌러요. rekordbox 핫큐는 HOT CUE AUTO LOAD가 켜져 있으면 로드하자마자 떠요.',src:'설명서 p.58–59',setup(){play(1,2,0);S.mx.fader[2]=.8;},steps:[
+   {text:'PLAY 후 빈 <b>HOT CUE</b> 버튼을 눌러 저장',hint:[H(1,'play'),H(1,'hc7')],check:()=>D(1).hc.some(v=>v!=null)&&D(1).playing},
+   {text:'조금 더 재생한 뒤 그 핫큐를 다시 눌러 점프',hint:['#deck1 .hc-row'],check:()=>D(1).st.hcJump>0},
+   {text:'일시정지 후 <b>조그</b>로 위치를 옮기고 <b>CUE</b>로 새 큐 지점',hint:['[data-jog="1"]',H(1,'cue')],check:()=>D(1).st.cueSet>0},
+   {text:'<b>MEMORY</b>로 저장 → <b>CUE/LOOP CALL ◀ ▶</b>로 불러오기',hint:[H(1,'memory'),H(1,'call_prev'),H(1,'call_next')],check:()=>D(1).mem.length>0&&D(1).st.call>0},
+   {text:'핫큐 하나 지우기: <b>CALL/DELETE</b>를 누른 채 그 핫큐 버튼 (연습기에선 CALL/DELETE를 한 번 눌러 고정한 뒤 눌러도 돼요)',hint:[H(1,'calldel'),'#deck1 .hcrow2'],check:()=>(D(1).st.hcDel||0)>0}]},
+ {grp:'booth',title:'루프',tag:'LOOP',rx:'루프 버튼이 패드·조그 옆에 있어요.',djm:'조그 왼쪽 위에 LOOP IN/CUE · OUT · RELOOP/EXIT와 4 BEAT · 8 BEAT LOOP 버튼이 있어요. 루프 중엔 4 BEAT = 1/2X, 8 BEAT = 2X로 바뀌고, BEAT JUMP ◀▶는 루프를 통째로 옮겨요.',src:'설명서 p.54–56, 62',setup(){play(1,7,40,1,true);S.mx.fader[2]=.8;},steps:[
+   {text:'<b>4 BEAT LOOP</b>',hint:[H(1,'beatloop')],check:()=>D(1).loop.active&&D(1).st.beatLoop>0},
+   {text:'루프 중에 <b>4 BEAT LOOP</b>를 두 번 더 → 1박 루프 (루프 중엔 1/2X 버튼이 돼요)',hint:[H(1,'beatloop')],check:()=>D(1).loop.active&&Math.abs(D(1).loop.out-D(1).loop.in-1)<1e-6},
+   {text:'<b>8 BEAT LOOP</b>(루프 중엔 2X)로 다시 늘리기',hint:[H(1,'beatloop8')],check:()=>D(1).loop.active&&D(1).st.loopGrow>0},
+   {text:'<b>BEAT JUMP ▶</b> → 루프가 통째로 앞으로 옮겨가요',hint:[H(1,'bj_f')],check:()=>D(1).loop.active&&(D(1).st.loopMove||0)>0},
+   {text:'<b>RELOOP/EXIT</b>로 빠져나오기',hint:[H(1,'reloop')],check:()=>!D(1).loop.active&&D(1).st.loopExit>0},
+   {text:'<b>IN/CUE</b> 누르고 몇 박 뒤 <b>OUT</b>으로 직접 루프',hint:[H(1,'in'),H(1,'out')],check:()=>D(1).loop.active&&D(1).st.manualLoop>0}]},
+ {grp:'booth',title:'템포 범위와 MASTER TEMPO',tag:'TEMPO',rx:'설정을 내가 바꾸기 전까진 그대로예요.',djm:'앞 DJ가 ±16·WIDE, MASTER TEMPO 꺼짐으로 두고 갔을 수 있어요. 화면 위 표시부터 확인.',setup(){play(1,3,64,1,true);const d=D(1);d.range=16;d.mt=false;S.mx.fader[2]=.8;},steps:[
+   {text:'<b>TEMPO</b> 버튼으로 범위 <b>±6</b>',hint:[H(1,'range')],check:()=>D(1).range===6},
+   {text:'템포 페이더를 <b>아래로</b> 내려 +4% 이상 → 음정이 올라가요',hint:['[data-ctl="tempo:1"]'],check:()=>tempoPct(D(1))>=4},
+   {text:'<b>MASTER TEMPO</b> 켜기 → 음정만 원래대로 (데모 곡 기준)',hint:[H(1,'mt')],check:()=>D(1).mt&&tempoPct(D(1))>=3},
+   {text:'<b>TEMPO RESET</b>으로 0%',hint:[H(1,'treset')],check:()=>D(1).tempoReset}]},
+ {grp:'booth',title:'마무리: USB 안전하게 빼기',tag:'USB STOP',rx:'내 USB는 내 기기에만 꽂혀 있어요.',djm:'다른 플레이어가 LINK로 내 USB를 읽고 있을 수 있어요. 멈추고 USB STOP 후에 빼요.',setup(){play(1,1,0);play(2,2,96,1,true);S.mx.fader[3]=.8;},steps:[
+   {text:`내 USB 곡을 재생 중인 <b>${P3}</b> 일시정지`,hint:[H(2,'play')],check:()=>!D(2).playing},
+   {text:`<b>${P2}의 USB STOP</b>`,hint:[H(1,'usbstop')],check:()=>S.usbStopped[1]},
+   {text:'<b>USB 포트</b>를 눌러 빼기',hint:[H(1,'usbslot')],check:()=>!S.usb[1]&&S.safeEject}]},
+ /* ---- mixer: DJM-2000NXS per manual ---- */
+ {grp:'mixer',kind:'diff',title:'내 채널 찾기',tag:'CHANNEL · LINK',rx:'왼쪽 덱 = CH1, 오른쪽 덱 = CH2로 고정이에요.',djm:'4채널 중 어디에 꽂혔는지는 부스마다 달라요. 설명서상 플레이어는 채널과 같은 번호의 LINK 단자에 연결해요. 이 부스는 CH2 = PLAYER 2, CH3 = PLAYER 3.',setup(){both();[1,2,3,4].forEach(c=>S.mx.fader[c]=0);},src:'설명서 p.14',steps:[
+   {text:`두 플레이어 모두 재생 중인데 조용해요. <b>${P3} 소리만</b> 나오게 그 채널 페이더만 올리세요 (채널 아래 라벨 확인)`,hint:['#mixer .wire'],check:()=>S.mx.fader[3]>.6&&S.mx.fader[2]<.1&&S.mx.fader[1]<.1&&S.mx.fader[4]<.1},
+   {text:`다음에 섞을 ${P2}는 헤드폰으로: 연습기 출력 <b>헤드폰</b>, CH2 <b>CUE</b>`,hint:[MA('monitor','hp'),MH('mxcue',2)],check:()=>S.mx.monitor==='hp'&&S.mx.cue[2]}]},
+ {grp:'mixer',kind:'new',title:'입력 셀렉터 (슬라이드 스위치)',tag:'INPUT',rx:'덱이 채널에 그대로 들어와서 입력을 고를 일이 없어요.',djm:'채널 맨 위 3단 슬라이드 스위치로 입력을 골라요. CH2·CH3은 CD/DIGITAL · LINE · USB, CH1·CH4는 CD/DIGITAL · PHONO · USB. 앞 DJ가 노트북(USB)으로 바꿔두면 무음.',setup(){play(2,4,32,2,true);S.mx.fader[3]=.8;S.mx.fader[2]=0;S.mx.input[3]='USB 5/6';},src:'설명서 p.12',steps:[
+   {text:`${P3}이 재생 중인데 CH3이 조용해요. CH3 맨 위 스위치를 <b>CD/DIGITAL</b>로`,hint:[MH('input',3)],check:()=>S.mx.input[3]==='CD/DIGITAL'}]},
+ {grp:'mixer',kind:'diff',title:'INST FX: 채널 FILTER 노브',tag:'INST FX',rx:'SOUND COLOR FX(SPACE · DUB ECHO · SWEEP · NOISE · CRUSH · FILTER) 중 하나를 고르고 채널 COLOR 노브를 돌려요. FILTER면 가운데가 꺼짐, 왼쪽 로우패스·오른쪽 하이패스.',djm:'왼쪽 INST FX 버튼 6개(NOISE · JET · ZIP · HPF · CRUSH · LPF) 중 하나를 고르면 네 채널 공통이에요. 채널 FILTER 노브는 MIN(왼쪽 끝 = 꺼짐) → MAX 한 방향. 로우패스와 하이패스는 버튼으로 바꾸고, PARAMETER 노브가 두 번째 값을 정해요.',setup(){play(1,3,64,1,true);S.mx.fader[2]=.8;S.mx.inst='HPF';},src:'설명서 p.17–18',steps:[
+   {text:'INST FX에서 <b>LPF</b> 버튼 누르기',hint:[MA('inst','LPF')],check:()=>S.mx.inst==='LPF'},
+   {text:'CH2 <b>FILTER</b>를 MAX 쪽으로 돌려 고음 깎기 (가운데가 아니라 왼쪽 끝이 꺼짐이에요)',hint:[MC('filt:2')],check:()=>S.mx.filt[2]>.7},
+   {text:'<b>PARAMETER</b>를 올려 공진 강조',hint:[MC('param:0')],check:()=>S.mx.param>.8},
+   {text:'<b>HPF</b>로 바꾸기 → 같은 노브가 이제 저음을 깎아요',hint:[MA('inst','HPF')],check:()=>S.mx.inst==='HPF'&&S.mx.filt[2]>.5},
+   {text:'CRUSH · JET · NOISE 중 <b>두 개</b>를 더 골라 FILTER를 돌려보기',hint:['#mixer .instfx',MC('filt:2')],check:()=>['CRUSH','JET','NOISE','ZIP'].filter(x=>S.mx.instUsed.has(x)).length>=2},
+   {text:'FILTER를 <b>MIN(왼쪽 끝)</b>으로 돌려 끄기',hint:[MC('filt:2')],check:()=>S.mx.filt[2]<.03}]},
+ {grp:'mixer',kind:'diff',title:'BEAT EFFECT',tag:'BEAT EFFECT',rx:'본체 BEAT FX에서 효과 하나를 골라 박자와 LEVEL/DEPTH로 조절해요.',djm:'가운데 BEAT EFFECT 구역에 효과마다 전용 버튼 12개, 박자 버튼 7개(1/8–4/1), 걸 곳을 고르는 CH SELECT(1–4 · MIC · A · B · M), 대역별 양을 정하는 EFFECT FREQUENCY(LOW · MID · HI)가 있어요. BPM은 믹서가 소리에서 측정(AUTO)하거나 TAP으로 입력.',setup(){play(1,3,64,1,true);S.master=1;S.mx.fader[2]=.8;Object.assign(S.mx.bfx,{type:'DELAY',beat:'1/1',ch:'M'});},src:'설명서 p.18, 25–26',steps:[
+   {text:'<b>EFFECT SELECT</b>에서 <b>ECHO</b>',hint:[MA('fxsel','ECHO')],check:()=>S.mx.bfx.type==='ECHO'},
+   {text:'박자 버튼 <b>3/4</b>',hint:[MA('beat','3/4')],check:()=>S.mx.bfx.beat==='3/4'&&!S.mx.bfx.timeMs},
+   {text:`<b>CH SELECT</b>에서 <b>2</b> (${P2} 채널에만)`,hint:[MA('chsel','2')],check:()=>S.mx.bfx.ch==='2'},
+   {text:'<b>ON/OFF</b>로 켜기 (켜져 있는 동안 깜빡여요)',hint:[MA('bfxon')],check:()=>S.mx.bfx.on},
+   {text:'<b>LEVEL/DEPTH</b>를 3시 이상으로',hint:[MC('bfxlevel:0')],check:()=>S.mx.bfx.level>.75},
+   {text:'<b>EFFECT FREQUENCY LOW</b>를 MIN으로 → 저음은 빼고 위쪽만 메아리',hint:[MC('efLo:0')],check:()=>S.mx.bfx.lo<.1},
+   {text:'<b>ON/OFF</b>로 끄기',hint:[MA('bfxon')],check:()=>!S.mx.bfx.on}]},
+ {grp:'mixer',kind:'new',title:'터치 패널: FREQUENCY MIX',tag:'TOUCH PANEL',rx:'이런 기능이 없어요.',djm:'가운데 5.8인치 터치 패널. [MIX]를 누르면 소리를 7대역으로 나눠 보여주고, 대역마다 터치 페이더로 두 채널 사이를 오가요. 쓰기 전에 두 채널의 CROSS FADER ASSIGN을 THRU로.',
+  setup(){both();S.mx.fader[2]=0;S.mx.fader[3]=.8;S.mx.xfa[2]='A';S.mx.xfa[3]='B';S.mx.tp={mode:'status',on:false,L:1,R:4,f:Array(7).fill(.5)};},src:'설명서 p.15',steps:[
+   {text:'CH2·CH3 <b>CROSS FADER ASSIGN</b>을 <b>THRU</b>로',hint:[MH('xfa',2),MH('xfa',3)],check:()=>S.mx.xfa[2]==='THRU'&&S.mx.xfa[3]==='THRU'},
+   {text:'터치 패널 오른쪽 <b>[MIX]</b> 누르기',hint:[MA('tpmix')],check:()=>S.mx.tp.mode==='mix'},
+   {text:'화면 위 채널 할당: 왼쪽 <b>CH2</b>, 오른쪽 <b>CH3</b>',hint:['#tpanel'],check:()=>S.mx.tp.L===2&&S.mx.tp.R===3},
+   {text:'<b>ALL &gt;&gt;</b>(또는 줄마다 &gt;&gt;)로 모든 터치 페이더를 오른쪽 끝으로',hint:['#tpanel'],check:()=>S.mx.tp.f.every(p=>p>.95)},
+   {text:'오른쪽 아래 <b>ON/OFF</b>로 켜기',hint:[MA('tpon')],check:()=>S.mx.tp.on},
+   {text:'CH2 <b>채널 페이더</b>를 올리기 (아직 CH3만 들려요)',hint:[MC('fader:2')],check:()=>S.mx.fader[2]>.6},
+   {text:'맨 아래 <b>60</b> 줄을 왼쪽 끝으로 → 킥·베이스만 CH2로 바뀌어요',hint:['#tpanel'],check:()=>S.mx.tp.f[0]<.05},
+   {text:'나머지 줄도 왼쪽으로 옮겨 CH2로 완전히 넘기고 <b>ON/OFF</b>로 끄기',hint:['#tpanel',MA('tpon')],check:()=>S.mx.tp.f.every(p=>p<.05)&&!S.mx.tp.on}]},
+ {grp:'mixer',kind:'diff',title:'EQ와 ISOLATOR 전환',tag:'CH EQ',rx:'TRIM + HI/MID/LOW. 노브를 끝까지 내려도 소리가 조금 남아요.',djm:'오른쪽 아래 CURVE SETTING의 CH EQ 스위치로 EQ ↔ ISOLATOR를 바꿔요. ISOLATOR면 끝까지 내렸을 때 그 대역이 사라져요. 앞 DJ 설정을 먼저 확인.',setup(){both();S.mx.fader[2]=.8;S.mx.fader[3]=.8;S.mx.low[3]=-1;S.mx.eqmode='EQ';},src:'설명서 p.12',steps:[
+   {text:'CURVE SETTING <b>CH EQ</b>를 <b>ISOLATOR</b>로',hint:[MA('eqmode')],check:()=>S.mx.eqmode==='ISOLATOR'},
+   {text:'CH2 <b>LOW</b>를 끝까지 내리기',hint:[MC('low:2')],check:()=>S.mx.low[2]<-.97},
+   {text:'CH3 <b>LOW</b>를 12시로 올려 베이스 교체',hint:[MC('low:3')],check:()=>S.mx.low[3]>-.15},
+   {text:'CH2 <b>채널 페이더</b>를 내려 마무리',hint:[MC('fader:2')],check:()=>S.mx.fader[2]<.1}]},
+ {grp:'mixer',kind:'diff',title:'크로스페이더 할당과 커브',tag:'CROSS FADER',rx:'크로스페이더로 두 덱을 오가요.',djm:'채널마다 아래쪽 A · THRU · B 스위치로 할당. 커브는 오른쪽 CURVE SETTING의 CROSS FADER 3단 스위치(급격 · 중간 · 완만), 채널 페이더 커브도 CH FADER 2단 스위치로 바꿔요.',setup(){both();S.mx.fader[2]=.8;S.mx.fader[3]=.8;},src:'설명서 p.12–13',steps:[
+   {text:'CH2를 <b>A</b>, CH3를 <b>B</b>로',hint:[MH('xfa',2),MH('xfa',3)],check:()=>S.mx.xfa[2]==='A'&&S.mx.xfa[3]==='B'},
+   {text:`크로스페이더를 <b>B 끝</b>으로 → ${P2}가 사라져요`,hint:[MC('xf:0')],check:()=>S.mx.xf>.9},
+   {text:'CROSS FADER 커브를 <b>급격</b>으로 바꾸고 크로스페이더를 <b>가운데</b>로 → 둘 다 크게',hint:[MA('xcurve'),MC('xf:0')],check:()=>S.mx.xcurve===0&&Math.abs(S.mx.xf)<.15}]},
+ {grp:'mixer',kind:'diff',title:'헤드폰: MONO SPLIT과 MIXING',tag:'HEADPHONES',rx:'CUE, 헤드폰 MIX/LEVEL. 헤드폰 단자는 앞쪽.',djm:'헤드폰 구역이 믹서 왼쪽 아래에 있어요. MIXING으로 CUE와 MASTER를 섞고, MONO SPLIT으로 두면 왼쪽 귀 = CUE, 오른쪽 귀 = MASTER.',setup(){play(1,3,64,1,true);play(2,4,0,1,true);S.mx.fader[2]=.8;S.mx.hplevel=.95;},src:'설명서 p.12–13',steps:[
+   {text:'헤드폰 꽂기 전에 <b>LEVEL</b>부터 낮추기',hint:[MC('hplevel:0')],check:()=>S.mx.hplevel<.3},
+   {text:'연습기 출력 <b>헤드폰</b>, <b>CH3 CUE</b> 켜기',hint:[MA('monitor','hp'),MH('mxcue',3)],check:()=>S.mx.monitor==='hp'&&S.mx.cue[3]},
+   {text:'<b>MIXING</b>을 12시 쪽으로 → CUE와 마스터를 섞어 듣기',hint:[MC('hpmix:0')],check:()=>S.mx.hpmix>-.25},
+   {text:'<b>MONO SPLIT</b>으로 바꿔 왼쪽·오른쪽 귀 차이 듣기, LEVEL은 적당히',hint:[MA('split'),MC('hplevel:0')],check:()=>S.mx.split&&S.mx.hplevel>.35}]},
+ {grp:'mixer',kind:'diff',title:'레벨 미터 맞추기',tag:'METER',rx:'채널·마스터 미터.',djm:'채널마다 피크 미터(-24 ~ +10 dB, OVER), 오른쪽에 큰 마스터 미터. 클럽에선 TRIM으로 채널을 0 dB 근처에 맞추고 마스터는 빨간칸(OVER)을 피해요.',setup(){play(1,3,64,1,true);S.mx.fader[2]=.8;S.mx.trim[2]=.2;},src:'설명서 p.11–12',steps:[
+   {text:'CH2 <b>TRIM</b>을 올려 채널 미터를 0 dB 근처(초록 끝·주황 시작)로',hint:[MC('trim:2'),'#mixer [data-meter="2"]'],check:()=>meterLv[2]+12>-1&&meterLv[2]+12<3},
+   {text:'<b>MASTER</b>를 끝까지 올려 마스터 미터 OVER(빨강) 확인',hint:[MC('master:0')],check:()=>meterLv.m+12>=12},
+   {text:'MASTER를 내려 빨간칸 없이 3초 유지',hint:[MC('master:0')],check:dt=>{const ok=meterLv.m+12<7&&meterLv.m>-40;M.hold=ok?M.hold+dt:0;return M.hold>3;}}]},
+];
+const M={idx:0,step:0,hold:0,done:new Set(store('cdjsim.done3')||[])};
+function startMission(i){M.idx=i;M.step=0;M.hold=0;resetWorld();MISSIONS[i].setup();applyMixer();if(S.mx.bfx.on)bfxBuild();renderCoach();applyHints(true);renderCards();}
+function renderCoach(){
+  let html='',last='';MISSIONS.forEach((m,i)=>{if(m.grp!==last){html+=`<div class="grp">${m.grp==='booth'?'부스 · 플레이어':'믹서 차이 체험'}</div>`;last=m.grp;}
+    html+=`<button data-m="${i}" class="${i===M.idx?'cur':''}"><span class="n">${m.steps.length?String(i).padStart(2,'0'):'—'}</span>${m.title}${M.done.has(i)?'<span class="ok">완료</span>':''}</button>`;});
+  $('#mlist').innerHTML=html;
+  const m=MISSIONS[M.idx],all=m.steps.length&&M.step>=m.steps.length;
+  $('#mcard').innerHTML=`<div class="mcard-head"><span class="tag">${m.tag}</span><h2>${m.title}</h2>${all?'<span class="mdone">미션 완료</span>':''}${m.src?`<span class="src-note">${m.src}</span>`:''}</div>
+   ${m.why?`<p class="why">${m.why}</p>`:''}
+   ${m.rx?`<div class="vs"><div><b>RX3에선</b>${m.rx}</div><div class="djm"><b>${m.grp==='mixer'?'DJM-2000NXS에선':'CDJ-3000에선'}</b>${m.djm}</div></div>`:''}
+   ${m.steps.length?`<ol class="steps">${m.steps.map((s,i)=>`<li class="${i<M.step?'done':i===M.step?'now':''}"><span class="b">${i<M.step?'✓':i+1}</span><span>${s.text}</span></li>`).join('')}</ol>`:''}
+   <div class="mnav"><button class="pill" data-nav="restart">처음부터 다시</button>${M.idx<MISSIONS.length-1?`<button class="pill ${all?'primary':''}" data-nav="next">다음 미션 ›</button>`:''}</div>`;
+}
+$('#mlist').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(b)startMission(+b.dataset.m);});
+$('#mcard').addEventListener('click',e=>{const b=e.target.closest('[data-nav]');if(!b)return;startMission(b.dataset.nav==='restart'?M.idx:M.idx+1);});
+let hintEls=[];
+function applyHints(jump){hintEls.forEach(el=>el.classList.remove('hint'));hintEls=[];const st=MISSIONS[M.idx].steps[M.step];if(st)st.hint.forEach(sel=>$$(sel).forEach(el=>{el.classList.add('hint');hintEls.push(el);}));
+  const units=new Set(hintEls.map(el=>el.closest('.unit')?.dataset.unit).filter(Boolean));$$('#tabs button').forEach(b=>b.classList.toggle('attn',units.has(b.dataset.tab)&&b.dataset.tab!==curTab));if(jump&&narrow&&units.size&&!units.has(curTab))setTab([...units][0]);}
+function checkMission(dt){const m=MISSIONS[M.idx];if(M.step>=m.steps.length)return;
+  if(m.steps[M.step].check(dt)){M.step++;M.hold=0;if(M.step>=m.steps.length){M.done.add(M.idx);store('cdjsim.done3',[...M.done]);toast('미션 완료! 잘했어요','good');renderCards();}renderCoach();applyHints(true);}
+  else if(hintEls.length&&!hintEls[0].isConnected)applyHints(false);}
+const KIND={same:'거의 같음',diff:'달라짐',new:'RX3에 없음'};
+function renderCards(){
+  const card=(m,i)=>`<div class="dcard"><h3>${m.title}${m.kind?`<span class="kind ${m.kind}">${KIND[m.kind]}</span>`:''}</h3>
+    <div class="vs"><div><b>RX3에선</b>${m.rx}</div><div class="djm"><b>${m.grp==='mixer'?'DJM에선':'CDJ에선'}</b>${m.djm}</div></div>
+    <div class="foot"><button class="pill ${i===M.idx?'':'primary'}" data-try="${i}">${i===M.idx?'진행 중':'해보기'}</button>${M.done.has(i)?'<span class="done">완료</span>':''}${m.src?`<span class="src-note">${m.src}</span>`:''}</div></div>`;
+  $('#cards').innerHTML=MISSIONS.map((m,i)=>m.grp==='mixer'?card(m,i):'').join('');$('#cards2').innerHTML=MISSIONS.map((m,i)=>m.grp==='booth'&&m.rx?card(m,i):'').join('');
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-try]');if(!b)return;startMission(+b.dataset.try);$('.coach').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});});
+const CHECK=['헤드폰 LEVEL을 먼저 줄이고 꽂기','내 플레이어가 믹서 몇 번 채널인지 (LINK 번호 = 채널 번호) CUE로 확인','그 채널 입력 스위치 CD/DIGITAL · TRIM · EQ 12시 · FILTER는 MIN','CURVE SETTING(CH EQ · 페이더 커브)과 CROSS FADER ASSIGN 확인 (모르면 THRU)','INST FX 어떤 버튼이 켜져 있는지, BEAT EFFECT는 꺼져 있는지','템포 범위 · MASTER TEMPO · QUANTIZE · JOG MODE 상태 보기','앞 DJ가 재생 중인 플레이어엔 손대지 않기','끝나면 USB STOP → LED 꺼진 뒤 빼기'];
+const chk=store('cdjsim.chk2')||[];
+$('#chk').innerHTML=CHECK.map((c,i)=>`<li><label><input type="checkbox" id="chk${i}" ${chk[i]?'checked':''}><span>${c}</span></label></li>`).join('');
+$('#chk').addEventListener('change',()=>store('cdjsim.chk2',CHECK.map((_,i)=>$('#chk'+i).checked)));
+
+/* ================= layout ================= */
+let narrow=false,curTab='d1',boothScale=1;
+function setTab(t){curTab=t;$$('.unit').forEach(u=>u.classList.toggle('cur',u.dataset.unit===t));$$('#tabs button').forEach(b=>b.classList.toggle('cur',b.dataset.tab===t));layout();applyHints(false);}
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b)setTab(b.dataset.tab);});
+function layout(){const wrap=$('#boothWrap'),booth=$('#booth'),avail=wrap.clientWidth;booth.style.transform='none';document.body.classList.remove('narrow');const full=booth.offsetWidth;narrow=avail<full*.55;document.body.classList.toggle('narrow',narrow);
+  if(narrow)$$('.unit').forEach(u=>u.classList.toggle('cur',u.dataset.unit===curTab));$$('#tabs button').forEach(b=>b.classList.toggle('cur',b.dataset.tab===curTab));
+  const bw=booth.offsetWidth,bh=booth.offsetHeight;boothScale=Math.min(1,avail/bw);booth.style.transform=`translateX(${Math.max(0,(avail-bw*boothScale)/2)}px) scale(${boothScale})`;wrap.style.height=Math.ceil(bh*boothScale)+'px';}
+window.addEventListener('resize',layout);if(window.ResizeObserver)new ResizeObserver(layout).observe($('#boothWrap'));
+let lastF=performance.now();
+function frame(now){const dt=Math.min(.1,(now-lastF)/1000);lastF=now;renderDeck(1);renderDeck(2);renderMixer();renderCtls();checkMission(dt);requestAnimationFrame(frame);}
+startMission(M.done.size?0:1);layout();requestAnimationFrame(frame);
+</script>

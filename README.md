@@ -2,7 +2,15 @@
 
 A practice booth in one HTML file: two CDJ-3000 players and a DJM-2000NXS mixer. It is meant for someone who knows the XDJ-RX3 and is about to play a club booth for the first time.
 
-Open `index.html` in a desktop browser. The first click turns the sound on. The page needs no server and no build step; fonts load from Google Fonts.
+**Open it:** https://y2kjang-sudo.github.io/cdj-booth-sim/ (GitHub Pages). A local copy of `index.html` also works in a desktop browser. The first click turns the sound on; fonts load from Google Fonts.
+
+**Files:**
+- `booth.html` is the source. It is written in Claude artifact form, without the doctype, head and body tags.
+- `index.html` is the standalone page that GitHub Pages serves. After every change to `booth.html`, rebuild it with:
+
+```sh
+python3 wrap.py booth.html index.html
+```
 
 ## What is in it
 

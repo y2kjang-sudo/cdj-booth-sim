@@ -14,7 +14,7 @@ Open `index.html` in a desktop browser. The first click turns the sound on. The 
   - **WAVEFORM** (factory setting) shows the sync master's waveform at this deck's zoom.
   - **PHASE METER** shows the two-line ruler of the p. 21 figure: orange for the sync master, blue for this player's beats and bars.
 
-  The CDJ-3000 is the standard: its manual (pp. 21-22, 80) and the CDJ-3000 firmware 3.16 note, which fixed "Master Player Waveform display issues".
+  The CDJ-3000 is the standard: its manual (pp. 21-22, 80) and the CDJ-3000 firmware 3.16 note, which fixed "Master Player Waveform display issues". The CDJ-3000X manual (DRI1957) is a secondary source, used only where the CDJ-3000 material is silent. Its p. 111 describes the setting as "phase meter or enlarged waveform".
 - **Your own USB.** Choose the root folder of a rekordbox export USB. The page reads the following, and plays the files in the browser:
   - from `PIONEER/rekordbox/export.pdb`: tracks, artists, keys and playlists;
   - from each track's ANLZ `.DAT`: the beat grid, hot cues and memory cues.

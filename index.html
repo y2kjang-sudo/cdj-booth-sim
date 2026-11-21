@@ -863,7 +863,22 @@ const fmtBeats=b=>b>=1?String(Math.round(b)):'1/'+Math.round(1/b);
    blue line = this player's beat grid (white beat ticks rising from the line, red bar ticks across it),
    orange line = the sync master's grid (plain in the figure, which shows no sync master: its countdown reads "--.-"),
    white line = playback point. About four bars span the strip, as in the figure. */
+/* Item 10 has two displays (CDJ-3000 manual p.22, CDJ-3000X manual p.24 & p.111: "phase meter or enlarged waveform",
+   factory setting WAVEFORM; touch to switch).
+   WAVEFORM: the sync master's enlarged waveform in the slot, at this deck's zoom, beat ticks on both edges (red on bar starts),
+   white playback line. PHASE METER: the two-line ruler drawn in both manuals' figures (drawPhaseMeter). */
 function drawRef(d,cv){
+  if((d.refMode||'wave')!=='wave')return drawPhaseMeter(d,cv);
+  const[w,h]=fit(cv),g=cv.getContext('2d'),dpr=DPR();if(w<4)return;g.fillStyle='#000';g.fillRect(0,0,w,h);
+  const sm=masterDeck(),cx=Math.round(w/2);
+  if(!sm||sm===d||!sm.track||!sm.track.ready){g.fillStyle='#fff';g.fillRect(cx-dpr*.7,0,Math.max(2,dpr*1.4),h);return;}
+  const rt=sm.track,ppb=28*dpr*(bpmOf(d)||1)/(bpmOf(sm)||1),mid=h/2; // same seconds-per-pixel as this deck's enlarged waveform
+  for(const[col,band,sc]of [['#1f5fff','low',.92],['#ff9a2e','mid',.58],['#f4f7ff','high',.3]]){g.fillStyle=col;for(let x=0;x<w;x++){const v=energy(rt,band,sm.pos+(x-cx)/ppb);if(v>0){const hh=v*mid*sc*.8;g.fillRect(x,mid-hh,1,hh*2);}}}
+  const b0=Math.ceil(sm.pos-cx/ppb),b1=Math.floor(sm.pos+(w-cx)/ppb);
+  for(let b=b0;b<=b1;b++){const x=Math.round(cx+(b-sm.pos)*ppb),bar=((b%4)+4)%4===0;g.fillStyle=bar?'#e23a2e':'rgba(255,255,255,.7)';const L=(bar?6:3)*dpr,W=bar?2*dpr:dpr;g.fillRect(x,0,W,L);g.fillRect(x,h-L,W,L);}
+  g.fillStyle='#fff';g.fillRect(cx-dpr*.7,0,Math.max(2,dpr*1.4),h);
+}
+function drawPhaseMeter(d,cv){
   const[w,h]=fit(cv),g=cv.getContext('2d'),dpr=DPR();if(w<4)return;g.fillStyle='#000';g.fillRect(0,0,w,h);
   const cx=Math.round(w/2),ppb=w/17,yO=Math.round(h*.22),yB=Math.round(h*.78),lw=Math.max(2,Math.round(1.6*dpr));
   const grid=(dk,y,dir)=>{const b0=Math.ceil(dk.pos-cx/ppb),b1=Math.floor(dk.pos+(w-cx)/ppb);for(let b=b0;b<=b1;b++){const x=Math.round(cx+(b-dk.pos)*ppb);
@@ -1209,7 +1224,7 @@ CTL.vsa={min:0,max:1,def:.5,kind:'k',get:n=>S.decks[n].vsa??.5,set:(n,v)=>{S.dec
 CTL.jadj={min:0,max:1,def:.5,kind:'k',get:n=>S.decks[n].jadj??.5,set:(n,v)=>{S.decks[n].jadj=v;}};
 for(const n of [1,2]){const scr=E[n].scr,root=E[n].root;Object.assign(E[n],{bar:$('.scr-bar',scr),dev:$('.dev',scr),cnt:$('.cnt .cs b',scr),cntM:$('.cnt .cm b',scr),msec:$('.msec',scr),rg2:$('.rg2',scr),mt2:$('.mtb2',scr),k2:$('.k2',scr),
   acue:$('.acue',scr),ahc:$('.ahc',scr),tno:$('.tno b',scr),lpb:$('.lpb',scr),qv:$('.qv',scr),bjv:$('.bjv',scr),vI:$('.vc .v',root),cI:$('.vc .c',root),usbInd:$('.usbind',root)});
-  E[n].ph.addEventListener('click',()=>toast('설명서: 터치하면 WAVEFORM ↔ PHASE METER 표시가 바뀌어요(기본값 WAVEFORM, SHORTCUT에서도 설정). PHASE METER 쪽 모양은 설명서에 그림이 없어서 연습기엔 넣지 않았어요'));}
+  E[n].ph.addEventListener('click',()=>{const d=S.decks[n];d.refMode=(d.refMode||'wave')==='wave'?'phase':'wave';toast(d.refMode==='wave'?'WAVEFORM: 싱크 마스터 곡의 확대 파형':'PHASE METER: 주황 = 싱크 마스터, 파랑 = 이 플레이어의 박·마디');});}
 const ctlOf=el=>{const[k,a]=el.dataset.ctl.split(':');return{c:CTL[k],a:+a,k};};
 function setCtl(el,v){const{c,a,k}=ctlOf(el);c.set(a,clamp(v,c.min,c.max));if(k!=='tempo')applyMixer();}
 let drag=null;
@@ -1500,11 +1515,11 @@ const MISSIONS=[
    {text:`<b>${P3}</b>의 BEAT SYNC 켜기 → 화면 BPM이 같아지는지 보기`,hint:[H(2,'sync')],check:()=>D(2).sync},
    {text:`<b>${P3}</b> 재생 → 박자가 자동으로 맞아요`,hint:[H(2,'play')],check:()=>D(2).playing&&D(2).sync},
    {text:'CH3 <b>채널 페이더</b>를 올려 겹쳐 듣기',hint:[MC('fader:3')],check:()=>S.mx.fader[3]>.6}]},
- {grp:'booth',title:'손으로 비트매칭',tag:'BEATMATCH',rx:'가운데 화면에 두 덱의 파형과 그리드가 위아래로 같이 떠서, 눈으로 킥 위치를 맞춰볼 수 있어요.',djm:'큰 파형은 자기 곡이에요. 그 위의 가는 띠(10번)가 싱크 마스터와의 마디·박 어긋남을 보여줘요. 주황 줄 = 싱크 마스터, 파란 줄 = 내 곡의 박(흰 눈금)·마디(빨간 눈금)이고, 두 줄의 눈금이 같은 자리에 오면 맞은 거예요. 왼쪽의 주황·파랑 숫자는 각각 가장 가까운 큐까지 남은 마디(3번). 템포 페이더는 아래가 +.',src:'설명서 p.22 (10번)',setup(){play(1,3,32,1,true);S.master=1;play(2,4,0,1);S.mx.fader[2]=.8;S.mx.hpmix=-1;},steps:[
+ {grp:'booth',title:'손으로 비트매칭',tag:'BEATMATCH',rx:'가운데 화면에 두 덱의 파형과 그리드가 위아래로 같이 떠서, 눈으로 킥 위치를 맞춰볼 수 있어요.',djm:'큰 파형은 자기 곡이에요. 그 위의 가는 띠(10번)가 싱크 마스터와의 마디·박 어긋남을 보여줘요. 기본값 WAVEFORM이면 싱크 마스터 곡의 확대 파형이 같은 배율로 흐르고, 띠를 누르면 PHASE METER(주황 = 싱크 마스터, 파랑 = 내 곡의 박·마디 눈금)로 바뀌어요. 왼쪽 파란 숫자는 가장 가까운 큐까지 남은 마디(3번). 템포 페이더는 아래가 +.',src:'CDJ-3000 설명서 p.21–22 · CDJ-3000X 설명서 p.24, 111',setup(){play(1,3,32,1,true);S.master=1;play(2,4,0,1);S.mx.fader[2]=.8;S.mx.hpmix=-1;},steps:[
    {text:'연습기 출력을 <b>헤드폰</b>으로, 믹서 <b>CH3 CUE</b> 켜기',hint:[MA('monitor','hp'),MH('mxcue',3)],check:()=>S.mx.monitor==='hp'&&S.mx.cue[3]},
    {text:`<b>${P3}</b> 재생`,hint:[H(2,'play')],check:()=>D(2).playing},
    {text:`${P3} <b>템포 페이더</b>로 BPM을 ${P2}와 ±0.10 이내로`,hint:['[data-ctl="tempo:2"]'],check:()=>D(2).track&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.1},
-   {text:`${P3} <b>조그 바깥 링</b>으로 위상 맞추기. 화면 위 띠에서 주황 줄(싱크 마스터 ${P2})과 파란 줄(내 곡)의 눈금이 같은 자리에 오게, 3초 유지`,hint:['[data-jog="2"]'],check:dt=>{const ok=D(1).playing&&D(2).playing&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.12&&phaseErrMs()<25;M.hold=ok?M.hold+dt:0;return M.hold>3;}},
+   {text:`${P3} <b>조그 바깥 링</b>으로 위상 맞추기. 화면 위 띠(기본 WAVEFORM = 싱크 마스터 ${P2}의 파형)의 마디선·킥이 아래 내 파형과 같은 자리에 오게, 3초 유지. 띠를 누르면 PHASE METER(주황·파랑 눈금)로 바뀌어요`,hint:['[data-jog="2"]'],check:dt=>{const ok=D(1).playing&&D(2).playing&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.12&&phaseErrMs()<25;M.hold=ok?M.hold+dt:0;return M.hold>3;}},
    {text:'출력을 <b>메인 스피커</b>로 돌리고 CH3 페이더 올려 믹스',hint:[MA('monitor','main'),MC('fader:3')],check:()=>S.mx.monitor==='main'&&S.mx.fader[3]>.6}]},
  {grp:'booth',title:'핫큐와 메모리 큐',tag:'HOT CUE',rx:'퍼포먼스 패드를 HOT CUE 모드로 바꿔서 써요.',djm:'화면 아래 A–H 전용 버튼 8개. 모드 전환이 없어요. 루프 중에 빈 버튼을 누르면 루프가 저장되고(주황), 지울 땐 CALL/DELETE를 누른 채 눌러요. rekordbox 핫큐는 HOT CUE AUTO LOAD가 켜져 있으면 로드하자마자 떠요.',src:'설명서 p.58–59',setup(){play(1,2,0);S.mx.fader[2]=.8;},steps:[
    {text:'PLAY 후 빈 <b>HOT CUE</b> 버튼을 눌러 저장',hint:[H(1,'play'),H(1,'hc7')],check:()=>D(1).hc.some(v=>v!=null)&&D(1).playing},

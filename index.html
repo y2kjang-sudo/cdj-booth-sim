@@ -863,10 +863,10 @@ const fmtBeats=b=>b>=1?String(Math.round(b)):'1/'+Math.round(1/b);
    blue line = this player's beat grid (white beat ticks rising from the line, red bar ticks across it),
    orange line = the sync master's grid (plain in the figure, which shows no sync master: its countdown reads "--.-"),
    white line = playback point. About four bars span the strip, as in the figure. */
-/* Item 10 has two displays (CDJ-3000 manual p.22, CDJ-3000X manual p.24 & p.111: "phase meter or enlarged waveform",
-   factory setting WAVEFORM; touch to switch).
-   WAVEFORM: the sync master's enlarged waveform in the slot, at this deck's zoom, beat ticks on both edges (red on bar starts),
-   white playback line. PHASE METER: the two-line ruler drawn in both manuals' figures (drawPhaseMeter). */
+/* Standard: CDJ-3000 (manual DRI1586A). Item 10 "Waveform/phase meter" shows the deviation from the sync master and
+   switches between a waveform and a phase meter on touch (p.22); SHORTCUT setting WAVEFORM is the factory setting (p.80).
+   CDJ-3000 firmware 3.16 lists a fix for "Master Player Waveform display issues", i.e. the waveform shown is the master player's.
+   WAVEFORM: the sync master's waveform in the slot, at this deck's zoom. PHASE METER: the two-line ruler of the p.21 figure. */
 function drawRef(d,cv){
   if((d.refMode||'wave')!=='wave')return drawPhaseMeter(d,cv);
   const[w,h]=fit(cv),g=cv.getContext('2d'),dpr=DPR();if(w<4)return;g.fillStyle='#000';g.fillRect(0,0,w,h);
@@ -1224,7 +1224,7 @@ CTL.vsa={min:0,max:1,def:.5,kind:'k',get:n=>S.decks[n].vsa??.5,set:(n,v)=>{S.dec
 CTL.jadj={min:0,max:1,def:.5,kind:'k',get:n=>S.decks[n].jadj??.5,set:(n,v)=>{S.decks[n].jadj=v;}};
 for(const n of [1,2]){const scr=E[n].scr,root=E[n].root;Object.assign(E[n],{bar:$('.scr-bar',scr),dev:$('.dev',scr),cnt:$('.cnt .cs b',scr),cntM:$('.cnt .cm b',scr),msec:$('.msec',scr),rg2:$('.rg2',scr),mt2:$('.mtb2',scr),k2:$('.k2',scr),
   acue:$('.acue',scr),ahc:$('.ahc',scr),tno:$('.tno b',scr),lpb:$('.lpb',scr),qv:$('.qv',scr),bjv:$('.bjv',scr),vI:$('.vc .v',root),cI:$('.vc .c',root),usbInd:$('.usbind',root)});
-  E[n].ph.addEventListener('click',()=>{const d=S.decks[n];d.refMode=(d.refMode||'wave')==='wave'?'phase':'wave';toast(d.refMode==='wave'?'WAVEFORM: 싱크 마스터 곡의 확대 파형':'PHASE METER: 주황 = 싱크 마스터, 파랑 = 이 플레이어의 박·마디');});}
+  E[n].ph.addEventListener('click',()=>{const d=S.decks[n];d.refMode=(d.refMode||'wave')==='wave'?'phase':'wave';toast(d.refMode==='wave'?'WAVEFORM: 싱크 마스터 곡의 파형':'PHASE METER: 주황 = 싱크 마스터, 파랑 = 이 플레이어의 박·마디');});}
 const ctlOf=el=>{const[k,a]=el.dataset.ctl.split(':');return{c:CTL[k],a:+a,k};};
 function setCtl(el,v){const{c,a,k}=ctlOf(el);c.set(a,clamp(v,c.min,c.max));if(k!=='tempo')applyMixer();}
 let drag=null;
@@ -1515,7 +1515,7 @@ const MISSIONS=[
    {text:`<b>${P3}</b>의 BEAT SYNC 켜기 → 화면 BPM이 같아지는지 보기`,hint:[H(2,'sync')],check:()=>D(2).sync},
    {text:`<b>${P3}</b> 재생 → 박자가 자동으로 맞아요`,hint:[H(2,'play')],check:()=>D(2).playing&&D(2).sync},
    {text:'CH3 <b>채널 페이더</b>를 올려 겹쳐 듣기',hint:[MC('fader:3')],check:()=>S.mx.fader[3]>.6}]},
- {grp:'booth',title:'손으로 비트매칭',tag:'BEATMATCH',rx:'가운데 화면에 두 덱의 파형과 그리드가 위아래로 같이 떠서, 눈으로 킥 위치를 맞춰볼 수 있어요.',djm:'큰 파형은 자기 곡이에요. 그 위의 가는 띠(10번)가 싱크 마스터와의 마디·박 어긋남을 보여줘요. 기본값 WAVEFORM이면 싱크 마스터 곡의 확대 파형이 같은 배율로 흐르고, 띠를 누르면 PHASE METER(주황 = 싱크 마스터, 파랑 = 내 곡의 박·마디 눈금)로 바뀌어요. 왼쪽 파란 숫자는 가장 가까운 큐까지 남은 마디(3번). 템포 페이더는 아래가 +.',src:'CDJ-3000 설명서 p.21–22 · CDJ-3000X 설명서 p.24, 111',setup(){play(1,3,32,1,true);S.master=1;play(2,4,0,1);S.mx.fader[2]=.8;S.mx.hpmix=-1;},steps:[
+ {grp:'booth',title:'손으로 비트매칭',tag:'BEATMATCH',rx:'가운데 화면에 두 덱의 파형과 그리드가 위아래로 같이 떠서, 눈으로 킥 위치를 맞춰볼 수 있어요.',djm:'큰 파형은 자기 곡이에요. 그 위의 가는 띠(10번)가 싱크 마스터와의 마디·박 어긋남을 보여줘요. 기본값 WAVEFORM이면 싱크 마스터 곡의 파형이 같은 배율로 흐르고, 띠를 누르면 PHASE METER(주황 = 싱크 마스터, 파랑 = 내 곡의 박·마디 눈금)로 바뀌어요. 왼쪽 파란 숫자는 가장 가까운 큐까지 남은 마디(3번). 템포 페이더는 아래가 +.',src:'CDJ-3000 설명서 p.21–22, 80 · 펌웨어 3.16 공지',setup(){play(1,3,32,1,true);S.master=1;play(2,4,0,1);S.mx.fader[2]=.8;S.mx.hpmix=-1;},steps:[
    {text:'연습기 출력을 <b>헤드폰</b>으로, 믹서 <b>CH3 CUE</b> 켜기',hint:[MA('monitor','hp'),MH('mxcue',3)],check:()=>S.mx.monitor==='hp'&&S.mx.cue[3]},
    {text:`<b>${P3}</b> 재생`,hint:[H(2,'play')],check:()=>D(2).playing},
    {text:`${P3} <b>템포 페이더</b>로 BPM을 ${P2}와 ±0.10 이내로`,hint:['[data-ctl="tempo:2"]'],check:()=>D(2).track&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.1},

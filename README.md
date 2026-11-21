@@ -10,11 +10,11 @@ Open `index.html` in a desktop browser. The first click turns the sound on. The 
   - **Booth / player:** USB and browse, PRO DJ LINK, MASTER and BEAT SYNC, beatmatching by hand, hot cues, loops, tempo range and MASTER TEMPO, ejecting the USB safely.
   - **Mixer differences from the RX3:** finding your channel, the input selector, the INST FX filter, BEAT EFFECT, the touch panel's FREQUENCY MIX, EQ versus ISOLATOR, crossfader assign and curve, headphones, level meters.
 - **Mixer layout.** It follows the control panel diagram and the INST FX, BEAT EFFECT and TOUCH PANEL EFFECT chapters of the DJM-2000NXS operating instructions (DRB1636A, pages 11–18 and 25). Each mixer mission names the manual page it comes from.
-- **Player layout.** It follows the CDJ-3000 operating instructions (DRI1586A): top panel (pp. 14–16), touch display (pp. 21–23), jog display (p. 26). The loop, hot cue and beat jump buttons behave as pp. 54–62 describe. Above the big waveform is the strip of item 10, which shows the offset from the sync master. It has two displays, switched by touching the strip:
-  - **WAVEFORM** (factory setting) shows the sync master's enlarged waveform at this deck's zoom.
-  - **PHASE METER** shows the two-line ruler drawn in both manuals' figures: orange for the sync master, blue for this player's beats and bars.
+- **Player layout.** It follows the CDJ-3000 operating instructions (DRI1586A): top panel (pp. 14–16), touch display (pp. 21–23), jog display (p. 26). The loop, hot cue and beat jump buttons behave as pp. 54–62 describe. Above the big waveform is the strip of item 10, which shows the offset from the sync master. Touching the strip switches its display:
+  - **WAVEFORM** (factory setting) shows the sync master's waveform at this deck's zoom.
+  - **PHASE METER** shows the two-line ruler of the p. 21 figure: orange for the sync master, blue for this player's beats and bars.
 
-  Sources: CDJ-3000 manual pp. 21-22 and 80, and CDJ-3000X manual (DRI1957) pp. 23-24 and 111, which says "phase meter or enlarged waveform". The unofficial [freedj-3000 PR #54](https://github.com/audiodestrukt/freedj-3000/pull/54) describes the same waveform view.
+  The CDJ-3000 is the standard: its manual (pp. 21-22, 80) and the CDJ-3000 firmware 3.16 note, which fixed "Master Player Waveform display issues".
 - **Your own USB.** Choose the root folder of a rekordbox export USB. The page reads the following, and plays the files in the browser:
   - from `PIONEER/rekordbox/export.pdb`: tracks, artists, keys and playlists;
   - from each track's ANLZ `.DAT`: the beat grid, hot cues and memory cues.

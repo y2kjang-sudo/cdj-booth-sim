@@ -10,6 +10,7 @@ Open `index.html` in a desktop browser. The first click turns the sound on. The 
   - **Booth / player:** USB and browse, PRO DJ LINK, MASTER and BEAT SYNC, beatmatching by hand, hot cues, loops, tempo range and MASTER TEMPO, ejecting the USB safely.
   - **Mixer differences from the RX3:** finding your channel, the input selector, the INST FX filter, BEAT EFFECT, the touch panel's FREQUENCY MIX, EQ versus ISOLATOR, crossfader assign and curve, headphones, level meters.
 - **Mixer layout.** It follows the control panel diagram and the INST FX, BEAT EFFECT and TOUCH PANEL EFFECT chapters of the DJM-2000NXS operating instructions (DRB1636A, pages 11–18 and 25). Each mixer mission names the manual page it comes from.
+- **Player layout.** It follows the CDJ-3000 operating instructions (DRI1586A): top panel (pp. 14–16), touch display (pp. 21–23), jog display (p. 26). The loop, hot cue and beat jump buttons behave as pp. 54–62 describe. Like the real unit, the screen shows only the player's own waveform. The other deck's alignment appears only as the phase meter against the sync master.
 - **Your own USB.** Choose the root folder of a rekordbox export USB. The page reads the following, and plays the files in the browser:
   - from `PIONEER/rekordbox/export.pdb`: tracks, artists, keys and playlists;
   - from each track's ANLZ `.DAT`: the beat grid, hot cues and memory cues.
@@ -22,5 +23,4 @@ Open `index.html` in a desktop browser. The first click turns the sound on. The 
   - The mixer effects are approximations. ZIP, GATE, PHASER and REV ROLL are simplified.
   - BEAT SLICE REMIX, SIDECHAIN REMIX and LIVE SAMPLER show their screens only.
 - **Uploaded tracks.** MASTER TEMPO does not apply to uploaded tracks; changing their tempo also changes their pitch.
-- **CDJ-3000 layout.** It was drawn from memory, not from the manual.
 - **Tested so far.** The `export.pdb` parser was checked against two real exports. ANLZ cue reading has not been checked against a real file.

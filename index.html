@@ -294,6 +294,96 @@ canvas.meter.tall{height:210px;width:16px}
 .mon-sim .btn{font-size:10.5px;text-transform:none;min-height:24px;padding:2px 8px}
 .curve{width:100%;display:flex;flex-direction:column;gap:5px;padding:6px 4px;border-radius:4px;box-shadow:inset 0 0 0 1px #2a2c30}
 
+/* ---------------- CDJ-3000 per manual (top panel p.14, touch display p.21, jog display p.26) ---------------- */
+.deck .chassis.cdj{width:610px;padding:16px 16px 20px;display:flex;flex-direction:column;gap:10px}
+.cdj-a{display:grid;grid-template-columns:84px minmax(0,1fr) 78px;gap:10px;align-items:start}
+.cdj-l,.cdj-r{display:flex;flex-direction:column;align-items:center;gap:8px}
+.cdj-l>.btn,.cdj-r>.btn{width:100%;min-height:28px}
+.media2{width:100%;display:flex;flex-direction:column;align-items:stretch;gap:5px;padding:6px;border-radius:5px;background:#0a0a0b;box-shadow:inset 0 1px 3px #000,0 0 0 1px #26282b}
+.media2 .mrow{display:flex;align-items:center;gap:5px}
+.media2 .usb-port{flex:1}
+.media2 .sdslot{flex:1;height:8px;border:0;cursor:pointer;padding:0}
+.media2 .btn{min-height:20px;font-size:8.5px}
+.ind{width:6px;height:6px;border-radius:50%;background:#1e2024;flex:none}
+.ind.on{background:var(--led-blue);box-shadow:0 0 6px var(--led-blue)}
+.cdj-c{display:flex;flex-direction:column;gap:7px;min-width:0}
+.navrow{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.navrow .btn{min-height:26px;font-size:9.5px}
+.hcrow2{display:grid;grid-template-columns:46px repeat(8,minmax(0,1fr));gap:5px}
+.hcrow2 .btn{min-height:34px;font-size:8.5px}
+.hc.loop{--hc:#ff8a1f!important}
+.rbtn{--led:#fff;width:42px;height:42px;border-radius:50%;cursor:pointer;border:1px solid #050506;background:radial-gradient(circle at 45% 35%,#303236,#17181a 70%);box-shadow:0 2px 0 #000,0 0 0 2px #26282c;color:#d6d8db;font-family:var(--f-panel);font-weight:700;font-size:9.5px;line-height:1;padding:0;touch-action:manipulation;flex:none}
+.rbtn.sm{width:32px;height:32px;font-size:9px}
+.rbtn.on{color:#fff;box-shadow:0 0 0 2px var(--led),0 0 12px var(--led),0 2px 0 #000}
+.rbtn.blink{animation:rblink .9s steps(1) infinite}
+@keyframes rblink{50%{box-shadow:0 0 0 2px var(--led),0 0 12px var(--led)}}
+.rbtn:active{transform:translateY(1px)}
+.lab{display:flex;flex-direction:column;align-items:center;gap:3px}
+.lab .silk{font-size:8.5px}
+.rowc{display:flex;gap:8px;justify-content:center;align-items:flex-start;width:100%}
+.cdj-b{display:grid;grid-template-columns:120px minmax(0,1fr) 120px;gap:8px;align-items:start}
+.cdj-bl,.cdj-br{display:flex;flex-direction:column;align-items:center;gap:6px}
+.cdj-br .g2,.cdj-bl .g2{width:100%}
+.cdj-br>.btn{width:100%}
+.dirlever{display:flex;flex-direction:column;gap:1px;width:60px;padding:3px;border-radius:3px;background:#0a0a0b;box-shadow:inset 0 0 0 1px #2c2e32;font-family:var(--f-panel);font-size:8px;color:var(--silk-dim);cursor:pointer;border:0}
+.dirlever span.on{color:#fff;background:#2a2c30;border-radius:2px}
+.vc{display:flex;flex-direction:column;gap:3px;font-family:var(--f-panel);font-size:9px;font-weight:700;letter-spacing:.06em}
+.vc i{font-style:normal;color:#3a3d42}
+.vc i.on{color:var(--led-blue);text-shadow:0 0 6px var(--led-blue)}
+.tempo-row{display:flex;gap:8px;align-items:flex-end}
+.cdj .jog{width:300px;height:300px;margin-top:14px}
+.cdj .bigs .big{width:70px;height:70px}
+.cdj-bl{gap:4px!important}
+.cdj-bl .g2 .btn{min-height:26px}
+.cdj .vf.tempo{height:200px}
+/* touch display: playback screen */
+.p-top{display:flex;align-items:center;gap:6px;padding:3px 6px;background:#0a111c;border-bottom:1px solid #18263a;min-width:0}
+.p-top .dev{font-family:var(--f-panel);font-size:10px;background:#2a5fa8;color:#fff;border-radius:2px;padding:1px 4px;flex:none}
+.p-top .dev.link{background:#0e6c7a}
+.p-top .tt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+.p-top .tt b{font-weight:600}
+.p-top .tt span{color:var(--scr-dim);margin-left:6px;font-size:11px}
+.p-top .k{font-family:var(--f-mono);font-size:10px;color:var(--scr-dim);white-space:nowrap}
+.tb{font-family:var(--f-panel);font-size:8.5px;line-height:1;border:1px solid #27405f;background:#0c1828;color:#cfe4ff;border-radius:2px;padding:2px 4px;cursor:pointer;flex:none}
+.p-strip{display:grid;grid-template-columns:58px 1fr;gap:6px;align-items:center;padding:3px 6px}
+.cnt{display:flex;align-items:baseline;gap:3px;font-family:var(--f-mono);color:#ff9a2e;font-size:13px;font-weight:700;border:1px solid #2b3c55;border-radius:2px;padding:0 3px;line-height:1.3}
+.cnt small{font-size:8px;color:var(--scr-dim);font-family:var(--f-panel)}
+.p-strip canvas.ph{height:16px;border:1px solid #2b3c55;border-radius:2px}
+.wzbox{position:relative}
+.wzbox canvas.wz{height:122px}
+.wzbox .lpb{position:absolute;left:4px;bottom:3px;font-family:var(--f-mono);font-size:10px;color:#ff9a2e}
+.wzbox .zoomind{position:absolute;right:4px;bottom:3px;font-family:var(--f-panel);font-size:8px;color:var(--scr-dim);border:1px solid #2b3c55;padding:0 3px;border-radius:2px}
+.p-info{display:grid;grid-template-columns:38px 34px 58px minmax(0,1fr) auto auto;gap:6px;align-items:center;padding:4px 6px;border-top:1px solid #121c2a}
+.p-info small{display:block;font-family:var(--f-panel);font-size:8.5px;letter-spacing:.06em;color:var(--scr-dim);line-height:1.1}
+.p-info .pl{border:1px solid #c0392b;border-radius:3px;text-align:center;padding:1px}
+.p-info .pl b{font-family:var(--f-mono);font-size:16px;color:#ff6b5e}
+.p-info .tno b{font-family:var(--f-mono);font-size:16px}
+.flags{display:flex;flex-direction:column;gap:2px}
+.flags i{font-style:normal;font-family:var(--f-panel);font-size:8px;border:1px solid #2b3c55;color:#3d4e63;border-radius:2px;padding:0 2px;text-align:center}
+.flags i.on{border-color:#c0392b;color:#ff6b5e}
+.p-info .st-time{white-space:nowrap}
+.p-info .st-time b{font-family:var(--f-mono);font-size:21px;font-weight:700}
+.p-info .st-time em{font-style:normal;font-family:var(--f-mono);font-size:12px}
+.p-info .single{font-family:var(--f-panel);font-size:8px;color:var(--scr-dim);margin-left:4px}
+.p-info .tempo{text-align:right;border:1px solid #33465f;border-radius:3px;padding:1px 4px}
+.p-info .tempo .rg2{font-family:var(--f-panel);font-size:8.5px;background:#c0392b;color:#fff;border-radius:2px;padding:0 3px}
+.p-info .tempo .pct{display:block;font-family:var(--f-mono);font-size:14px;color:var(--scr-ink)}
+.p-info .st-bpm{text-align:right}
+.p-info .st-bpm b{font-family:var(--f-mono);font-size:22px;font-weight:700;color:#ff6b5e;display:block;line-height:1}
+.p-info .st-bpm .ms{display:inline-block;font-size:8px;padding:0 3px;border-radius:2px;margin:0 0 0 3px;border:0;color:#3d4e63}
+.p-info .st-bpm .ms.master{background:var(--led-orange);color:#000}
+.p-info .st-bpm .ms.sync{background:var(--led-blue);color:#000}
+.mtk{display:flex;gap:4px;justify-content:flex-end;align-items:center;font-family:var(--f-mono);font-size:10px}
+.mtk i{font-style:normal;font-family:var(--f-panel);font-size:8.5px;color:#3d4e63;border:1px solid #2b3c55;border-radius:2px;padding:0 2px}
+.mtk i.on{color:#ff6b5e;border-color:#c0392b}
+.k2{color:var(--scr-ink)}
+.k2.match{color:#22e07a}
+.p-ov{display:grid;grid-template-columns:44px minmax(0,1fr);gap:5px;padding:2px 6px 4px;align-items:stretch}
+.qb{display:grid;grid-template-columns:1fr;font-family:var(--f-panel);text-align:center;border:1px solid #2b3c55;border-radius:2px;line-height:1}
+.qb small{font-size:7px;color:var(--scr-dim)}
+.qb b{font-family:var(--f-mono);font-size:10px;color:var(--scr-ink)}
+.p-ov canvas.wo{height:30px}
+
 /* cards */
 .diff{margin-top:24px}
 .diff-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 16px;margin-bottom:12px}
@@ -394,7 +484,7 @@ canvas.meter.tall{height:210px;width:16px}
   <ul class="chk" id="chk"></ul>
   <p class="keys">조작 팁: 노브·페이더는 위아래로 드래그, 더블클릭하면 기본값. 슬라이드 스위치(입력 셀렉터, CROSS FADER ASSIGN, 커브 설정 등)는 누를 때마다 다음 위치로. 템포 페이더는 휠이나 Shift+드래그로 미세 조정. 조그는 돌리듯 드래그. 터치 패널의 FREQUENCY MIX 줄은 좌우로 드래그.</p>
 </section>
-<p class="disc">비공식 연습 도구예요. 믹서는 DJM-2000NXS 사용 설명서(컨트롤 패널, INST FX, BEAT EFFECT, TOUCH PANEL EFFECT 장)를 참고해 배치와 이름을 맞췄고, 소리는 브라우저에서 근사했어요(ZIP, GATE, PHASER, REV ROLL 등은 단순화, BEAT SLICE·SIDECHAIN REMIX·LIVE SAMPLER는 화면만). CDJ-3000은 기억에 의존한 배치라 실제와 다를 수 있어요. 업로드한 곡은 MASTER TEMPO가 적용되지 않아요.</p>
+<p class="disc">비공식 연습 도구예요. 믹서는 DJM-2000NXS 사용 설명서(컨트롤 패널, INST FX, BEAT EFFECT, TOUCH PANEL EFFECT 장)를 참고해 배치와 이름을 맞췄고, 소리는 브라우저에서 근사했어요(ZIP, GATE, PHASER, REV ROLL 등은 단순화, BEAT SLICE·SIDECHAIN REMIX·LIVE SAMPLER는 화면만). CDJ-3000은 사용 설명서(DRI1586A)의 상단 패널(p.14–16)·화면(p.21–23)·조그 표시창(p.26) 그림을 따라 배치했어요. 화면 위 BEAT LOOP·KEY SHIFT·BEAT JUMP 터치 버튼, DIRECTION 레버, TRACK FILTER, SHORTCUT 등은 모양만 있어요. 업로드한 곡은 MASTER TEMPO가 적용되지 않아요.</p>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -664,7 +754,7 @@ function forgetUsb(p){for(const d of Object.values(S.decks))if(d.browse.dev&&d.b
 
 /* ================= deck actions ================= */
 const NOTIMPL={taglist:'TAG LIST: 곡을 임시 목록에 모아두는 기능 (연습기에선 생략)',searchbtn:'SEARCH: 화면 키보드로 곡 검색 (연습기에선 생략)',menu:'MENU/UTILITY: 플레이어 설정 (연습기에선 생략)',tag:'TAG TRACK: 선택한 곡을 TAG LIST에 추가 (연습기에선 생략)',keysync:'KEY SYNC: 마스터 곡과 키를 맞추는 기능 (연습기에선 생략)',sdslot:'SD 카드 슬롯 (연습기에선 생략)'};
-function act(name,n,phase){
+function act_base(name,n,phase){
   const d=S.decks[n];
   if(phase==='up'){if(name==='cue'&&d.previewing){d.previewing=false;if(d.playLatch)d.playLatch=false;else{d.playing=false;seek(d,d.cue);}}if(name==='srch_b'||name==='srch_f')d.search=0;return;}
   if(NOTIMPL[name]){toast(NOTIMPL[name]);return;}
@@ -715,6 +805,103 @@ function act(name,n,phase){
 }
 function phaseAlign(d){const m=masterDeck();if(!m||m===d||!m.track)return;const fm=frac(m.pos);seek(d,fm+Math.round(d.pos-fm));}
 
+/* ================= CDJ-3000 button behaviour per manual =================
+   p.54–56: 4 BEAT LOOP (1/2X) / 8 BEAT LOOP (2X) start a loop, and halve/double it while looping (CUE/LOOP CALL ◀▶ too).
+   p.58–59: a hot cue pressed during a loop stores the loop; delete = press A–H while holding CALL/DELETE.
+   p.62: BEAT JUMP ◀▶ jumps by the set beats, moves the loop while looping; CALL/DELETE + BEAT JUMP changes the beat count. */
+const callOn=d=>d.callHeld||clock()<(d.callLatch||0);
+function act(name,n,phase){
+  const d=S.decks[n],t=d.track;
+  if(name==='calldel'){
+    if(phase==='up'){d.callHeld=false;if(clock()-(d.callDown||0)<.35){d.callLatch=clock()+4;toast('CALL/DELETE 고정(4초). 실제 기기에선 누른 채로 A–H나 BEAT JUMP를 눌러요');}}
+    else{d.callHeld=true;d.callDown=clock();}
+    return;
+  }
+  if(phase==='up')return act_base(name,n,phase);
+  const NI2={trkfilter:'TRACK FILTER/EDIT: BPM·키 같은 조건으로 목록을 걸러요 (연습기에선 생략)',shortcut:'SHORTCUT: 자주 쓰는 설정 화면 (연습기에선 생략)',direction:'DIRECTION 레버: FWD / REV(역재생) / SLIP REV (연습기에선 생략)',
+    t_kshift:'KEY SHIFT: 키를 반음 단위로 올리고 내려요 (연습기에선 생략)',t_bloop:'화면의 BEAT LOOP: 루프 박자 수를 골라 바로 루프. 연습기에선 4 BEAT / 8 BEAT LOOP 버튼을 쓰세요',t_bjump:'화면의 BEAT JUMP: 점프할 박자 수를 골라요. 하드웨어에선 CALL/DELETE를 누른 채 BEAT JUMP ◀▶로도 바꿔요'};
+  if(NI2[name]){toast(NI2[name]);return;}
+  if(t&&!t.ready&&['beatloop','beatloop8','bj_b','bj_f'].includes(name)){toast('곡을 읽는 중이에요. 잠시만요');return;}
+  switch(name){
+    case'beatloop':case'beatloop8':{
+      if(!t)return;
+      if(d.loop.active)return act_base(name==='beatloop'?'half':'double',n,'down');
+      const s=d.q?Math.floor(d.pos):d.pos;d.loop={in:s,out:s+(name==='beatloop'?4:8),active:true};d.st.beatLoop++;return;}
+    case'call_prev':case'call_next':
+      if(d.loop.active)return act_base(name==='call_prev'?'half':'double',n,'down');
+      return act_base(name,n,phase);
+    case'bj_b':case'bj_f':{
+      if(callOn(d)){const V=[1,2,4,8,16,32,64];let i=V.indexOf(d.bj||16);i=clamp(i+(name==='bj_f'?1:-1),0,V.length-1);d.bj=V[i];d.callLatch=0;toast('BEAT JUMP '+d.bj+'박');return;}
+      if(!t)return;const j=(d.bj||16)*(name==='bj_f'?1:-1);
+      if(d.loop.active){d.loop.in+=j;d.loop.out+=j;d.st.loopMove=(d.st.loopMove||0)+1;}
+      seek(d,d.pos+j);d.st.bj=(d.st.bj||0)+1;return;}
+    case'delete':{
+      if(!t)return;const i=d.mem.findIndex(m=>Math.abs(m-d.pos)<.05);
+      if(!d.playing&&i>=0){d.mem.splice(i,1);toast('메모리 큐 삭제');}
+      else toast('DELETE는 메모리 큐용이에요: CALL로 그 지점에 멈춘 뒤 누르세요. 핫큐는 CALL/DELETE를 누른 채 A–H');
+      return;}
+  }
+  if(name.startsWith('hc')&&t){
+    const i=+name.slice(2);if(d.hclTrack!==t){d.hcl=[];d.hclTrack=t;}
+    if(callOn(d)){if(d.hc[i]!=null){d.hc[i]=null;d.hcl[i]=null;d.st.hcDel=(d.st.hcDel||0)+1;toast('HOT CUE '+LETTERS[i]+' 삭제');}d.callLatch=0;return;}
+    if(d.hc[i]==null&&d.loop.active){d.hc[i]=d.loop.in;d.hcl[i]=d.loop.out-d.loop.in;toast('HOT CUE '+LETTERS[i]+'에 루프 저장');return;}
+    if(d.hc[i]!=null&&d.hcl[i]){d.loop={in:d.hc[i],out:d.hc[i]+d.hcl[i],active:true};seek(d,d.hc[i]);d.playing=true;d.st.hcJump++;return;}
+    if(d.hc[i]==null){d.hc[i]=d.q?Math.round(d.pos):d.pos;toast('HOT CUE '+LETTERS[i]+' 저장');return;}
+  }
+  return act_base(name,n,phase);
+}
+function camelotOk(a,b){const p=s=>{const m=/^(\d{1,2})([AB])$/.exec(s||'');return m?[+m[1],m[2]]:null;};const x=p(a),y=p(b);if(!x||!y)return false;if(x[0]===y[0])return true;if(x[1]!==y[1])return false;const df=Math.abs(x[0]-y[0]);return df===1||df===11;}
+function nextCueDist(d){let best=Infinity;[d.cue,...d.mem,...d.hc.filter(v=>v!=null)].forEach(c=>{const x=c-d.pos;if(x>.01&&x<best)best=x;});return best;}
+function fmtMs(sec){sec=Math.max(0,sec);const m=Math.floor(sec/60),s=Math.floor(sec-m*60),ms=Math.floor((sec-Math.floor(sec))*1000);return{a:String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'),b:'.'+String(ms).padStart(3,'0')};}
+const fmtBeats=b=>b>=1?String(Math.round(b)):'1/'+Math.round(1/b);
+function renderDeck(n){
+  const d=S.decks[n],e=E[n],t=d.track,v=d.view==='source'||d.view==='browse'?'list':(t?'play':'idle');
+  e.idle.hidden=v!=='idle';e.list.hidden=v!=='list';e.play.hidden=v!=='play';e.bar.hidden=v==='play';
+  if(v==='list')renderList(d,e);else e.listSig='';
+  setT(e.src,t?(d.srcOwner===n?'USB · ':'LINK P'+PN(d.srcOwner)+' · ')+t.title:(S.usb[n]&&!S.usbStopped[n]?'USB 인식됨 · '+MEDIA.name:'—'));setC(e.src,'link',!!t&&d.srcOwner!==n);
+  setC(e.bq,'on',d.q);setC(e.bmt,'on',d.mt);setC(e.bsl,'on',d.slip);setC(e.bjm,'on',d.jog==='VINYL');
+  const rl=d.range===100?'WIDE':'±'+d.range;setT(e.brg,rl);setT(e.bjm,d.jog);setT(e.rv,rl);
+  setC(e.vI,'on',d.jog==='VINYL');setC(e.cI,'on',d.jog==='CDJ');setC(e.usbInd,'on',S.usb[n]&&!S.usbStopped[n]);
+  if(v==='play'){
+    e.loading.hidden=t.ready;setT(e.loading,t.error?'읽기 실패: '+t.error:'LOADING…');
+    setT(e.dev,d.srcOwner===n?'USB':'LINK '+PN(d.srcOwner));setC(e.dev,'link',d.srcOwner!==n);
+    setT(e.title,t.title);setT(e.artist,t.artist||'');setT(e.key,(t.bpm?t.bpm.toFixed(1):'')+'  '+(t.key||''));
+    if(t.ready){const total=(t.beats-t.startBeat)*spbOf(t),cur=(d.pos-t.startBeat)*spbOf(t),f=fmtMs(d.remain?total-cur:cur);
+      setT(e.tm,d.remain?'REMAIN':'ELAPSED');setT(e.time,f.a);setT(e.msec,f.b);
+      const nc=nextCueDist(d);setT(e.cnt,isFinite(nc)?String(Math.floor(nc/4)).padStart(2,'0')+'.'+Math.floor(nc%4):'--.-');}
+    setT(e.bpm,bpmOf(d).toFixed(1));const p=tempoPct(d);setT(e.pct,(p>=0?'+':'')+p.toFixed(2)+'%');setT(e.rg2,d.tempoReset?'RESET':rl);
+    const isM=S.master===n,isS=d.sync&&!isM;setT(e.ms,isM?'MASTER':isS?'SYNC':'');setC(e.ms,'master',isM);setC(e.ms,'sync',isS);
+    const m=masterDeck();setC(e.mt2,'on',d.mt);setT(e.k2,t.key||'');setC(e.k2,'match',!!(m&&m!==d&&m.track&&camelotOk(t.key,m.track.key)));
+    setC(e.ahc,'on',(t.hot||[]).length>0);setT(e.tno,String(Math.max(1,MEDIA.tracks.indexOf(t)+1)).padStart(2,'0'));
+    setT(e.lpb,d.loop.active?fmtBeats(d.loop.out-d.loop.in):'');setT(e.qv,d.q?'1':'-');setT(e.bjv,String(d.bj||16));
+    drawZoom(d,e.wz);drawOverview(d,e.wo);drawPhase(d,e.ph);
+  }
+  drawJog(d,e.jd);
+  const Bt=e.btn,atCue=t&&Math.abs(d.pos-d.cue)<.02,len=d.loop.active?d.loop.out-d.loop.in:0;
+  setC(Bt.play,'on',!!t&&d.playing&&!d.previewing);setC(Bt.play,'blink',!!t&&!d.playing);setC(Bt.cue,'on',!!t&&(d.previewing||(!d.playing&&atCue)));setC(Bt.cue,'blink',!!t&&!d.playing&&!atCue);
+  setC(Bt.master,'on',S.master===n);setC(Bt.sync,'on',d.sync);setC(Bt.mt,'on',d.mt);setC(Bt.quantize,'on',d.q);setC(Bt.slip,'on',d.slip);setC(Bt.treset,'on',d.tempoReset);setC(Bt.jogmode,'on',d.jog==='VINYL');
+  setC(Bt.calldel,'on',callOn(d));setC(Bt.time,'on',!d.remain);
+  setC(Bt.in,'on',d.loop.active);setC(Bt.in,'blink',d.loop.in!=null&&d.loop.out==null);setC(Bt.out,'on',d.loop.active);setC(Bt.reloop,'on',d.loop.active);setC(Bt.reloop,'blink',!d.loop.active&&d.loop.out!=null);
+  setC(Bt.beatloop,'on',Math.abs(len-4)<1e-6);setC(Bt.beatloop8,'on',Math.abs(len-8)<1e-6);
+  setC(Bt.usbstop,'on',S.usb[n]&&!S.usbStopped[n]);setC(e.usb,'in',S.usb[n]);setC(Bt.memory,'on',d.mem.length>0);setC(e.led0,'on',!!t&&Math.abs(tempoPct(d))<.005);
+  for(let i=0;i<8;i++){const b=Bt['hc'+i],isLoop=!!(d.hcl&&d.hclTrack===t&&d.hcl[i]&&d.hc[i]!=null);setC(b,'set',d.hc[i]!=null);setC(b,'loop',isLoop);}
+}
+/* jog display per manual p.26: artwork, playback point indicator, cue point, SLIP / SYNC / VINYL / MASTER indicators */
+function drawJog(d,cv){
+  const[w,h]=fit(cv),g=cv.getContext('2d'),r=w/2,dpr=DPR();if(w<40)return;g.clearRect(0,0,w,h);g.save();g.translate(r,r);const t=d.track;
+  g.beginPath();g.arc(0,0,r*.46,0,Math.PI*2);
+  if(t){const hue=(String(t.title).charCodeAt(0)*47+String(t.title).length*13)%360,gr=g.createRadialGradient(-r*.1,-r*.1,2,0,0,r*.46);gr.addColorStop(0,`hsl(${hue} 60% 50%)`);gr.addColorStop(1,`hsl(${(hue+40)%360} 55% 18%)`);g.fillStyle=gr;}else g.fillStyle='#0b1220';
+  g.fill();
+  if(t){g.fillStyle='rgba(255,255,255,.9)';g.font=`700 ${15*dpr}px "Barlow Condensed",sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText((t.title||'?').slice(0,1).toUpperCase(),0,1);}
+  g.strokeStyle='#12233a';g.lineWidth=6*dpr;g.beginPath();g.arc(0,0,r-9*dpr,0,Math.PI*2);g.stroke();
+  if(t&&t.ready){const A_=s=>s/1.8*Math.PI*2-Math.PI/2,ang=A_(d.pos*spbOf(t));
+    if(Math.abs(d.pos-d.cue)<8){const ca=A_(d.cue*spbOf(t));g.strokeStyle='#ff8a1f';g.beginPath();g.arc(0,0,r-9*dpr,ca-.07,ca+.07);g.stroke();}
+    g.strokeStyle='#ffffff';g.beginPath();g.arc(0,0,r-9*dpr,ang-.13,ang+.13);g.stroke();}
+  const lab=(txt,x,y,on,col)=>{g.fillStyle=on?col:'#1c2838';g.font=`700 ${8*dpr}px "Barlow Condensed",sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText(txt,x,y);};
+  lab('SLIP',-r*.46,-r*.62,d.slip,'#ff8a1f');lab('SYNC',r*.46,-r*.62,d.sync,'#2f9bff');lab('VINYL',-r*.44,r*.64,d.jog==='VINYL','#a9d4ff');lab('MASTER',r*.44,r*.64,S.master===d.n,'#ff8a1f');
+  g.restore();
+}
+
 /* ================= mixer actions ================= */
 const SLIDES={
   input:{opts:c=>INPUTS[c],get:c=>S.mx.input[c],set:(c,v)=>S.mx.input[c]=v},
@@ -754,7 +941,84 @@ function mxAct(name,c,el){
 /* ================= build DOM ================= */
 const B=(act,label,n,cls='')=>`<button class="btn ${cls}" data-act="${act}" data-d="${n}">${label}</button>`;
 const PLAY_SVG='<svg viewBox="0 0 30 20" aria-hidden="true"><path d="M2 2 L13 10 L2 18Z"/><rect x="18" y="2" width="3.5" height="16"/><rect x="24.5" y="2" width="3.5" height="16"/></svg>';
+/* CDJ-3000 top panel, laid out after the manual's "Part names / Top panel" diagram (DRI1586A p.14–16) */
 function deckHTML(n){
+  const R=(act,label,cls='',sm)=>`<button class="rbtn ${sm?'sm':''} ${cls}" data-act="${act}" data-d="${n}">${label}</button>`;
+  const L=(inner,label)=>`<div class="lab">${inner}<span class="silk dim">${label}</span></div>`;
+  return `<div class="cap-line"><b>${PL(n)}</b><span>CDJ-3000 · 설명서 상단 패널 그림 기준</span></div>
+  <div class="chassis cdj">
+   <div class="cdj-a">
+    <div class="cdj-l">
+      <div class="media2">
+        <div class="mrow"><button class="usb-port" data-act="usbslot" data-d="${n}" aria-label="USB 포트"><span class="stick"></span></button><span class="ind usbind" title="USB 인디케이터"></span></div>
+        ${B('usbstop','USB STOP',n,'led-green')}
+        <div class="mrow"><button class="sdslot" data-act="sdslot" data-d="${n}" aria-label="SD 슬롯"></button><span class="ind"></span></div>
+        <span class="silk dim">SD</span>
+      </div>
+      ${L(R('time','','',1),'TIME MODE<br>AUTO CUE')}
+      <div class="rowc">${L(R('slip','','led-orange',1),'SLIP')}${L(R('quantize','','led-red',1),'QUANTIZE')}</div>
+    </div>
+    <div class="cdj-c">
+      <div class="navrow">${B('source','SOURCE',n)}${B('browse','BROWSE',n)}${B('taglist','TAG LIST',n)}${B('playlist','PLAYLIST',n)}${B('searchbtn','SEARCH',n)}${B('menu','MENU<br><small>UTILITY</small>',n)}</div>
+      <div class="bezel"><div class="screen" id="scr${n}">
+        <div class="scr-bar"><b class="pn">${PL(n)}</b><span class="src">—</span><span class="badges"><i class="q">Q</i><i class="mtb">MT</i><i class="rg">±10</i><i class="sl">SLIP</i><i class="jm">VINYL</i></span></div>
+        <div class="scr-idle"><div><b>NO TRACK</b>SOURCE를 눌러 기기를 고르세요</div></div>
+        <div class="scr-list" hidden><div class="crumb"></div><ul></ul></div>
+        <div class="scr-play" hidden>
+          <div class="p-top"><span class="dev">USB</span><div class="tt"><b></b><span></span></div><span class="k"></span>
+            <button class="tb" data-act="t_bloop" data-d="${n}">BEAT<br>LOOP</button><button class="tb" data-act="t_kshift" data-d="${n}">KEY<br>SHIFT</button><button class="tb" data-act="t_bjump" data-d="${n}">BEAT<br>JUMP</button></div>
+          <div class="p-strip"><span class="cnt" title="가장 가까운 큐 지점까지 남은 마디.박"><b>--.-</b><small>Bars</small></span><canvas class="ph" title="싱크 마스터와의 마디·박 어긋남 (PHASE METER)"></canvas></div>
+          <div class="wzbox"><canvas class="wz"></canvas><span class="lpb"></span><span class="zoomind">ZOOM</span></div>
+          <div class="p-info">
+            <div class="pl"><small>PLAYER</small><b>${PN(n)}</b></div>
+            <div class="tno"><small>TRACK</small><b>--</b></div>
+            <div class="flags"><i class="ahc">A.HOT CUE</i><i class="acue on">AUTO CUE</i></div>
+            <div class="st-time" title="눌러서 남은 시간/지난 시간 전환"><small class="tm">REMAIN</small><b>--:--</b><em class="msec">.000</em><span class="single">SINGLE</span></div>
+            <div class="tempo"><small>TEMPO <span class="rg2">±10</span></small><b class="pct">+0.00%</b></div>
+            <div class="st-bpm"><small>BPM <span class="ms">—</span></small><b>---.-</b><span class="mtk"><i class="mtb2">MT</i><span class="k2"></span></span></div>
+          </div>
+          <div class="p-ov"><div class="qb"><small>QUANTIZE</small><b class="qv">1</b><small>BEAT JUMP</small><b class="bjv">16</b></div><canvas class="wo" title="터치해서 원하는 위치로 이동"></canvas></div>
+          <div class="loading" hidden>LOADING…</div>
+        </div>
+      </div></div>
+      <div class="hcrow2">${B('calldel','CALL/<br>DELETE',n,'led-red')}${[...LETTERS].map((Lt,i)=>`<button class="hc" data-act="hc${i}" data-d="${n}" style="--hc:${HC_COLORS[i]}">${Lt}</button>`).join('')}</div>
+    </div>
+    <div class="cdj-r">
+      ${B('back','BACK',n)}${B('tag','TAG TRACK<br><small>REMOVE</small>',n)}
+      <div class="rotary" data-rot="${n}" title="돌리기: 휠/위아래 드래그 · 누르기: 클릭"><div class="cap"></div></div>
+      ${B('trkfilter','TRACK FILTER<br><small>EDIT</small>',n)}${B('shortcut','SHORTCUT',n)}
+      ${K('vsa:'+n,'VINYL SPEED ADJ.','small')}
+    </div>
+   </div>
+   <div class="cdj-b">
+    <div class="cdj-bl">
+      <div class="sect">LOOP</div>
+      <div class="rowc">${L(R('in','IN/<br>CUE','led-orange'),'IN ADJUST')}${L(R('out','OUT','led-orange'),'OUT ADJUST')}${L(R('reloop','RELOOP<br>EXIT','led-orange',1),'')}</div>
+      <div class="sect">BEAT LOOP</div>
+      <div class="rowc">${L(R('beatloop','4','led-orange',1),'1/2X')}${L(R('beatloop8','8','led-orange',1),'2X')}</div>
+      <div class="sect">BEAT JUMP</div>
+      <div class="g2">${B('bj_b','◀',n)}${B('bj_f','▶',n)}</div>
+      <button class="dirlever" data-act="direction" data-d="${n}"><span>SLIP REV</span><span class="on">FWD</span><span>REV</span></button><span class="silk dim">DIRECTION</span>
+      <div class="sect">TRACK SEARCH</div><div class="rowc">${R('trk_prev','|◀◀','',1)}${R('trk_next','▶▶|','',1)}</div>
+      <div class="sect">SEARCH</div><div class="rowc">${R('srch_b','◀◀','',1)}${R('srch_f','▶▶','',1)}</div>
+      <div class="bigs"><button class="big cue" data-act="cue" data-d="${n}">CUE</button><button class="big play" data-act="play" data-d="${n}" aria-label="PLAY/PAUSE">${PLAY_SVG}</button></div>
+    </div>
+    <div class="jogcell"><div class="jog" data-jog="${n}"><div class="ring"></div><div class="top"></div><canvas class="jd"></canvas></div></div>
+    <div class="cdj-br">
+      <div class="rowc">${R('call_prev','◀','',1)}${R('call_next','▶','',1)}</div><span class="silk dim">CUE/LOOP CALL</span>
+      <div class="rowc">${L(R('delete','','led-red',1),'DELETE')}${L(R('memory','','led-red',1),'MEMORY')}</div>
+      <div class="rowc">${B('jogmode','JOG<br>MODE',n,'led-blue')}<span class="vc"><i class="v">VINYL</i><i class="c">CDJ</i></span></div>
+      ${K('jadj:'+n,'JOG ADJUST','small')}
+      <div class="g2">${B('sync','BEAT<br>SYNC',n,'led-blue')}${B('master','MASTER',n,'led-orange')}</div>
+      <span class="silk dim" style="margin-top:-4px">INST.DOUBLES</span>
+      ${B('keysync','KEY SYNC',n)}
+      <div class="rowc">${L(R('range','<span class="rv">±10</span>','',1),'TEMPO')}${L(R('mt','','led-red',1),'MASTER<br>TEMPO')}</div>
+      <div class="tempo-row">${L(R('treset','','led-green',1),'TEMPO<br>RESET')}<div class="tempo-box"><div class="tempo-scale"><span>−</span><span>0</span><span>+</span></div><div class="vf tempo" data-ctl="tempo:${n}"><span class="led0"></span><div class="cap"></div></div></div></div>
+    </div>
+   </div>
+  </div>`;
+}
+function deckHTML_old(n){
   return `<div class="cap-line"><b>${PL(n)}</b><span>CDJ-3000 · 연습용 근사</span></div>
   <div class="chassis">
   <div class="dk-a">
@@ -895,6 +1159,10 @@ const CTL={
   efLo:bK('lo',0,1,1),efMid:bK('mid',0,1,1),efHi:bK('hi',0,1,1),bfxlevel:bK('level',0,1,.5),
   bfxtime:{min:0,max:1,def:.5,kind:'k',get:()=>{const ms=fxTime()*1000;return clamp(Math.log(ms)/Math.log(4000),0,1);},set:(c,v)=>{S.mx.bfx.timeMs=Math.round(clamp(Math.exp(v*Math.log(4000)),1,4000));}},
 };
+CTL.vsa={min:0,max:1,def:.5,kind:'k',get:n=>S.decks[n].vsa??.5,set:(n,v)=>{S.decks[n].vsa=v;}};
+CTL.jadj={min:0,max:1,def:.5,kind:'k',get:n=>S.decks[n].jadj??.5,set:(n,v)=>{S.decks[n].jadj=v;}};
+for(const n of [1,2]){const scr=E[n].scr,root=E[n].root;Object.assign(E[n],{bar:$('.scr-bar',scr),dev:$('.dev',scr),cnt:$('.cnt b',scr),msec:$('.msec',scr),rg2:$('.rg2',scr),mt2:$('.mtb2',scr),k2:$('.k2',scr),
+  acue:$('.acue',scr),ahc:$('.ahc',scr),tno:$('.tno b',scr),lpb:$('.lpb',scr),qv:$('.qv',scr),bjv:$('.bjv',scr),vI:$('.vc .v',root),cI:$('.vc .c',root),usbInd:$('.usbind',root)});}
 const ctlOf=el=>{const[k,a]=el.dataset.ctl.split(':');return{c:CTL[k],a:+a,k};};
 function setCtl(el,v){const{c,a,k}=ctlOf(el);c.set(a,clamp(v,c.min,c.max));if(k!=='tempo')applyMixer();}
 let drag=null;
@@ -914,6 +1182,7 @@ document.addEventListener('keydown',e=>{const el=e.target.closest&&e.target.clos
 
 /* ================= buttons ================= */
 const HOLD=new Set(['cue','srch_b','srch_f']);
+HOLD.add('calldel');
 const MXA=new Set(['mxcue','monitor','inst','chsel','fxsel','beat','bfxon','autotap','tap','tpmix','tpremix','tpon','tpL','tpR','frl','frr','frall','mxinfo',...Object.keys(SLIDES)]);
 let held=null;
 function press(b){const a=b.dataset.act;if(MXA.has(a)){mxAct(a,+b.dataset.ch||0,b);return null;}const n=+b.dataset.d;if(!n)return null;act(a,n,'down');return HOLD.has(a)?{a,n}:null;}
@@ -984,7 +1253,7 @@ function drawOverview(d,cv){const[w,h]=fit(cv),g=cv.getContext('2d');g.fillStyle
 function drawPhase(d,cv){const[w,h]=fit(cv),g=cv.getContext('2d');g.clearRect(0,0,w,h);const dpr=DPR();if(!d.track||w<4)return;const m=masterDeck(),cw=(w-9*dpr)/4,rowH=(h-4*dpr)/2;
   const row=(y,dk,col)=>{const beat=((Math.floor(dk.pos)%4)+4)%4;for(let i=0;i<4;i++){g.fillStyle=i===beat?col:'#14243a';g.fillRect(i*(cw+3*dpr),y,cw,rowH);}};row(0,d,'#e8f1ff');
   if(m&&m!==d&&m.track){row(rowH+4*dpr,m,'#ff8a1f');const e=wrapPhase(frac(d.pos)-frac(m.pos)),ms=e*60/bpmOf(d)*1000,x=w/2+clamp(e*2,-1,1)*w/2;g.fillStyle=Math.abs(ms)<25?'#22e07a':'#ff3d33';g.fillRect(x-1.5*dpr,0,3*dpr,h);}}
-function drawJog(d,cv){const[w,h]=fit(cv),g=cv.getContext('2d'),r=w/2,dpr=DPR();if(w<40)return;g.clearRect(0,0,w,h);g.save();g.translate(r,r);
+function drawJog_old(d,cv){const[w,h]=fit(cv),g=cv.getContext('2d'),r=w/2,dpr=DPR();if(w<40)return;g.clearRect(0,0,w,h);g.save();g.translate(r,r);
   g.strokeStyle='#12233a';g.lineWidth=5*dpr;g.beginPath();g.arc(0,0,r-6*dpr,0,Math.PI*2);g.stroke();const t=d.track;
   if(t&&t.ready){g.strokeStyle='#2f9bff';g.beginPath();g.arc(0,0,r-6*dpr,-Math.PI/2,-Math.PI/2+(d.pos-t.startBeat)/(t.beats-t.startBeat)*Math.PI*2);g.stroke();
     const A_=s=>s/1.8*Math.PI*2-Math.PI/2,ang=A_(d.pos*spbOf(t));g.strokeStyle='#fff';g.lineWidth=3*dpr;g.beginPath();g.moveTo(Math.cos(ang)*r*.45,Math.sin(ang)*r*.45);g.lineTo(Math.cos(ang)*(r-12*dpr),Math.sin(ang)*(r-12*dpr));g.stroke();
@@ -997,7 +1266,7 @@ function renderList(d,e){
   e.ul.innerHTML=its.slice(start,start+vis).map((it,j)=>{const i=start+j;const meta=it.track!=null?`<span class="m">${it.bpm?it.bpm.toFixed(2):'--.--'}</span><span class="m">${esc(it.key||'')}</span>`:`<span></span><span class="chev">${it.dis?'':'›'}</span>`;
     return `<li data-i="${i}" class="${i===idx?'sel':''} ${it.dis?'dis':''}"><span class="t">${esc(it.label)}${it.sub?`<small>${esc(it.sub)}</small>`:''}</span>${meta}</li>`;}).join('');
 }
-function renderDeck(n){
+function renderDeck_old(n){
   const d=S.decks[n],e=E[n],t=d.track,v=d.view==='source'||d.view==='browse'?'list':(t?'play':'idle');
   e.idle.hidden=v!=='idle';e.list.hidden=v!=='list';e.play.hidden=v!=='play';if(v==='list')renderList(d,e);else e.listSig='';
   setT(e.src,t?(d.srcOwner===n?'USB · ':'LINK P'+PN(d.srcOwner)+' · ')+t.title:(S.usb[n]&&!S.usbStopped[n]?'USB 인식됨 · '+MEDIA.name:'—'));setC(e.src,'link',!!t&&d.srcOwner!==n);
@@ -1184,21 +1453,23 @@ const MISSIONS=[
    {text:`<b>${P3}</b>의 BEAT SYNC 켜기 → 화면 BPM이 같아지는지 보기`,hint:[H(2,'sync')],check:()=>D(2).sync},
    {text:`<b>${P3}</b> 재생 → 박자가 자동으로 맞아요`,hint:[H(2,'play')],check:()=>D(2).playing&&D(2).sync},
    {text:'CH3 <b>채널 페이더</b>를 올려 겹쳐 듣기',hint:[MC('fader:3')],check:()=>S.mx.fader[3]>.6}]},
- {grp:'booth',title:'손으로 비트매칭',tag:'BEATMATCH',rx:'템포 페이더는 아래가 + (같아요).',djm:'CDJ-3000 페이더가 길어서 더 세밀해요. 휠이나 Shift+드래그로 미세 조정, 조그 바깥 링으로 위상을 밀고 당겨요.',setup(){play(1,3,32,1,true);S.master=1;play(2,4,0,1);S.mx.fader[2]=.8;S.mx.hpmix=-1;},steps:[
+ {grp:'booth',title:'손으로 비트매칭',tag:'BEATMATCH',rx:'가운데 화면에 두 덱의 파형과 그리드가 위아래로 같이 떠서, 눈으로 킥 위치를 맞춰볼 수 있어요.',djm:'CDJ-3000 화면엔 자기 곡 파형만 나와요. 다른 덱과 어긋난 정도는 파형 위 PHASE METER 띠(싱크 마스터 기준 마디·박 차이)로 보고, 나머지는 귀로 맞춰요. 템포 페이더는 아래가 +.',src:'설명서 p.22 (10번)',setup(){play(1,3,32,1,true);S.master=1;play(2,4,0,1);S.mx.fader[2]=.8;S.mx.hpmix=-1;},steps:[
    {text:'연습기 출력을 <b>헤드폰</b>으로, 믹서 <b>CH3 CUE</b> 켜기',hint:[MA('monitor','hp'),MH('mxcue',3)],check:()=>S.mx.monitor==='hp'&&S.mx.cue[3]},
    {text:`<b>${P3}</b> 재생`,hint:[H(2,'play')],check:()=>D(2).playing},
    {text:`${P3} <b>템포 페이더</b>로 BPM을 ${P2}와 ±0.10 이내로`,hint:['[data-ctl="tempo:2"]'],check:()=>D(2).track&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.1},
    {text:`${P3} <b>조그 바깥 링</b>으로 위상 맞추기. PHASE 막대 초록색 3초 유지`,hint:['[data-jog="2"]'],check:dt=>{const ok=D(1).playing&&D(2).playing&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.12&&phaseErrMs()<25;M.hold=ok?M.hold+dt:0;return M.hold>3;}},
    {text:'출력을 <b>메인 스피커</b>로 돌리고 CH3 페이더 올려 믹스',hint:[MA('monitor','main'),MC('fader:3')],check:()=>S.mx.monitor==='main'&&S.mx.fader[3]>.6}]},
- {grp:'booth',title:'핫큐와 메모리 큐',tag:'HOT CUE',rx:'퍼포먼스 패드를 HOT CUE 모드로 바꿔서 써요.',djm:'화면 아래 A–H 전용 버튼 8개. 모드 전환이 없어요. rekordbox에서 찍은 핫큐는 로드하면 바로 떠요.',setup(){play(1,2,0);S.mx.fader[2]=.8;},steps:[
+ {grp:'booth',title:'핫큐와 메모리 큐',tag:'HOT CUE',rx:'퍼포먼스 패드를 HOT CUE 모드로 바꿔서 써요.',djm:'화면 아래 A–H 전용 버튼 8개. 모드 전환이 없어요. 루프 중에 빈 버튼을 누르면 루프가 저장되고(주황), 지울 땐 CALL/DELETE를 누른 채 눌러요. rekordbox 핫큐는 HOT CUE AUTO LOAD가 켜져 있으면 로드하자마자 떠요.',src:'설명서 p.58–59',setup(){play(1,2,0);S.mx.fader[2]=.8;},steps:[
    {text:'PLAY 후 빈 <b>HOT CUE</b> 버튼을 눌러 저장',hint:[H(1,'play'),H(1,'hc7')],check:()=>D(1).hc.some(v=>v!=null)&&D(1).playing},
    {text:'조금 더 재생한 뒤 그 핫큐를 다시 눌러 점프',hint:['#deck1 .hc-row'],check:()=>D(1).st.hcJump>0},
    {text:'일시정지 후 <b>조그</b>로 위치를 옮기고 <b>CUE</b>로 새 큐 지점',hint:['[data-jog="1"]',H(1,'cue')],check:()=>D(1).st.cueSet>0},
-   {text:'<b>MEMORY</b>로 저장 → <b>CUE/LOOP CALL ◀ ▶</b>로 불러오기',hint:[H(1,'memory'),H(1,'call_prev'),H(1,'call_next')],check:()=>D(1).mem.length>0&&D(1).st.call>0}]},
- {grp:'booth',title:'루프',tag:'LOOP',rx:'루프 버튼이 패드·조그 옆에 있어요.',djm:'LOOP 묶음(IN/CUE, OUT, RELOOP/EXIT, 4 BEAT LOOP, 1/2X, 2X)이 조그 왼쪽 위에 모여 있어요.',setup(){play(1,7,40,1,true);S.mx.fader[2]=.8;},steps:[
+   {text:'<b>MEMORY</b>로 저장 → <b>CUE/LOOP CALL ◀ ▶</b>로 불러오기',hint:[H(1,'memory'),H(1,'call_prev'),H(1,'call_next')],check:()=>D(1).mem.length>0&&D(1).st.call>0},
+   {text:'핫큐 하나 지우기: <b>CALL/DELETE</b>를 누른 채 그 핫큐 버튼 (연습기에선 CALL/DELETE를 한 번 눌러 고정한 뒤 눌러도 돼요)',hint:[H(1,'calldel'),'#deck1 .hcrow2'],check:()=>(D(1).st.hcDel||0)>0}]},
+ {grp:'booth',title:'루프',tag:'LOOP',rx:'루프 버튼이 패드·조그 옆에 있어요.',djm:'조그 왼쪽 위에 LOOP IN/CUE · OUT · RELOOP/EXIT와 4 BEAT · 8 BEAT LOOP 버튼이 있어요. 루프 중엔 4 BEAT = 1/2X, 8 BEAT = 2X로 바뀌고, BEAT JUMP ◀▶는 루프를 통째로 옮겨요.',src:'설명서 p.54–56, 62',setup(){play(1,7,40,1,true);S.mx.fader[2]=.8;},steps:[
    {text:'<b>4 BEAT LOOP</b>',hint:[H(1,'beatloop')],check:()=>D(1).loop.active&&D(1).st.beatLoop>0},
-   {text:'<b>LOOP 1/2X</b> 두 번 → 1박 루프',hint:[H(1,'half')],check:()=>D(1).loop.active&&Math.abs(D(1).loop.out-D(1).loop.in-1)<1e-6},
-   {text:'<b>LOOP 2X</b>로 다시 늘리기',hint:[H(1,'double')],check:()=>D(1).loop.active&&D(1).st.loopGrow>0},
+   {text:'루프 중에 <b>4 BEAT LOOP</b>를 두 번 더 → 1박 루프 (루프 중엔 1/2X 버튼이 돼요)',hint:[H(1,'beatloop')],check:()=>D(1).loop.active&&Math.abs(D(1).loop.out-D(1).loop.in-1)<1e-6},
+   {text:'<b>8 BEAT LOOP</b>(루프 중엔 2X)로 다시 늘리기',hint:[H(1,'beatloop8')],check:()=>D(1).loop.active&&D(1).st.loopGrow>0},
+   {text:'<b>BEAT JUMP ▶</b> → 루프가 통째로 앞으로 옮겨가요',hint:[H(1,'bj_f')],check:()=>D(1).loop.active&&(D(1).st.loopMove||0)>0},
    {text:'<b>RELOOP/EXIT</b>로 빠져나오기',hint:[H(1,'reloop')],check:()=>!D(1).loop.active&&D(1).st.loopExit>0},
    {text:'<b>IN/CUE</b> 누르고 몇 박 뒤 <b>OUT</b>으로 직접 루프',hint:[H(1,'in'),H(1,'out')],check:()=>D(1).loop.active&&D(1).st.manualLoop>0}]},
  {grp:'booth',title:'템포 범위와 MASTER TEMPO',tag:'TEMPO',rx:'설정을 내가 바꾸기 전까진 그대로예요.',djm:'앞 DJ가 ±16·WIDE, MASTER TEMPO 꺼짐으로 두고 갔을 수 있어요. 화면 위 표시부터 확인.',setup(){play(1,3,64,1,true);const d=D(1);d.range=16;d.mt=false;S.mx.fader[2]=.8;},steps:[

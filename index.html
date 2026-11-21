@@ -346,8 +346,11 @@ canvas.meter.tall{height:210px;width:16px}
 .p-top .k{font-family:var(--f-mono);font-size:10px;color:var(--scr-dim);white-space:nowrap}
 .tb{font-family:var(--f-panel);font-size:8.5px;line-height:1;border:1px solid #27405f;background:#0c1828;color:#cfe4ff;border-radius:2px;padding:2px 4px;cursor:pointer;flex:none}
 .p-strip{display:grid;grid-template-columns:62px 1fr;gap:6px;align-items:stretch;padding:3px 6px}
-.cnt{display:flex;flex-direction:column;justify-content:center;font-family:var(--f-mono);color:#ff9a2e;font-size:16px;font-weight:700;border:1px solid #2b3c55;border-radius:2px;padding:0 4px;line-height:1}
-.cnt small{font-size:8px;color:var(--scr-dim);font-family:var(--f-panel);text-align:right}
+.cnt{display:flex;flex-direction:column;justify-content:center;gap:1px;font-family:var(--f-mono);font-weight:700;padding:0 2px;line-height:1}
+.cnt>span{display:flex;align-items:baseline;justify-content:flex-end;gap:2px}
+.cnt .cm{color:#ff8a1f;font-size:11px}
+.cnt .cs{color:#3d8bff;font-size:15px}
+.cnt small{font-size:7.5px;font-family:var(--f-panel);font-weight:600}
 .p-strip canvas.ph{height:32px;border:1px solid #2b3c55;border-radius:2px;cursor:pointer}
 .wzbox{position:relative}
 .wzbox canvas.wz{height:106px}
@@ -856,10 +859,25 @@ function fmtMs(sec){sec=Math.max(0,sec);const m=Math.floor(sec/60),s=Math.floor(
 const fmtBeats=b=>b>=1?String(Math.round(b)):'1/'+Math.round(1/b);
 /* manual p.22 item 10: "Waveform/phase meter — displays the bar and beat deviations from the sync master; touch to switch".
    Reference deck = the sync master when it is another player, otherwise the other loaded player. */
-function refDeck(d){const m=masterDeck();if(m&&m!==d&&m.track&&m.track.ready)return m;const o=S.decks[d.n===1?2:1];return o.track&&o.track.ready?o:null;}
+/* Drawn after the manual's figure (p.21, item 10, factory setting WAVEFORM):
+   blue line = this player's beat grid (white beat ticks rising from the line, red bar ticks across it),
+   orange line = the sync master's grid (plain in the figure, which shows no sync master: its countdown reads "--.-"),
+   white line = playback point. About four bars span the strip, as in the figure. */
 function drawRef(d,cv){
+  const[w,h]=fit(cv),g=cv.getContext('2d'),dpr=DPR();if(w<4)return;g.fillStyle='#000';g.fillRect(0,0,w,h);
+  const cx=Math.round(w/2),ppb=w/17,yO=Math.round(h*.22),yB=Math.round(h*.78),lw=Math.max(2,Math.round(1.6*dpr));
+  const grid=(dk,y,dir)=>{const b0=Math.ceil(dk.pos-cx/ppb),b1=Math.floor(dk.pos+(w-cx)/ppb);for(let b=b0;b<=b1;b++){const x=Math.round(cx+(b-dk.pos)*ppb);
+      if(((b%4)+4)%4===0){g.fillStyle='#e23a2e';g.fillRect(x-dpr*.7,y-h*.14,lw,h*.28);}else{g.fillStyle='#e8e8e8';const L=h*.3;g.fillRect(x-dpr*.5,dir<0?y-L:y,Math.max(1,dpr),L);}}};
+  g.fillStyle='#ff8a1f';g.fillRect(0,yO-lw/2,w,lw);
+  g.fillStyle='#2f7dff';g.fillRect(0,yB-lw/2,w,lw);
+  const sm=masterDeck();
+  if(d.track&&d.track.ready)grid(d,yB,-1);
+  if(sm&&sm!==d&&sm.track&&sm.track.ready)grid(sm,yO,1);
+  g.fillStyle='#ffffff';g.fillRect(cx-dpr*.7,0,lw,h);
+}
+function drawRef_unused(d,cv){
   const[w,h]=fit(cv),g=cv.getContext('2d'),dpr=DPR();if(w<4)return;g.fillStyle='#020306';g.fillRect(0,0,w,h);
-  const r=refDeck(d),t=d.track;
+  const r=null,t=d.track;
   const label=(txt,col)=>{g.font=`700 ${9*dpr}px "Barlow Condensed",sans-serif`;g.textBaseline='top';g.fillStyle=col;g.fillText(txt,3*dpr,2*dpr);};
   if(!r||!t||!t.ready){label('NO SYNC MASTER','#3d4e63');return;}
   const e=wrapPhase(frac(d.pos)-frac(r.pos)),ms=e*60/bpmOf(d)*1000,barOff=(((Math.floor(d.pos)-Math.floor(r.pos))%4)+4)%4,ok=Math.abs(ms)<25,cx=Math.round(w/2);
@@ -895,7 +913,8 @@ function renderDeck(n){
     setT(e.title,t.title);setT(e.artist,t.artist||'');setT(e.key,(t.bpm?t.bpm.toFixed(1):'')+'  '+(t.key||''));
     if(t.ready){const total=(t.beats-t.startBeat)*spbOf(t),cur=(d.pos-t.startBeat)*spbOf(t),f=fmtMs(d.remain?total-cur:cur);
       setT(e.tm,d.remain?'REMAIN':'ELAPSED');setT(e.time,f.a);setT(e.msec,f.b);
-      const nc=nextCueDist(d);setT(e.cnt,isFinite(nc)?String(Math.floor(nc/4)).padStart(2,'0')+'.'+Math.floor(nc%4):'--.-');}
+      const cd=x=>{const nc=x?nextCueDist(x):Infinity;return isFinite(nc)?String(Math.floor(nc/4)).padStart(2,'0')+'.'+Math.floor(nc%4):'--.-';};
+      const sm=masterDeck();setT(e.cnt,cd(d));setT(e.cntM,sm&&sm!==d&&sm.track&&sm.track.ready?cd(sm):'--.-');}
     setT(e.bpm,bpmOf(d).toFixed(1));const p=tempoPct(d);setT(e.pct,(p>=0?'+':'')+p.toFixed(2)+'%');setT(e.rg2,d.tempoReset?'RESET':rl);
     const isM=S.master===n,isS=d.sync&&!isM;setT(e.ms,isM?'MASTER':isS?'SYNC':'');setC(e.ms,'master',isM);setC(e.ms,'sync',isS);
     const m=masterDeck();setC(e.mt2,'on',d.mt);setT(e.k2,t.key||'');setC(e.k2,'match',!!(m&&m!==d&&m.track&&camelotOk(t.key,m.track.key)));
@@ -994,7 +1013,7 @@ function deckHTML(n){
         <div class="scr-play" hidden>
           <div class="p-top"><span class="dev">USB</span><div class="tt"><b></b><span></span></div><span class="k"></span>
             <button class="tb" data-act="t_bloop" data-d="${n}">BEAT<br>LOOP</button><button class="tb" data-act="t_kshift" data-d="${n}">KEY<br>SHIFT</button><button class="tb" data-act="t_bjump" data-d="${n}">BEAT<br>JUMP</button></div>
-          <div class="p-strip"><span class="cnt" title="가장 가까운 큐 지점까지 남은 마디.박"><b>--.-</b><small>Bars</small></span><canvas class="ph" title="싱크 마스터와의 마디·박 어긋남 (PHASE METER)"></canvas></div>
+          <div class="p-strip"><span class="cnt" title="3. Beat countdown"><span class="cm"><b>--.-</b><small>Bars</small></span><span class="cs"><b>--.-</b><small>Bars</small></span></span><canvas class="ph" title="10. Waveform/phase meter — 싱크 마스터와의 마디·박 어긋남"></canvas></div>
           <div class="wzbox"><canvas class="wz"></canvas><span class="lpb"></span><span class="zoomind">ZOOM</span></div>
           <div class="p-info">
             <div class="pl"><small>PLAYER</small><b>${PN(n)}</b></div>
@@ -1188,9 +1207,9 @@ const CTL={
 };
 CTL.vsa={min:0,max:1,def:.5,kind:'k',get:n=>S.decks[n].vsa??.5,set:(n,v)=>{S.decks[n].vsa=v;}};
 CTL.jadj={min:0,max:1,def:.5,kind:'k',get:n=>S.decks[n].jadj??.5,set:(n,v)=>{S.decks[n].jadj=v;}};
-for(const n of [1,2]){const scr=E[n].scr,root=E[n].root;Object.assign(E[n],{bar:$('.scr-bar',scr),dev:$('.dev',scr),cnt:$('.cnt b',scr),msec:$('.msec',scr),rg2:$('.rg2',scr),mt2:$('.mtb2',scr),k2:$('.k2',scr),
+for(const n of [1,2]){const scr=E[n].scr,root=E[n].root;Object.assign(E[n],{bar:$('.scr-bar',scr),dev:$('.dev',scr),cnt:$('.cnt .cs b',scr),cntM:$('.cnt .cm b',scr),msec:$('.msec',scr),rg2:$('.rg2',scr),mt2:$('.mtb2',scr),k2:$('.k2',scr),
   acue:$('.acue',scr),ahc:$('.ahc',scr),tno:$('.tno b',scr),lpb:$('.lpb',scr),qv:$('.qv',scr),bjv:$('.bjv',scr),vI:$('.vc .v',root),cI:$('.vc .c',root),usbInd:$('.usbind',root)});
-  E[n].ph.addEventListener('click',()=>{const d=S.decks[n];d.refMode=(d.refMode||'wave')==='wave'?'phase':'wave';d.refToggles=(d.refToggles||0)+1;});}
+  E[n].ph.addEventListener('click',()=>toast('설명서: 터치하면 WAVEFORM ↔ PHASE METER 표시가 바뀌어요(기본값 WAVEFORM, SHORTCUT에서도 설정). PHASE METER 쪽 모양은 설명서에 그림이 없어서 연습기엔 넣지 않았어요'));}
 const ctlOf=el=>{const[k,a]=el.dataset.ctl.split(':');return{c:CTL[k],a:+a,k};};
 function setCtl(el,v){const{c,a,k}=ctlOf(el);c.set(a,clamp(v,c.min,c.max));if(k!=='tempo')applyMixer();}
 let drag=null;
@@ -1481,11 +1500,11 @@ const MISSIONS=[
    {text:`<b>${P3}</b>의 BEAT SYNC 켜기 → 화면 BPM이 같아지는지 보기`,hint:[H(2,'sync')],check:()=>D(2).sync},
    {text:`<b>${P3}</b> 재생 → 박자가 자동으로 맞아요`,hint:[H(2,'play')],check:()=>D(2).playing&&D(2).sync},
    {text:'CH3 <b>채널 페이더</b>를 올려 겹쳐 듣기',hint:[MC('fader:3')],check:()=>S.mx.fader[3]>.6}]},
- {grp:'booth',title:'손으로 비트매칭',tag:'BEATMATCH',rx:'가운데 화면에 두 덱의 파형과 그리드가 위아래로 같이 떠서, 눈으로 킥 위치를 맞춰볼 수 있어요.',djm:'큰 파형은 자기 곡이에요. 그 위의 가는 띠가 싱크 마스터와의 마디·박 어긋남을 보여줘요(파형 ↔ PHASE METER, 띠를 눌러 전환). 파형 모드에서 띠의 빨간 마디선과 킥이 가운데 흰 선에 오면 맞은 거예요. 템포 페이더는 아래가 +.',src:'설명서 p.22 (10번)',setup(){play(1,3,32,1,true);S.master=1;play(2,4,0,1);S.mx.fader[2]=.8;S.mx.hpmix=-1;},steps:[
+ {grp:'booth',title:'손으로 비트매칭',tag:'BEATMATCH',rx:'가운데 화면에 두 덱의 파형과 그리드가 위아래로 같이 떠서, 눈으로 킥 위치를 맞춰볼 수 있어요.',djm:'큰 파형은 자기 곡이에요. 그 위의 가는 띠(10번)가 싱크 마스터와의 마디·박 어긋남을 보여줘요. 주황 줄 = 싱크 마스터, 파란 줄 = 내 곡의 박(흰 눈금)·마디(빨간 눈금)이고, 두 줄의 눈금이 같은 자리에 오면 맞은 거예요. 왼쪽의 주황·파랑 숫자는 각각 가장 가까운 큐까지 남은 마디(3번). 템포 페이더는 아래가 +.',src:'설명서 p.22 (10번)',setup(){play(1,3,32,1,true);S.master=1;play(2,4,0,1);S.mx.fader[2]=.8;S.mx.hpmix=-1;},steps:[
    {text:'연습기 출력을 <b>헤드폰</b>으로, 믹서 <b>CH3 CUE</b> 켜기',hint:[MA('monitor','hp'),MH('mxcue',3)],check:()=>S.mx.monitor==='hp'&&S.mx.cue[3]},
    {text:`<b>${P3}</b> 재생`,hint:[H(2,'play')],check:()=>D(2).playing},
    {text:`${P3} <b>템포 페이더</b>로 BPM을 ${P2}와 ±0.10 이내로`,hint:['[data-ctl="tempo:2"]'],check:()=>D(2).track&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.1},
-   {text:`${P3} <b>조그 바깥 링</b>으로 위상 맞추기. 화면 위 띠(${P2} 파형)의 킥이 가운데 선에 오고 오른쪽 ms가 초록색으로 3초 유지`,hint:['[data-jog="2"]'],check:dt=>{const ok=D(1).playing&&D(2).playing&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.12&&phaseErrMs()<25;M.hold=ok?M.hold+dt:0;return M.hold>3;}},
+   {text:`${P3} <b>조그 바깥 링</b>으로 위상 맞추기. 화면 위 띠에서 주황 줄(싱크 마스터 ${P2})과 파란 줄(내 곡)의 눈금이 같은 자리에 오게, 3초 유지`,hint:['[data-jog="2"]'],check:dt=>{const ok=D(1).playing&&D(2).playing&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.12&&phaseErrMs()<25;M.hold=ok?M.hold+dt:0;return M.hold>3;}},
    {text:'출력을 <b>메인 스피커</b>로 돌리고 CH3 페이더 올려 믹스',hint:[MA('monitor','main'),MC('fader:3')],check:()=>S.mx.monitor==='main'&&S.mx.fader[3]>.6}]},
  {grp:'booth',title:'핫큐와 메모리 큐',tag:'HOT CUE',rx:'퍼포먼스 패드를 HOT CUE 모드로 바꿔서 써요.',djm:'화면 아래 A–H 전용 버튼 8개. 모드 전환이 없어요. 루프 중에 빈 버튼을 누르면 루프가 저장되고(주황), 지울 땐 CALL/DELETE를 누른 채 눌러요. rekordbox 핫큐는 HOT CUE AUTO LOAD가 켜져 있으면 로드하자마자 떠요.',src:'설명서 p.58–59',setup(){play(1,2,0);S.mx.fader[2]=.8;},steps:[
    {text:'PLAY 후 빈 <b>HOT CUE</b> 버튼을 눌러 저장',hint:[H(1,'play'),H(1,'hc7')],check:()=>D(1).hc.some(v=>v!=null)&&D(1).playing},

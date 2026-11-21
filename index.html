@@ -345,12 +345,12 @@ canvas.meter.tall{height:210px;width:16px}
 .p-top .tt span{color:var(--scr-dim);margin-left:6px;font-size:11px}
 .p-top .k{font-family:var(--f-mono);font-size:10px;color:var(--scr-dim);white-space:nowrap}
 .tb{font-family:var(--f-panel);font-size:8.5px;line-height:1;border:1px solid #27405f;background:#0c1828;color:#cfe4ff;border-radius:2px;padding:2px 4px;cursor:pointer;flex:none}
-.p-strip{display:grid;grid-template-columns:58px 1fr;gap:6px;align-items:center;padding:3px 6px}
-.cnt{display:flex;align-items:baseline;gap:3px;font-family:var(--f-mono);color:#ff9a2e;font-size:13px;font-weight:700;border:1px solid #2b3c55;border-radius:2px;padding:0 3px;line-height:1.3}
-.cnt small{font-size:8px;color:var(--scr-dim);font-family:var(--f-panel)}
-.p-strip canvas.ph{height:16px;border:1px solid #2b3c55;border-radius:2px}
+.p-strip{display:grid;grid-template-columns:62px 1fr;gap:6px;align-items:stretch;padding:3px 6px}
+.cnt{display:flex;flex-direction:column;justify-content:center;font-family:var(--f-mono);color:#ff9a2e;font-size:16px;font-weight:700;border:1px solid #2b3c55;border-radius:2px;padding:0 4px;line-height:1}
+.cnt small{font-size:8px;color:var(--scr-dim);font-family:var(--f-panel);text-align:right}
+.p-strip canvas.ph{height:32px;border:1px solid #2b3c55;border-radius:2px;cursor:pointer}
 .wzbox{position:relative}
-.wzbox canvas.wz{height:122px}
+.wzbox canvas.wz{height:106px}
 .wzbox .lpb{position:absolute;left:4px;bottom:3px;font-family:var(--f-mono);font-size:10px;color:#ff9a2e}
 .wzbox .zoomind{position:absolute;right:4px;bottom:3px;font-family:var(--f-panel);font-size:8px;color:var(--scr-dim);border:1px solid #2b3c55;padding:0 3px;border-radius:2px}
 .p-info{display:grid;grid-template-columns:38px 34px 58px minmax(0,1fr) auto auto;gap:6px;align-items:center;padding:4px 6px;border-top:1px solid #121c2a}
@@ -854,6 +854,33 @@ function camelotOk(a,b){const p=s=>{const m=/^(\d{1,2})([AB])$/.exec(s||'');retu
 function nextCueDist(d){let best=Infinity;[d.cue,...d.mem,...d.hc.filter(v=>v!=null)].forEach(c=>{const x=c-d.pos;if(x>.01&&x<best)best=x;});return best;}
 function fmtMs(sec){sec=Math.max(0,sec);const m=Math.floor(sec/60),s=Math.floor(sec-m*60),ms=Math.floor((sec-Math.floor(sec))*1000);return{a:String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'),b:'.'+String(ms).padStart(3,'0')};}
 const fmtBeats=b=>b>=1?String(Math.round(b)):'1/'+Math.round(1/b);
+/* manual p.22 item 10: "Waveform/phase meter — displays the bar and beat deviations from the sync master; touch to switch".
+   Reference deck = the sync master when it is another player, otherwise the other loaded player. */
+function refDeck(d){const m=masterDeck();if(m&&m!==d&&m.track&&m.track.ready)return m;const o=S.decks[d.n===1?2:1];return o.track&&o.track.ready?o:null;}
+function drawRef(d,cv){
+  const[w,h]=fit(cv),g=cv.getContext('2d'),dpr=DPR();if(w<4)return;g.fillStyle='#020306';g.fillRect(0,0,w,h);
+  const r=refDeck(d),t=d.track;
+  const label=(txt,col)=>{g.font=`700 ${9*dpr}px "Barlow Condensed",sans-serif`;g.textBaseline='top';g.fillStyle=col;g.fillText(txt,3*dpr,2*dpr);};
+  if(!r||!t||!t.ready){label('NO SYNC MASTER','#3d4e63');return;}
+  const e=wrapPhase(frac(d.pos)-frac(r.pos)),ms=e*60/bpmOf(d)*1000,barOff=(((Math.floor(d.pos)-Math.floor(r.pos))%4)+4)%4,ok=Math.abs(ms)<25,cx=Math.round(w/2);
+  if((d.refMode||'wave')==='wave'){
+    const ppb=28*dpr,rt=r.track,mid=h/2;
+    for(const[col,band,sc]of [['#1f5fff','low',.95],['#ff9a2e','mid',.6],['#f4f7ff','high',.3]]){g.fillStyle=col;for(let x=0;x<w;x++){const v=energy(rt,band,r.pos+(x-cx)/ppb);if(v>0){const hh=v*mid*sc;g.fillRect(x,mid-hh,1,hh*2);}}}
+    const b0=Math.ceil(r.pos-cx/ppb),b1=Math.floor(r.pos+(w-cx)/ppb);
+    for(let b=b0;b<=b1;b++){const x=Math.round(cx+(b-r.pos)*ppb),bar=((b%4)+4)%4===0;g.fillStyle=bar?'#ff3b30':'rgba(255,255,255,.6)';g.fillRect(x,0,bar?2*dpr:dpr,bar?h:4*dpr);}
+    // this deck's own nearest beat, for comparison
+    const myB=Math.round(d.pos),mx=Math.round(cx+(myB-d.pos)*ppb);g.fillStyle=ok?'#22e07a':'#ffd23f';g.fillRect(mx-dpr,h-5*dpr,2*dpr,5*dpr);
+    g.fillStyle='#fff';g.fillRect(cx-dpr,0,2*dpr,h);
+    g.fillStyle='rgba(2,3,6,.75)';g.fillRect(0,0,64*dpr,12*dpr);label((r===masterDeck()?'MASTER ':'')+PL(r.n).replace('PLAYER ','P'),'#ff8a1f');
+  }else{
+    const cw=(w-9*dpr)/4,rowH=(h-4*dpr)/2;
+    const row=(y,dk,col)=>{const beat=((Math.floor(dk.pos)%4)+4)%4;for(let i=0;i<4;i++){g.fillStyle=i===beat?col:'#14243a';g.fillRect(i*(cw+3*dpr),y,cw,rowH);}};
+    row(0,d,'#e8f1ff');row(rowH+4*dpr,r,'#ff8a1f');
+    const x=w/2+clamp(e*2,-1,1)*w/2;g.fillStyle=ok?'#22e07a':'#ff3d33';g.fillRect(x-2*dpr,0,4*dpr,h);
+  }
+  g.font=`700 ${9*dpr}px "JetBrains Mono",monospace`;g.textBaseline='top';g.textAlign='right';g.fillStyle='rgba(2,3,6,.75)';g.fillRect(w-74*dpr,0,74*dpr,12*dpr);
+  g.fillStyle=ok?'#22e07a':'#ff3d33';g.fillText((barOff?barOff+'B ':'')+(ms>=0?'+':'')+Math.round(ms)+'ms',w-3*dpr,2*dpr);g.textAlign='left';
+}
 function renderDeck(n){
   const d=S.decks[n],e=E[n],t=d.track,v=d.view==='source'||d.view==='browse'?'list':(t?'play':'idle');
   e.idle.hidden=v!=='idle';e.list.hidden=v!=='list';e.play.hidden=v!=='play';e.bar.hidden=v==='play';
@@ -874,7 +901,7 @@ function renderDeck(n){
     const m=masterDeck();setC(e.mt2,'on',d.mt);setT(e.k2,t.key||'');setC(e.k2,'match',!!(m&&m!==d&&m.track&&camelotOk(t.key,m.track.key)));
     setC(e.ahc,'on',(t.hot||[]).length>0);setT(e.tno,String(Math.max(1,MEDIA.tracks.indexOf(t)+1)).padStart(2,'0'));
     setT(e.lpb,d.loop.active?fmtBeats(d.loop.out-d.loop.in):'');setT(e.qv,d.q?'1':'-');setT(e.bjv,String(d.bj||16));
-    drawZoom(d,e.wz);drawOverview(d,e.wo);drawPhase(d,e.ph);
+    drawZoom(d,e.wz);drawOverview(d,e.wo);drawRef(d,e.ph);
   }
   drawJog(d,e.jd);
   const Bt=e.btn,atCue=t&&Math.abs(d.pos-d.cue)<.02,len=d.loop.active?d.loop.out-d.loop.in:0;
@@ -1162,7 +1189,8 @@ const CTL={
 CTL.vsa={min:0,max:1,def:.5,kind:'k',get:n=>S.decks[n].vsa??.5,set:(n,v)=>{S.decks[n].vsa=v;}};
 CTL.jadj={min:0,max:1,def:.5,kind:'k',get:n=>S.decks[n].jadj??.5,set:(n,v)=>{S.decks[n].jadj=v;}};
 for(const n of [1,2]){const scr=E[n].scr,root=E[n].root;Object.assign(E[n],{bar:$('.scr-bar',scr),dev:$('.dev',scr),cnt:$('.cnt b',scr),msec:$('.msec',scr),rg2:$('.rg2',scr),mt2:$('.mtb2',scr),k2:$('.k2',scr),
-  acue:$('.acue',scr),ahc:$('.ahc',scr),tno:$('.tno b',scr),lpb:$('.lpb',scr),qv:$('.qv',scr),bjv:$('.bjv',scr),vI:$('.vc .v',root),cI:$('.vc .c',root),usbInd:$('.usbind',root)});}
+  acue:$('.acue',scr),ahc:$('.ahc',scr),tno:$('.tno b',scr),lpb:$('.lpb',scr),qv:$('.qv',scr),bjv:$('.bjv',scr),vI:$('.vc .v',root),cI:$('.vc .c',root),usbInd:$('.usbind',root)});
+  E[n].ph.addEventListener('click',()=>{const d=S.decks[n];d.refMode=(d.refMode||'wave')==='wave'?'phase':'wave';d.refToggles=(d.refToggles||0)+1;});}
 const ctlOf=el=>{const[k,a]=el.dataset.ctl.split(':');return{c:CTL[k],a:+a,k};};
 function setCtl(el,v){const{c,a,k}=ctlOf(el);c.set(a,clamp(v,c.min,c.max));if(k!=='tempo')applyMixer();}
 let drag=null;
@@ -1453,11 +1481,11 @@ const MISSIONS=[
    {text:`<b>${P3}</b>의 BEAT SYNC 켜기 → 화면 BPM이 같아지는지 보기`,hint:[H(2,'sync')],check:()=>D(2).sync},
    {text:`<b>${P3}</b> 재생 → 박자가 자동으로 맞아요`,hint:[H(2,'play')],check:()=>D(2).playing&&D(2).sync},
    {text:'CH3 <b>채널 페이더</b>를 올려 겹쳐 듣기',hint:[MC('fader:3')],check:()=>S.mx.fader[3]>.6}]},
- {grp:'booth',title:'손으로 비트매칭',tag:'BEATMATCH',rx:'가운데 화면에 두 덱의 파형과 그리드가 위아래로 같이 떠서, 눈으로 킥 위치를 맞춰볼 수 있어요.',djm:'CDJ-3000 화면엔 자기 곡 파형만 나와요. 다른 덱과 어긋난 정도는 파형 위 PHASE METER 띠(싱크 마스터 기준 마디·박 차이)로 보고, 나머지는 귀로 맞춰요. 템포 페이더는 아래가 +.',src:'설명서 p.22 (10번)',setup(){play(1,3,32,1,true);S.master=1;play(2,4,0,1);S.mx.fader[2]=.8;S.mx.hpmix=-1;},steps:[
+ {grp:'booth',title:'손으로 비트매칭',tag:'BEATMATCH',rx:'가운데 화면에 두 덱의 파형과 그리드가 위아래로 같이 떠서, 눈으로 킥 위치를 맞춰볼 수 있어요.',djm:'큰 파형은 자기 곡이에요. 그 위의 가는 띠가 싱크 마스터와의 마디·박 어긋남을 보여줘요(파형 ↔ PHASE METER, 띠를 눌러 전환). 파형 모드에서 띠의 빨간 마디선과 킥이 가운데 흰 선에 오면 맞은 거예요. 템포 페이더는 아래가 +.',src:'설명서 p.22 (10번)',setup(){play(1,3,32,1,true);S.master=1;play(2,4,0,1);S.mx.fader[2]=.8;S.mx.hpmix=-1;},steps:[
    {text:'연습기 출력을 <b>헤드폰</b>으로, 믹서 <b>CH3 CUE</b> 켜기',hint:[MA('monitor','hp'),MH('mxcue',3)],check:()=>S.mx.monitor==='hp'&&S.mx.cue[3]},
    {text:`<b>${P3}</b> 재생`,hint:[H(2,'play')],check:()=>D(2).playing},
    {text:`${P3} <b>템포 페이더</b>로 BPM을 ${P2}와 ±0.10 이내로`,hint:['[data-ctl="tempo:2"]'],check:()=>D(2).track&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.1},
-   {text:`${P3} <b>조그 바깥 링</b>으로 위상 맞추기. PHASE 막대 초록색 3초 유지`,hint:['[data-jog="2"]'],check:dt=>{const ok=D(1).playing&&D(2).playing&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.12&&phaseErrMs()<25;M.hold=ok?M.hold+dt:0;return M.hold>3;}},
+   {text:`${P3} <b>조그 바깥 링</b>으로 위상 맞추기. 화면 위 띠(${P2} 파형)의 킥이 가운데 선에 오고 오른쪽 ms가 초록색으로 3초 유지`,hint:['[data-jog="2"]'],check:dt=>{const ok=D(1).playing&&D(2).playing&&Math.abs(bpmOf(D(2))-bpmOf(D(1)))<.12&&phaseErrMs()<25;M.hold=ok?M.hold+dt:0;return M.hold>3;}},
    {text:'출력을 <b>메인 스피커</b>로 돌리고 CH3 페이더 올려 믹스',hint:[MA('monitor','main'),MC('fader:3')],check:()=>S.mx.monitor==='main'&&S.mx.fader[3]>.6}]},
  {grp:'booth',title:'핫큐와 메모리 큐',tag:'HOT CUE',rx:'퍼포먼스 패드를 HOT CUE 모드로 바꿔서 써요.',djm:'화면 아래 A–H 전용 버튼 8개. 모드 전환이 없어요. 루프 중에 빈 버튼을 누르면 루프가 저장되고(주황), 지울 땐 CALL/DELETE를 누른 채 눌러요. rekordbox 핫큐는 HOT CUE AUTO LOAD가 켜져 있으면 로드하자마자 떠요.',src:'설명서 p.58–59',setup(){play(1,2,0);S.mx.fader[2]=.8;},steps:[
    {text:'PLAY 후 빈 <b>HOT CUE</b> 버튼을 눌러 저장',hint:[H(1,'play'),H(1,'hc7')],check:()=>D(1).hc.some(v=>v!=null)&&D(1).playing},
